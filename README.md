@@ -21,11 +21,18 @@ This project is a combined work, based on the following repositories:
 2. [Ida Core](https://github.com/innerbytes/ida-v8) - Core Ida engine source code, which provides V8 integration and base scripting API, which can be used as blueprint for other games as well.
   - If you do any general improvements to the Ida core engine in this repository, porting back to the Ida Core is not mandatory, but can be desirable.
 
-## How can I contribute ? 
+## ❤️ How can I help the author ?
+
+This project is developed and maintained in my free time.  
+If you like IdaJS, and find it useful, consider supporting it 💙
+
+Your support helps keep the project alive and improving.
+- ☕ Buy me a coffee: https://buymeacoffee.com/innerbytes  
+- ❤️ Patreon: https://www.patreon.com/15102220/join
+
+## How can I contribute to IdaJS project ? 
 
 - Read [Contribution Guidelines](CONTRIBUTING.md).
-
-- The build system and the LBA2 game source code in this repository are based on LBA2 fork: https://github.com/innerbytes/lba2-classic-ida
 
 ## Little Big Adventure 2 - Engine source code - Community
 
