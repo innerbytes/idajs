@@ -32,7 +32,8 @@ Your support helps keep the project alive and improving.
 
 ## How can I contribute to IdaJS project ? 
 
-- Read [Contribution Guidelines](CONTRIBUTING.md).
+- Read [Contribution Guidelines](https://ida.innerbytes.com/v0.1.45-50/#9-contributing-to-the-idajs-project)
+- See also [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Little Big Adventure 2 - Engine source code - Community
 
