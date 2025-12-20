@@ -20,14 +20,41 @@ try {
 
 exports.load = function (app) {
   app.renderer.on(PageEvent.END, (page) => {
-    if (page.url !== "index.html") return;
     if (!page.contents) return;
+
+    // Inject favicon links to all HTML pages
+    if (page.url && (page.url.endsWith(".html") || page.url.endsWith(".htm"))) {
+      page.contents = injectFaviconToHead(page.contents);
+    }
+
+    if (page.url !== "index.html") return;
 
     page.contents = injectCanonicalTag(page.contents);
     page.contents = processIndexReferences(page.contents);
     page.contents = processExternalUrls(page.contents);
   });
 };
+
+/**
+ * Injects favicon links into HTML head if not already present.
+ */
+function injectFaviconToHead(html) {
+  // Check if favicon links are already present
+  if (html.includes('rel="apple-touch-icon"')) {
+    return html;
+  }
+
+  const faviconLinks = `  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">`;
+
+  if (html.includes("</head>")) {
+    return html.replace("</head>", `${faviconLinks}\n</head>`);
+  } else {
+    return `${faviconLinks}\n${html}`;
+  }
+}
 
 /**
  * Injects canonical tag into HTML if not already present.

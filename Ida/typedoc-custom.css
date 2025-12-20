@@ -12,6 +12,7 @@
 :root {
   --idajs-color-light: #147f95;
   --idajs-color-dark: #e1dec2;
+  --dim-toolbar-contents-height: 3.5rem;
 }
 
 .idajs {
@@ -31,4 +32,20 @@
 
 :root[data-theme="light"] .idajs {
   color: var(--idajs-color-light);
+}
+
+/* 
+ * Logo in header
+ */
+a.title::before {
+  content: "";
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  background-image: url('/media/ida.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 10px;
+  vertical-align: middle;
 }
