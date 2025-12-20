@@ -1,0 +1,4 @@
+{
+  "name": "ts-storm",
+  "description": "The same as original storm sample, but written in TypeScript."
+}

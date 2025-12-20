@@ -1,0 +1,27 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "tsconfig": "tsconfig.typedoc.json",
+  "name": "IdaJS",
+  "entryPoints": [
+    "srcjs/types/global.d.ts",
+    "srcjs/types/index.d.ts"
+  ],
+  "sort": ["visibility", "kind", "instance-first", "alphabetical-ignoring-documents"],
+  "sortEntryPoints": false,
+  "readme": "README.md",
+  "exclude": ["**/mark.d.ts"],
+  "out": "docs",
+  "customCss": "./typedoc-custom.css",
+  "plugin": ["./typedoc-plugin.js"],
+  "excludeExternals": false,
+  "excludeInternal": false,
+  "excludePrivate": false,
+  "excludeProtected": false,
+  "highlightLanguages": ["typescript", "javascript", "cpp", "bash", "json", "powershell", "cmd"],
+  "navigationLinks": {
+    "❤️ Support IdaJS ❤️": "https://innerbytes.com/#about",
+    "LBA Architect": "https://moonbase.kaziq.net/index.php?page=d_prog",
+    "LBA2 HQR resources": "https://lbafileinfo.kaziq.net/index.php/LBA_2_files",
+    "LBA Tools": "https://magicball.net/devtools/"
+  }
+}

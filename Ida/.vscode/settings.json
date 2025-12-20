@@ -1,0 +1,82 @@
+{
+  "editor.formatOnSave": true,
+  "editor.indentSize": "tabSize",
+  "files.eol": "\n", // Use LF endings
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.tabSize": 4
+  },
+  "[c]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools",
+    "editor.tabSize": 4
+  },
+  "files.associations": {
+    "*.c": "c",
+    "*.cpp": "cpp",
+    "*.h": "cpp",
+    "*.hpp": "cpp",
+    "*.js": "javascript",
+    "*.ts": "typescript"
+  },
+  "C_Cpp.clang_format_fallbackStyle": "Google",
+  "C_Cpp.autoAddFileAssociations": false,
+  "[javascript]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.rulers": [100]
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "editor.rulers": [100]
+  },
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+
+  // Override global settings to enable TypeScript IntelliSense for this project
+  "javascript.suggest.enabled": true,
+  "typescript.suggest.enabled": true,
+
+  // Disable word-based suggestions to prevent unrelated properties from showing
+  "javascript.suggest.names": false,
+  "editor.wordBasedSuggestions": "off",
+
+  "editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
+  },
+  "editor.suggestOnTriggerCharacters": false,
+  "editor.wrapOnEscapedLineFeeds": false,
+  "editor.wrappingIndent": "indent",
+  "editor.wrappingStrategy": "simple",
+  "[markdown]": {
+    "editor.formatOnSave": false,
+    "editor.wordWrap": "off"
+  },
+  "cSpell.words": [
+    "Holomap",
+    "lifef",
+    "Meteo",
+    "srcjs",
+    "subfolders",
+    "cutscene",
+    "idajs",
+    "Innerbytes",
+    "Loopable",
+    "Modders",
+    "Namespacing",
+    "Sendell",
+    "Soloud",
+    "Twinsen",
+    "Twinsen's",
+    "Winget",
+    "NitroMecaPingouin" // Of course
+  ]
+}

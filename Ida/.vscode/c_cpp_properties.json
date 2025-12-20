@@ -1,22 +1,21 @@
 {
-    "configurations": [
-        {
-            "name": "Win32",
-            "includePath": [
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/../soloud/include"
-            ],
-            "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
-            ],
-            "windowsSdkVersion": "10.0.22621.0",
-            "compilerPath": "cl.exe",
-            "cStandard": "c17",
-            "cppStandard": "c++20",
-            "intelliSenseMode": "windows-msvc-x64"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/src/**",
+        "${workspaceFolder}/lib/*/*",
+        "${workspaceFolder}/../soloud/include",
+        "${workspaceFolder}/../SDL/include",
+        "${workspaceFolder}/../packages/v8-v143-x86.13.0.245.25/include"
+      ],
+      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+      "windowsSdkVersion": "10.0.22621.0",
+      "compilerPath": "cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "windows-msvc-x64"
+    }
+  ],
+  "version": 4
 }

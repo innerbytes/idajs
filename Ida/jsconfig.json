@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types", "./srcjs/types", "./srcjs/tests"],
+    "lib": ["es2021", "dom"]
+  },
+  "include": ["./srcjs/tests/**/*.js", "./srcjs/types/**/*.d.ts", "./srcjs/tests/**/*.d.ts"]
+}

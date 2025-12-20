@@ -223,47 +223,57 @@ void	InitGrilleExt( U32 numcube )
 	// quand il pleut
 	switch( Island )
 	{
-		case 0:
-			if( TEMPETE_FINIE )
-			{
-				if( !strstr(IslandName,"citabeau") )
-					LastIsland = 1 ;	// pour que le chargement s'effectue
+	case 0:
+	{
+		// Allowing moders to force which type of Citadel island 3D model to load
+		bool loadCitabeau = !ida->isForcedCitadel() && (ida->isForcedCitabeau() || TEMPETE_FINIE);
 
-				strcpy( IslandName, PATH_RESSOURCE ) ;
-				strcat( IslandName, "citabau" ) ;
-				numskysea = RESS_SKYSEA00 ;
-			}
-			else
-			{
-				if( !strstr(IslandName,"citadel") )
-					LastIsland = 1 ;	// pour que le chargement s'effectue
+		if (loadCitabeau)
+		{
+			if (!strstr(IslandName, "citabeau"))
+				LastIsland = 1;	// pour que le chargement s'effectue
 
-				strcpy( IslandName, PATH_RESSOURCE ) ;
-				strcat( IslandName, "citadel" ) ;
+			strcpy(IslandName, PATH_RESSOURCE);
+			strcat(IslandName, "citabau");
+			numskysea = RESS_SKYSEA00;
+		}
+		else
+		{
+			if (!strstr(IslandName, "citadel"))
+				LastIsland = 1;	// pour que le chargement s'effectue
 
-				numskysea = RESS_SKYSEA0 ;
-			}
-			break ;
+			strcpy(IslandName, PATH_RESSOURCE);
+			strcat(IslandName, "citadel");
 
-		case 5:
-			if( ListVarGame[FLAG_CELEBRATION] )
-			{
-				if( !strstr(IslandName,"celebra2") )
-					LastIsland = 1 ;	// pour que le chargement s'effectue
+			numskysea = RESS_SKYSEA0;
+		}
+	}
+	break ;
 
-				strcpy( IslandName, PATH_RESSOURCE ) ;
-				strcat( IslandName, "celebra2" ) ;
-			}
-			else
-			{
-				if( !strstr(IslandName,"celebrat") )
-					LastIsland = 1 ;	// pour que le chargement s'effectue
+	case 5:
+	{
+		// Ida - Allowing moders to force which type of Celebration island 3D model to load
+		bool loadCelebra2 = !ida->isForcedCelebrationNormal() && (ida->isForcedCelebrationRisen() || ListVarGame[FLAG_CELEBRATION]);
 
-				strcpy( IslandName, PATH_RESSOURCE ) ;
-				strcat( IslandName, "celebrat" ) ;
-			}
-			numskysea = RESS_SKYSEA5 ;
-			break ;
+		if (loadCelebra2)
+		{
+			if (!strstr(IslandName, "celebra2"))
+				LastIsland = 1;	// pour que le chargement s'effectue
+
+			strcpy(IslandName, PATH_RESSOURCE);
+			strcat(IslandName, "celebra2");
+		}
+		else
+		{
+			if (!strstr(IslandName, "celebrat"))
+				LastIsland = 1;	// pour que le chargement s'effectue
+
+			strcpy(IslandName, PATH_RESSOURCE);
+			strcat(IslandName, "celebrat");
+		}
+		numskysea = RESS_SKYSEA5;
+	}
+	break ;
 
 		default:
 //			DefFileBufferInit( PATH_RESSOURCE"ile.lst", Screen, 640*480 ) ;

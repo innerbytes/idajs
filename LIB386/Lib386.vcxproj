@@ -843,7 +843,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ail\MIXER.H" />
-    <ClInclude Include="cfg-defines.h" />
     <ClInclude Include="FILEIO\PCXHEAD.H" />
     <ClInclude Include="glext.h" />
     <ClInclude Include="H\3D.H" />

@@ -1,0 +1,26 @@
+{
+  "name": "@idajs/types",
+  "version": "0.0.0",
+  "description": "TypeScript type definitions for LBA2 IdaJS modding engine",
+  "author": "Andriy Tevelyev",
+  "license": "GPL-2.0",
+  "keywords": [
+    "idajs",
+    "typescript",
+    "types",
+    "definitions",
+    "lba",
+    "lba2",
+    "mod"
+  ],
+  "files": [
+    "*.d.ts",
+    "LICENSE",
+    "README.md"
+  ],
+  "types": "index.d.ts",
+  "main": "index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "prettier.prettier-vscode",
+    "ms-vscode.cpptools"
+  ],
+  "unwantedRecommendations": []
+}

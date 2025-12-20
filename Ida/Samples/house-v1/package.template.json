@@ -1,0 +1,4 @@
+{
+  "name": "sample-house-v1",
+  "description": "A sample implementation of Twinsen's house scripts using IdaJS Core api only"
+}

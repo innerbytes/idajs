@@ -31,6 +31,7 @@ extern void TheEndCheckFile(char *filename);
 extern void InitTheEnd(S32 num,char *error);
 /*--------------------------------------------------------------------------*/
 extern void TheEnd(S32 num,char *error);
+extern void TheEndIda(S32 num, char* error, S32 exitCode);
 /*--------------------------------------------------------------------------*/
 extern void TheEndInfo(void);
 /*--------------------------------------------------------------------------*/

@@ -1,18 +1,17 @@
 # How to Contribute
 
-This project currently doesn't accept any new gameplay features, but the bug fixes and improvements are accepted.
+This project accepts contributions withing the scope of the planned features.
 
-If you have any ideas for your own game modifications or new stories in LBA2 world based on this project, create your own fork.
+The bug fixes and improvements are very welcome as well.
 
-If you spotted any bugs or want to improve something, the PR is always welcome here.
+If you want to contribute, please first read the guildelines here: [Contributing to the IdaJS project](https://ida.innerbytes.com/v0.1.45-50/#9-contributing-to-the-idajs-project)
 
-# Known bugs and issues
+## Known bugs and issues
 
-### Minor issues
-- Volume CD is useless property in menu - remove?
-- General volume slider in the menu has no effect - might as well just remove, as general sound can be regulated by the Windows
-- Sometimes white dots and lines artifacts appear on the ground (this is and old issue)
+See the [Issues](https://github.com/innerbytes/idajs/issues) section on GitHub for the list of current open issues.
 
-# Contacts
+## Contacts
 
-Contact me at [info@innerbytes.com](mailto:info@innerbytes.com) for any questions ot suggestions. 
+If you have a feature or improvement idea, or want to discuss a contribution, you can reach out to the author:
+
+https://innerbytes.com/#about

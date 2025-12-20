@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "checkJs": false,
+    "baseUrl": ".",
+    "typeRoots": ["./srcjs/types"],
+    "lib": ["esnext", "dom"]
+  },
+  "include": ["./srcjs/types/*.d.ts"]
+}

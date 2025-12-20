@@ -1,6 +1,8 @@
 #ifndef	OBJECT_H
 #define	OBJECT_H
 
+#include "engine/idaTypes.h"
+
 #define	GivePtrObjFix(index)	HQR_Get( HQR_ObjFix, index )
 #define	GivePtrSample(index)	HQR_Get( HQR_Samples, index )
 
@@ -38,7 +40,7 @@ extern void InitLoadedGame(void);
 /*--------------------------------------------------------------------------*/
 extern void LoadFile3dObjects(void);
 /*--------------------------------------------------------------------------*/
-extern void ChangeCube(void);
+extern void ChangeCube(bool restoreValidPos = false);
 /*--------------------------------------------------------------------------*/
 extern void HitObj(U8 numhitter,U8 num,S32 hitforce,S32 beta);
 /*--------------------------------------------------------------------------*/
@@ -113,6 +115,8 @@ extern void SetZoneCamera(T_ZONE *ptrz);
 extern void CheckZoneSce(T_OBJET *ptrobj,U8 numobj);
 /*--------------------------------------------------------------------------*/
 extern void CheckBuggyZoneGiver( T_OBJET *ptrobj ) ;
+/*--------------------------------------------------------------------------*/
+extern bool TestObjectZoneDirection(S32 objX, S32 objZ, S32 objBeta, T_ZONE *zone, ZoneDirection direction);
 /*--------------------------------------------------------------------------*/
 
 #endif	// OBJECT_H

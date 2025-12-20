@@ -18,10 +18,11 @@
 #include	<ail\sample.h>
 #include	<ail\stream.h>
 
+#include    "common/ElasticBuffer.h"
+
 #pragma pack(8)
 #include	"soloud.h"
 #include	"soloud_wav.h"
-#include    "ElasticBuffer.h"
 #pragma pack(1)
 
 #include	<assert.h>

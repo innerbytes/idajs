@@ -1,0 +1,22 @@
+# Common ignores
+.env
+node_modules/
+
+# Build outputs
+/src/version.h
+/docs/
+
+# Documentation and licenses
+
+# Readme file and versions.json are auto-generated (root folder only)
+/README.md 
+/versions.json
+
+# packages.config are ignored in this project
+/packages.config
+
+# We copy LICENSE into the types package before publishing
+/srcjs/types/LICENSE
+
+# Footer for the typedoc
+/typedoc-footer.html

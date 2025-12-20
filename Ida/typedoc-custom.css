@@ -1,0 +1,34 @@
+/* 
+ * Typedoc side menu anchor links scroll fix for mobile devices
+ */
+.has-menu body {
+  overflow: visible !important;
+}
+
+/* 
+ * IdaJS text styling
+ */
+
+:root {
+  --idajs-color-light: #147f95;
+  --idajs-color-dark: #e1dec2;
+}
+
+.idajs {
+  /*font-weight: bold;*/
+  color: var(--idajs-color-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .idajs {
+    color: var(--idajs-color-dark);
+  }
+}
+
+:root[data-theme="dark"] .idajs {
+  color: var(--idajs-color-dark);
+}
+
+:root[data-theme="light"] .idajs {
+  color: var(--idajs-color-light);
+}

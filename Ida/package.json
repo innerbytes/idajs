@@ -1,0 +1,35 @@
+{
+  "name": "idajs",
+  "version": "0.1.45",
+  "description": "IdaJS game engine for Little Big Adventure 2 game modding",
+  "author": "Andriy Tevelyev",
+  "license": "MIT",
+  "scripts": {
+    "build": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Release -Passive",
+    "rebuild": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Release -Clean -Passive",
+    "build:debug": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Debug -Passive",
+    "build:release": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Release -Passive",
+    "rebuild:debug": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Debug -Clean -Passive",
+    "rebuild:release": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Release -Clean -Passive",
+    "test": "powershell -ExecutionPolicy Bypass -File ./test.ps1",
+    "test:md5": "pwsh -ExecutionPolicy Bypass -Command \"cd ./srcjs/tests-md5; ./run_tests.ps1\"",
+    "patch": "npm version patch --no-git-tag-version && git add package.json package-lock.json && node version-commit.js && node release.js",
+    "minor": "npm version minor --no-git-tag-version && git add package.json package-lock.json && node version-commit.js && node release.js",
+    "major": "npm version major --no-git-tag-version && git add package.json package-lock.json && node version-commit.js && node release.js",
+    "push": "git push --follow-tags",
+    "docs": "node generate-readme.js && npx typedoc && npx open-cli ./docs/index.html",
+    "create": "node srcjs/create-mod/index.js",
+    "publish:types": "node check-publish.js srcjs/types && node publish-package.js srcjs/types",
+    "publish:types:dev": "node check-publish.js srcjs/types --dev-publish && node publish-package.js srcjs/types --dev",
+    "publish:create": "node check-publish.js srcjs/create-mod && node publish-package.js srcjs/create-mod",
+    "publish:create:dev": "node check-publish.js srcjs/create-mod --dev-publish && node publish-package.js srcjs/create-mod --dev",
+    "publish:docs": "node check-publish.js srcjs/types README.template.md && node generate-readme.js && node generate-typedoc-config.js && node publish-docs.js && rm README.md && node generate-typedoc-config.js --reset",
+    "publish:docs:update": "node check-publish.js srcjs/types README.template.md --dev-publish && node generate-readme.js && node generate-typedoc-config.js && node publish-docs.js && rm README.md && node generate-typedoc-config.js --reset"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "mustache": "^4.2.0",
+    "open-cli": "^8.0.0",
+    "typedoc": "0.28.15"
+  }
+}

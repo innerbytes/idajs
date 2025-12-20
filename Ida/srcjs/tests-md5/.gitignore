@@ -1,0 +1,12 @@
+# Auto-copied files - ignore to prevent conflicts
+MD5.h
+md5.js
+
+# Compiled executables
+*.exe
+*.obj
+*.pdb
+
+# Test outputs
+*_results.txt
+temp_*.bat

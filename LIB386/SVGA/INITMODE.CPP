@@ -118,7 +118,8 @@ void	ClearGraphSvga()
 }
 
 //--------------------------------------------------------------------------
-static	S32	InitDesiredMode()
+// Ida - added fullScreen parameter
+static	S32	InitDesiredMode(int fullScreen)
 {
 	S32	res	;
 	S32	i, off	;
@@ -128,7 +129,7 @@ static	S32	InitDesiredMode()
 		return	-1	;
 	}
 
-	res = DetectInitVESAMode(ModeDesiredX, ModeDesiredY, ModeDesiredDepth, VESAMemory)	;
+	res = DetectInitVESAMode(ModeDesiredX, ModeDesiredY, ModeDesiredDepth, VESAMemory, fullScreen);
 
 #ifndef	YAZ_WIN32
 	CopyBoxVESA = CopyBoxVESAInit	;	// check gain for linear buffer
@@ -165,8 +166,8 @@ static	S32	InitDesiredMode()
 #ifdef	_WIN32
 
 //--------------------------------------------------------------------------
-
-S32	InitGraphSvga(U32 resx, U32 resy, U32 depth)
+// Ida - added fullScreen parameter
+S32	InitGraphSvga(U32 resx, U32 resy, U32 depth, U32 fullScreen)
 {
 	static S32	flag = 0	;
 
@@ -189,7 +190,7 @@ S32	InitGraphSvga(U32 resx, U32 resy, U32 depth)
 
 	LogPrintf("\nDesired resolution: %i*%i*%i\n", ModeDesiredX, ModeDesiredY, ModeDesiredDepth);
 
-	if(!InitDesiredMode())
+	if(!InitDesiredMode(fullScreen))
 	{
 		LogPuts("Error initializing video mode\n");
 		return 1	;

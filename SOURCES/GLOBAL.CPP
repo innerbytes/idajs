@@ -290,7 +290,7 @@ S32		NbObjets = 0 ;
 T_OBJET		ListObjet[MAX_OBJETS] ;
 T_EXTRA		ListExtra[MAX_EXTRAS] ;
 S32		NbZones = 0 ;
-T_ZONE		*ListZone ;
+T_ZONE		*ListZone;
 T_INCRUST_DISP	ListIncrustDisp[MAX_INCRUST_DISP] ;
 		// ListPartFlow en extern sauvé ici
 

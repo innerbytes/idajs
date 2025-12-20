@@ -1,0 +1,37 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Get tag annotation
+        id: tag_data
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "Tag name: $TAG_NAME"
+          git fetch --force --tags
+          TAG_MESSAGE=$(git tag -l --format='%(contents)' "$TAG_NAME")
+          echo "Tag message:"
+          echo "$TAG_MESSAGE"
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          echo "$TAG_MESSAGE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.tag_data.outputs.message }}
+          draft: false
+          prerelease: ${{ contains(github.ref, '-dev.') || contains(github.ref, '-alpha') || contains(github.ref, '-beta') }}

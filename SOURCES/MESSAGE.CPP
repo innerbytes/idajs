@@ -137,6 +137,13 @@ char    PathVoxCD[_MAX_PATH] ;
 #define MAX_STACK       100             // ex 32!!!
 #define MAX_SHADE       14              // ex 32!!!
 #define SPEAK_SAMPLE    0x1234
+
+// Ida - improvement to not let the word exceed the memory
+#define MAX_WORD_CHARS 255
+
+// Ida - improvement to not let the line exceed the memory
+#define MAX_LINE_CHARS 255
+
 /*-------------------------------------------------------------------------*/
 S32    Dial_X0=16      ;
 S32    Dial_Y0=334     ;
@@ -144,7 +151,7 @@ S32    Dial_X1=639-16  ;
 S32    Dial_Y1=479-16  ;
 static  S32    DialMaxSize=((623-8)-(16+8));
 
-static  char    BufLine[256]    ;
+static  char    BufLine[MAX_LINE_CHARS+1];
 static  char    *PtLine         ;
 static  S32    SizeLine        ;
 static  S32    NbSpace         ;
@@ -163,11 +170,12 @@ S32     FlecheForcee = FALSE ;
 /*-------------------------------------------------------------------------*/
 
 U16    MaxText          ;
+S32    IdaDialogStartId;
 
 static char     FileText[256]   ;
 
-S32     Language = 1    ;               // English
-S32     LastFileInit=-1 ;
+S32     Language = 1;               // Français
+S32     LastFileInit = -1;
 
 // yaz: can't change the encoding of those, else it breaks the language cfg reading
 char    *TabLanguage[] = {
@@ -254,7 +262,7 @@ typedef struct
 T_FILEONHD      TabFileOnHD[MAX_FILE_VOICE] ;
 
 U32     TotalSizeFileHD = 0             ;
-S32     LanguageCD = 0                  ;// Français, a changer of course!
+S32     LanguageCD = 0                  ;
 S32     NbFileOnHD = 0                  ;// No File for the moment
 S32     MaxVoice=0                      ;
 
@@ -263,7 +271,7 @@ S32     MaxVoice=0                      ;
 
 char    *PtDial                 ;//     Use by Holomap
 S32    X_Dial, Y_Dial           ;//     Use by Holomap
-static  char    Word[256]       ;
+static  char    Word[MAX_WORD_CHARS+1];
 static  char    *PtWord         ;
 static  S32    NbLineDial      ;
 static  S32    MaxLineDial=3   ;
@@ -305,6 +313,7 @@ U32     GetHDFreeSize()
 
 /*-------------------------------------------------------------------------*/
 #endif//YAZ_WIN32
+
 
 /*-------------------------------------------------------------------------*/
 #ifdef  CDROM
@@ -418,6 +427,23 @@ void    InitLanguage()
         }
 #endif
 }
+/*-------------------------------------------------------------------------*/
+
+static S32 FindMaximumTextId()
+{
+	U16 *pt = BufOrder;
+	S32 maximumDialogId = -1;
+	for (S32 i = 0; i < MaxText; i++) 
+	{
+		auto currentTextId = *pt++;
+		if (currentTextId > maximumDialogId) 
+		{
+			maximumDialogId = currentTextId;
+		}
+	}
+
+	return maximumDialogId;
+}
 
 /*-------------------------------------------------------------------------*/
 
@@ -430,7 +456,7 @@ S32    FindText( S32 text )
 
         for ( i = 0 ; i < MaxText ; i++ )
         {
-                if ( *pt++ == text )    return( i )     ;
+            if ( *pt++ == text )    return( i )     ;
         }
         return( -1 )    ;
 }
@@ -1152,6 +1178,33 @@ S32     TestSpeak()
 //void  StopSpeak() { }
 //----------------------------------------------------------------------------
 #endif
+
+/*-------------------------------------------------------------------------*/
+
+/// <summary>
+/// Used to collect all the dialog ids and find the maximum, so the modding engine can use the next available id
+/// </summary>
+int IdaInitAllDialogs() 
+{
+    int maximumDialogId = -1;
+
+    for (int i = 0; i < START_FILE_ISLAND + MAX_ISLAND; ++i) 
+    {
+        if (i == 1) continue; 
+
+	    InitDial(i);
+		int localMaximumDialogId = FindMaximumTextId();
+		if (maximumDialogId < localMaximumDialogId)
+		{
+			maximumDialogId = localMaximumDialogId;
+		}
+    }
+
+	IdaDialogStartId = maximumDialogId + 1;
+
+    return IdaDialogStartId;
+}
+
 /*-------------------------------------------------------------------------*/
 void    InitDial( S32 file )
 {
@@ -1190,39 +1243,57 @@ S32     FlagGui = 0     ;
 
 void    GetNextWord(char *ptchaine, char *mot)
 {
-        char    *dst, *pt       ;
+        char *dst = mot;
+        LenWord = 0;
 
-        dst = mot       ;
-        LenWord = 0     ;
+	// Ida - will not let the word to exceed 255 chars
+        S32 stored = 0;
 
         if (( *ptchaine == '\"' ) AND ( *(ptchaine+1) == ' ' ))
         {
-                *dst++ = *ptchaine++    ;
-                *dst++ = CODE_HARD_SPACE;//     Code SPACE
-                ptchaine++              ;
-                LenWord += 2            ;
-                FlagGui = 1             ;// Open "
+            if (stored + 2 <= MAX_WORD_CHARS) 
+            {
+                *dst++ = *ptchaine;
+                *dst++ = CODE_HARD_SPACE; // Code SPACE
+		stored += 2;
+            }
+            
+            ptchaine += 2           ;
+            LenWord += 2            ;
+            FlagGui = 1             ; // Open "
         }
 
         while(( *ptchaine != 0 )
         AND ( *ptchaine != 1 )
         AND ( *ptchaine != ' ' ))
         {
-                *dst++ = *ptchaine++    ;
-                LenWord++               ;
+                if (stored < MAX_WORD_CHARS) {
+                        *dst++ = *ptchaine;  //     Char
+                        stored++;
+                }
+                ptchaine++;
+                LenWord++;
 
                 while ( *ptchaine == ' ' )
                 {
-
+                        char* pt;
                         if ( FlagGui )  pt = (char*)strchr( "!?);:\"", *(ptchaine+1))  ;
                         else            pt = (char*)strchr( "!?);:", *(ptchaine+1))    ;
 
                         if ( pt )
                         {
                                 if ( *pt == '\"' )      FlagGui = 0     ;
-                                ptchaine++              ;
-                                *dst++ = CODE_HARD_SPACE;//     Code SPACE
-                                *dst++ = *ptchaine++    ;//     Ponctuation
+                                ptchaine++;
+
+                                // consume space + punctuation
+                                if (stored + 2 <= MAX_WORD_CHARS) 
+                                {
+                                    *dst++ = CODE_HARD_SPACE;
+                                    *dst++ = *ptchaine;
+                                    stored += 2;
+                                }
+
+                                ptchaine++;
                                 LenWord += 2            ;
                         }
                         else    break   ;
@@ -1318,6 +1389,21 @@ void    TestCoulDial( S32 coul )
 {
         MinDegrade = coul*16    ;
         MaxDegrade = coul*16+12 ;
+}
+/*-------------------------------------------------------------------------*/
+static void IdaSetDialogColor(DialogColorHandle idaDialogColor)
+{
+    S32 mainColor = (S32)idaDialogColor.MainColor;
+
+    if (mainColor < 0) 
+    {
+        MinDegrade = idaDialogColor.StartColor256 > -1 ? idaDialogColor.StartColor256 : 0;
+        MaxDegrade = idaDialogColor.EndColor256 > -1 ? idaDialogColor.EndColor256 : idaDialogColor.StartColor256;
+    }
+    else 
+    {
+        TestCoulDial((S32)idaDialogColor.MainColor);
+    }
 }
 /*-------------------------------------------------------------------------*/
 void    NormalWinDial()
@@ -1457,6 +1543,12 @@ S32     GereFlagDial( S32 text )
 #endif
                 )       ret = Speak(text)       ;
 
+                // Ida - spy on dialog info in Say mode
+                if (idaSpy->isDialogSpyEnabled()) 
+                {
+                    idaSpy->spyDialog(TimerRefHR, PtText, SizeText, FlagDial, ListObjet[NumObjDial].CoulObj, 0);
+                }
+
                 ret = TRUE ;
         }
         return ret      ;
@@ -1465,21 +1557,45 @@ S32     GereFlagDial( S32 text )
 /*-------------------------------------------------------------------------*/
 S32    GetText( S32 text )
 {
-        U16   offset0 ;
-        U16   offset1 ;
-        S32    num      ;
+        U16 offset0;
+        U16 offset1;
 
-        num = FindText( text )          ;//     Must have good number
-        if ( num == -1 )        return(0L);//   RETURN
+        if (IdaDialogStartId && ida->controlsDialogText(text)) 
+        {
+            const U8* idaText = ida->getText(text, &SizeText);
+            if (!idaText) 
+            {
+                return 0L;
+            }
 
-        offset0 = *(U16*)(BufText+((num+0)*2L));
-        offset1 = *(U16*)(BufText+((num+1)*2L));
+            PtText = (U8*)idaText;
+        }
+        else 
+        {
+            S32    num;
 
-        PtText = BufText+offset0        ;
+            num = FindText(text);//     Must have good number
+            if (num == -1)        return(0L);//   RETURN
 
-        FlagDial = *PtText++            ; // attribut pour GereFlagDial()
+            offset0 = *(U16*)(BufText + ((num + 0) * 2L));
+            offset1 = *(U16*)(BufText + ((num + 1) * 2L));
 
-        SizeText = offset1-offset0-1    ; // -1 pour virer octet d'attribut
+            PtText = BufText + offset0;
+
+            SizeText = offset1-offset0-1    ; // -1 pour virer octet d'attribut
+        }
+
+        // Ida - a situation where an original game text is controlled by Ida, custom text is not passed, but the user still want to use custom flag
+		U8 customFlag = IdaDialogStartId ? ida->getDialogFlag(text) : 0;
+        if (customFlag > 0)
+        {
+            FlagDial = customFlag;
+            PtText++;
+        }
+        else 
+        {
+            FlagDial = *PtText++; // attribut pour GereFlagDial()
+        }
 
         return(1L)                      ;
 }
@@ -1491,7 +1607,14 @@ S32    GetText( S32 text )
 //----- incrust vignette Radio
 void    TestAndDrawRadio( void )
 {
-        if( FlagDial&DIAL_RAD )         // Message Radio
+	// Ida - for automated tests
+	if (idaSpy->isDialogSpyEnabled()) 
+	{
+		idaSpy->spyDialogSpriteClear();
+	}
+
+
+        if( FlagDial & DIAL_RAD )         // Message Radio
         {
                 S32     sprite ;
                 S32     mindx, mindy ;
@@ -1527,7 +1650,24 @@ void    TestAndDrawRadio( void )
                         mindy += ClipWindowYMin ;
                 }
 
-                AffGraph( 0, mindx, mindy, HQR_Get(HQRPtrSprite,sprite) ) ;
+                int idaX, idaY, idaSpriteNumber;
+                const SpriteHandle *idaAtlas = ida->getDialogSprite(CurrentDial, mindx, mindy, sprite, &idaX, &idaY, &idaSpriteNumber);
+                if (idaAtlas) 
+                {
+                    // Showing Ida sprite if overriden
+                    AffGraph(idaSpriteNumber, idaX, idaY, (void *)idaAtlas->buffer);
+
+                    // Ida - for automated tests
+                    if (idaSpy->isDialogSpyEnabled()) 
+                    {
+                        idaSpy->spyDialogSprite(idaSpriteNumber, idaX, idaY, idaAtlas);
+                    }
+                }
+                else 
+                {
+                    // Otherwise showing default radio sprite - either Zoe or Baldino
+                    AffGraph(0, mindx, mindy, HQR_Get(HQRPtrSprite,sprite)) ;
+                }
 
                 if( FlagDisplayText OR !FlagAnimWhoSpeak )
                 {
@@ -1653,17 +1793,35 @@ void    OpenDial(S32 text)
 #endif
 }
 /*-------------------------------------------------------------------------*/
+
+static inline void SafeAppendToBufLine(const char* src)
+{
+    size_t currentLength = strlen(BufLine);
+    size_t avail = (MAX_LINE_CHARS - currentLength);
+    if (avail <= 0) return;
+
+    size_t numBytesToCopy = strlen(src);
+    if (numBytesToCopy > avail) 
+    { 
+        numBytesToCopy = avail; 
+    }
+
+    memcpy(BufLine + currentLength, src, numBytesToCopy);
+    BufLine[currentLength + numBytesToCopy] = 0;
+}
+
 void    GetNextLine()
 {
         S32    dx, dd  ;
-        S32    flag    ;
+        S32    flag    ;   // If 1 - need to justify
 
-        SizeLine = 0    ;
-        NbSpace = 0     ;
-        *BufLine = 0    ;
-        SizeSpace = INTER_SPACE ;
-        flag = 1        ;//     Justifie
+        SizeLine = 0    ;  // Size of the line in pixels
+        NbSpace = 0     ;  // Number of spaces in the line
+        *BufLine = 0    ;  // Buffer to accumulate the line characters
+        SizeSpace = INTER_SPACE;  // Initial size of space between words in pixels
+        flag = 1        ;  // Justifie
 
+        // Reducing the zone of the text if the sprite needs to be displayed
 //----- Retrait du texte si vignette Baldino ou Zoe en Radio...
 //      if (( FlagDial & DIAL_BIG ) AND ( FlagDial & DIAL_RAD ))
         if (( FlagDial & DIAL_RAD ))
@@ -1688,57 +1846,105 @@ void    GetNextLine()
 //-----
         while(TRUE)
         {
-                while( *PtDial == ' ' ) PtDial++;
-                if ( *PtDial == 0 )     break   ;
-                GetNextWord( PtDial, Word )     ;
-                if ( SizeLine+SizeSpace+SizeWord > DialMaxSize ) break  ;
+                while( *PtDial == ' ' ) PtDial++;   // Skipping the initial spaces
+                if ( *PtDial == 0 )     break   ;   // Check if we reached the end of the source text
+                GetNextWord( PtDial, Word )     ;   // Reading the next word
+
+                // Ida - bug fix - if first word is already longer than the allowed window width, force it on the line and end line
+                if (SizeLine == 0 && SizeWord > DialMaxSize)
+                {
+                        // Accept overflowing word (legacy behavior: no truncation)
+                        PtDial += LenWord;
+                        strcpy(BufLine, Word);
+                        SizeLine = SizeWord;
+                        // Consume following source space if present so progress continues
+                        if (*PtDial == ' ') PtDial++;
+                        flag = 0;          // Do not justify an overflow line
+                        NbSpace = 0;
+                        break;
+                }
+
+                // If we reached the max line size, end the line, the rest of the words will be on the next line
+                // Ida - fixing bug: do not count leading space before the first word
+                if (SizeLine + (SizeLine ? SizeSpace : 0) + SizeWord > DialMaxSize) break;
+                // if (SizeLine + SizeSpace + SizeWord > DialMaxSize) break;
+
 //------------- Caractere Spéciaux, saut de ligne, de page, etc.
-                if ( *PtDial == 1 )
+                if ( *PtDial == 1 )   // Normal line break - no justification for this line, break
                 {
                         PtDial++        ;
                         flag = 0        ;
                         break           ;
                 }
-                if ( *Word == '@' )
+                if ( *Word == '@' )   // Special break - can be @ or @P
                 {
-                        flag = 0                ;
+                        flag = 0                ;  // No justification for this line
                         PtDial++                ;
                         if ( SizeLine == 0 )// Line Vide
                         {
-                                strcpy( BufLine, " " )  ;
+                                strcpy( BufLine, " " )  ;  // If line was empty, put one space
                                 SizeLine = INTER_SPACE  ;
                         }
                         if ( *(Word+1) == 'P' )
                         {
-                                NbLineDial = MaxLineDial;
+                                NbLineDial = MaxLineDial;    // If force next page, make no more lines available for this page
                                 PtDial++                ;
                         }
                         break   ;
                 }
 //-------------
-                PtDial += LenWord               ;
-                strcat( BufLine, Word )         ;
-                strcat( BufLine, " " )          ;
-                SizeLine += (SizeWord+SizeSpace);
-                NbSpace++                       ;
-                if ( *PtDial == 0 )     break   ;
-                PtDial++                        ;
+              
+                PtDial += LenWord               ;   // Moving past this word in the source text
+
+                // Appending the word and space to the line
+		// Ida - protecting from line buffer overflow
+                SafeAppendToBufLine(Word);
+                SafeAppendToBufLine(" ");
+                // strcat( BufLine, Word );
+                // strcat( BufLine, " " );
+
+                SizeLine += (SizeWord+SizeSpace);    // Increasing the size of the line in pixels
+                NbSpace++                       ;    // Increase counter of spaces
+                if ( *PtDial == 0 )     break   ;    // Check if we reached the end of the source text
+                PtDial++                        ;    // Moving past the space in the source text
         }
 
-        if ( NbSpace )  NbSpace--       ;// Ne doit jamais arrive :-]
+        // Removing trailing space if any
+        if ( NbSpace )  NbSpace--       ;    // Ne doit jamais arrive :-] (si, mais bon...)
 
-        if (( *PtDial != 0 )             // Derniere Ligne ou Ligne seule
-        AND ( flag == 1 ))               // Pas tout le temps, c'est a c...
+        // If it's still not the end of the text, and we need to justify and the number of spaces is not 0
+        if (
+                ( *PtDial != 0 )             // Derniere Ligne ou Ligne seule
+                AND ( flag == 1 ) 
+                AND ( NbSpace > 0 )          // Ida - bug fix (when word was too long)
+        )               
         {
+                // Remaining space to fill in pixels
                 dx = DialMaxSize-SizeLine       ;
-                dd = dx/NbSpace                 ;
-                SizeSpace += dd                 ;
-                dd = NbSpace*dd                 ;
-                NbBigSpace = dx-dd              ;
+
+                // Ida - bug fix
+                if (dx > 0) 
+                {
+                        dd = dx / NbSpace;  // Even space size to add in pixels for each space
+                        SizeSpace += dd                 ;  // Adding to the space size
+                        dd = NbSpace*dd                 ;  // Total distributed free pixels after even distribution
+                        NbBigSpace = dx-dd              ;  // Number bigger spaces equals number of remaining pixels to distribute
+                }
+                else
+                {
+
+                        // Ida - bug fix
+                        NbBigSpace = 0;
+                }
+        }
+        else 
+        {
+                // Ida - bug fix
+                NbBigSpace = 0                  ;
         }
 
-        LenLine = strlen(BufLine)       ;
-        PtLine = BufLine                ;
+        LenLine = strlen(BufLine)       ; // Setting the length of the line in characters
+        PtLine = BufLine                ; // Setting pointer to the beginning of the line buffer
         DialNbLine++ ;  // pour la version demo le 02/08/96
 }
 /*-------------------------------------------------------------------------*/
@@ -2011,6 +2217,28 @@ void    SpeakAnimation()
 //────────────────────────────────────────────────────────────────────────────
 //                                 D I A L
 //────────────────────────────────────────────────────────────────────────────
+
+static void SetDialColor(S32 textId) {
+    if (!IdaDialogStartId) {
+		// No modded color
+		TestCoulDial(ListObjet[NumObjDial].CoulObj);
+        return;
+    }
+
+	// Checking if Ida mod wants another color for this text
+	DialogColorHandle customDialogColor = ida->getTextColor(textId);
+	if (customDialogColor.MainColor == DialogColors::None && customDialogColor.StartColor256 < 0)
+	{
+		// No modded color
+		TestCoulDial(ListObjet[NumObjDial].CoulObj);
+	}
+	else
+	{
+		// Modded color
+		IdaSetDialogColor(customDialogColor);
+	}
+}
+
 void    Dial( S32 text, S32 drawscene )
 {
         S32     ret = 0         ;
@@ -2053,7 +2281,7 @@ void    Dial( S32 text, S32 drawscene )
 
         SaveTimer( ) ;
 
-        TestCoulDial( ListObjet[NumObjDial].CoulObj ) ;
+		SetDialColor(text);
 
         MemoClip()      ;
         UnsetClip()     ;
@@ -2160,12 +2388,22 @@ void    Dial( S32 text, S32 drawscene )
                         while( TimerRefHR<endtimer
                         AND !MyKey AND !Input )
                         {
-                                SpeakAnimation() ;
+                            SpeakAnimation() ;
                         }
                 }
                 else    while( !MyKey AND !Input )
                 {
-                        SpeakAnimation() ;
+                        SpeakAnimation();
+
+                        // Ida - spying on the dialog for automated tests
+                        if (idaSpy->isDialogSpyEnabled()) 
+                        {
+							bool terminateDialog = idaSpy->spyDialog(TimerRefHR, PtText, SizeText, FlagDial, MinDegrade, MaxDegrade);
+                            if (terminateDialog) 
+                            {
+                                break;
+                            }
+                        }
                 }
         }
 

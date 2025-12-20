@@ -49,23 +49,23 @@ U16     RealGameMainMenu[] = {
 #define MENU_DISPLAY_TEXT       7
 
 U16     GameOptionMenu[] = {
-			0,      // selected
-			8,      // nb entries
-			260,    // y center
-			0,      // .dia num
+            0,      // selected
+            8,      // nb entries
+            260,    // y center
+            0,      // .dia num
 
-			0, 26,  // menu precedent
-			0, 11,  // reglage volumes
-			0, 12,  // Reverse Stereo ON/OFF
-			7, 45,  // Niveau des détails
-			0, 47,  // Cameras Scénariques ON/OFF
-			0, 14,  // Configuration Clavier
-			0, 27,	// Video FullScreen ON/OFF
-			0, 16,  // Afficher les Textes ON/OFF
-				} ;
+            0, 26,  // menu precedent
+            0, 11,  // reglage volumes
+            0, 12,  // Reverse Stereo ON/OFF
+            7, 45,  // Niveau des détails
+            0, 47,  // Cameras Scénariques ON/OFF
+            0, 14,  // Configuration Clavier
+            0, 27,	// Video FullScreen ON/OFF
+            0, 16,  // Afficher les Textes ON/OFF
+                } ;
 
 U16     SavedConfirmMenu[] = {
-			0,      // selected
+            0,      // selected
                         2,      // nb entries
                         350,    // y center.
                         0,      // .dia num
@@ -92,15 +92,15 @@ U16     GameChoiceMenu[] = {
 #ifdef  DEMO
 U16     VolumeMenu[] = {
                         0,      // selected
-			4,      // nb entries
+            4,      // nb entries
                         240,    // y center
                         0,      // .dia num
 
                         0, 26,  // menu precedent
                         2, 19,  // reglage volume samples
-			4, 21,  // reglage volume musiques (Jingles)
-			6, 23,  // reglage volume Master
-			} ;
+            4, 21,  // reglage volume musiques (Jingles)
+            6, 23,  // reglage volume Master
+            } ;
 #else
 U16	*VolumeMenu	;
 
@@ -115,18 +115,18 @@ U16     VolumeMenuVoice[] = { // integere volume des voix
                         3, 20,  // reglage volume voix
                         4, 21,  // reglage volume musiques (Jingles)
                         5, 22,  // reglage volume CD
-			6, 23,  // reglage volume Master
-			} ;
+            6, 23,  // reglage volume Master
+            } ;
 
 U16     VolumeMenuNoVoice[] = { // integere volume des voix
-			0,      // selected
-			5,      // nb entries
+            0,      // selected
+            5,      // nb entries
                         240,    // y center
                         0,      // .dia num
 
                         0, 26,  // menu precedent
                         2, 19,  // reglage volume samples
-			4, 21,  // reglage volume musiques (Jingles)
+            4, 21,  // reglage volume musiques (Jingles)
                         5, 22,  // reglage volume CD
                         6, 23,  // reglage volume Master
                         } ;
@@ -145,6 +145,17 @@ extern  S32     EscTimer ;
 
 char    PathSave[_MAX_PATH] ;
 char    GamePathname[_MAX_PATH] ;
+
+std::string getCurrentSavePath() 
+{
+    return std::string(PathSave)+"current.lba";
+}
+
+std::string getAutoSavePath()
+{
+	return std::string(PathSave) + "autosave.lba";
+}
+
 #ifdef	YAZ_WIN32
 char    OldGamePathname[_MAX_PATH] ;
 #endif
@@ -195,45 +206,45 @@ void    Init3DGame()
 /*──────────────────────────────────────────────────────────────────────────*/
 void    SetDetailLevel( void )
 {
-	S32	oldmaxpolysea  = MaxPolySea 	;
-	U8	olddrawhorizon = FlagDrawHorizon;
+    S32	oldmaxpolysea  = MaxPolySea 	;
+    U8	olddrawhorizon = FlagDrawHorizon;
 
         switch( DetailLevel )
-	{
-		case 0: // machine bof !!!!!!!!
-			MaxPolySea = 0 		;// Pas d'eau animée
-			Shadow     = 1 		;// Pas d'ombres sur extras
-			RainEnable = FALSE 	;// Pas d'affichage de pluie
-			FlagDrawHorizon = FALSE ;// Pas D'affichage des cubes autour
-			break ;
+    {
+        case 0: // machine bof !!!!!!!!
+            MaxPolySea = 0 		;// Pas d'eau animée
+            Shadow     = 1 		;// Pas d'ombres sur extras
+            RainEnable = FALSE 	;// Pas d'affichage de pluie
+            FlagDrawHorizon = FALSE ;// Pas D'affichage des cubes autour
+            break ;
 
-		case 1: // 486 ?
-			MaxPolySea = 0 		;// Pas d'eau animée
-			Shadow     = 2 		;// pas d'ombres sur impacts
-			RainEnable = FALSE 	;// Pas d'affichage de pluie
-			FlagDrawHorizon = TRUE 	;// Affichage des cubes autour
-			break ;
+        case 1: // 486 ?
+            MaxPolySea = 0 		;// Pas d'eau animée
+            Shadow     = 2 		;// pas d'ombres sur impacts
+            RainEnable = FALSE 	;// Pas d'affichage de pluie
+            FlagDrawHorizon = TRUE 	;// Affichage des cubes autour
+            break ;
 
-		case 2: // Pentium de base ?
-			MaxPolySea = 0 		;// Pas d'eau animée
-			Shadow     = 3 		;// full shadows
-			RainEnable = TRUE 	;// Affichage de la pluie
-			FlagDrawHorizon = TRUE 	;// Affichage des cubes autour
-			break ;
+        case 2: // Pentium de base ?
+            MaxPolySea = 0 		;// Pas d'eau animée
+            Shadow     = 3 		;// full shadows
+            RainEnable = TRUE 	;// Affichage de la pluie
+            FlagDrawHorizon = TRUE 	;// Affichage des cubes autour
+            break ;
 
-		default:// machine de folie !!!!!
-			if( PtrPolySea )        MaxPolySea = MAX_POLY_SEA ;
-			Shadow     = 3 		;// full shadows
-			RainEnable = TRUE 	;// Affichage de la pluie
-			FlagDrawHorizon = TRUE 	;// Affichage des cubes autour
-			break ;
-	}
+        default:// machine de folie !!!!!
+            if( PtrPolySea )        MaxPolySea = MAX_POLY_SEA ;
+            Shadow     = 3 		;// full shadows
+            RainEnable = TRUE 	;// Affichage de la pluie
+            FlagDrawHorizon = TRUE 	;// Affichage des cubes autour
+            break ;
+    }
 
-	if( FlagDrawHorizon!=olddrawhorizon
-	OR  MaxPolySea!=oldmaxpolysea )
-	{
-		FirstTime = AFF_ALL_FLIP ;
-	}
+    if( FlagDrawHorizon!=olddrawhorizon
+    OR  MaxPolySea!=oldmaxpolysea )
+    {
+        FirstTime = AFF_ALL_FLIP ;
+    }
 }
 
 //──────────────────────────────────────────────────────────────────────────
@@ -328,8 +339,8 @@ S32     PlayerGameList( char **ptrlistname, char *listname, S32 flagnew )
                 // On ne liste pas l'autosave ni la currentsave
                 // D'ailleurs ces sauvegardes pourraient avoir une autre
                 // extension que .LBA ce qui éviterait ce test !
-                if( stricmp(pathname,AUTOSAVE_FILENAME)
-                AND stricmp(pathname,CURRENTSAVE_FILENAME) )
+                if(stricmp(pathname, getAutoSavePath().c_str())
+                AND stricmp(pathname, getCurrentSavePath().c_str()))
                 {
                         handle = OpenRead( pathname ) ;
                         if( handle )
@@ -358,9 +369,10 @@ S32     PlayerGameList( char **ptrlistname, char *listname, S32 flagnew )
                 sizeof( char * ),
                 my_sort_function ) ;
 
-        if( !flagnew AND nb<MAX_PLAYER AND FileSize( AUTOSAVE_FILENAME ) )
+		char *autoSavePath = (char*)getAutoSavePath().c_str();
+        if(!flagnew AND nb<MAX_PLAYER AND FileSize(autoSavePath))
         {
-                strcpy( GamePathname, AUTOSAVE_FILENAME ) ;
+                strcpy(GamePathname, autoSavePath);
                 LoadGamePlayerName() ;
                 *ptrlistname = listname  ;
                 strcpy( listname, PlayerName ) ;
@@ -417,11 +429,12 @@ S32     FindPlayerFile()
                 rc = _dos_findnext( &fileinfo ) ;
         }
 
-        if( FileSize( AUTOSAVE_FILENAME ) )
+		char* autoSavePath = (char*)getAutoSavePath().c_str();
+        if (FileSize(autoSavePath))
         {
                 strcpy( playername, PlayerName ) ;
 
-                strcpy( GamePathname, AUTOSAVE_FILENAME ) ;
+                strcpy(GamePathname, autoSavePath);
                 LoadGamePlayerName() ;
 
                 if( !stricmp( PlayerName, playername ) )
@@ -516,55 +529,55 @@ void    ClearOneString( S32 x, S32 y )
 
 void    DrawSingleString( S32 x, S32 y, char *string )
 {
-	S32     x0,y0,x1,y1 ;
-	S32     sf ;
+    S32     x0,y0,x1,y1 ;
+    S32     sf ;
 
-	sf = SizeFont( string ) ;
+    sf = SizeFont( string ) ;
 
-	x0 = x - sf/2 ;
-	x1 = x + sf/2 ;
+    x0 = x - sf/2 ;
+    x1 = x + sf/2 ;
 
-	y0 = y - HAUTEUR_STANDARD/2 ;
-	y1 = y + HAUTEUR_STANDARD/2 ;
+    y0 = y - HAUTEUR_STANDARD/2 ;
+    y1 = y + HAUTEUR_STANDARD/2 ;
 
-	// text
-	ColorFont( BLACK ) ;
-	Font( x0 + 4, y-18 + 4, string ) ;
-	ColorFont( CoulTextMenu ) ;
-	Font( x0, y-18, string ) ;
+    // text
+    ColorFont( BLACK ) ;
+    Font( x0 + 4, y-18 + 4, string ) ;
+    ColorFont( CoulTextMenu ) ;
+    Font( x0, y-18, string ) ;
 
-	// flip
-	BoxStaticAdd( x0,y0, x1,y1 ) ;
-	BoxUpdate() ;
+    // flip
+    BoxStaticAdd( x0,y0, x1,y1 ) ;
+    BoxUpdate() ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
 void	DrawCadreNewGame( void )
 {
-	S32	num = 16 ;// Logo Americain
-	S32	dx, dy	;
-	S32	x, y	;
-	U8	*ptr 	;
+    S32	num = 16 ;// Logo Americain
+    S32	dx, dy	;
+    S32	x, y	;
+    U8	*ptr 	;
 
-	switch( DistribVersion )
-	{
-		case UNKNOWN_VERSION:
-		case EA_VERSION:
-			num = 11 ;
-			break ;
-	}
+    switch( DistribVersion )
+    {
+        case UNKNOWN_VERSION:
+        case EA_VERSION:
+            num = 11 ;
+            break ;
+    }
 
-	ptr = (U8*)HQR_Get( HQRPtrSprite, num ) ;
+    ptr = (U8*)HQR_Get( HQRPtrSprite, num ) ;
 
-	GetDxDyGraph( 0, &dx, &dy, ptr ) ;
+    GetDxDyGraph( 0, &dx, &dy, ptr ) ;
 
-	DrawCadreSave( 240, 50 ) ;
+    DrawCadreSave( 240, 50 ) ;
 
-	x = 320 - dx/2 ;
-	y = 50+(SCREEN_SAVE_HEIGHT)/2 - dy/2 ;
+    x = 320 - dx/2 ;
+    y = 50+(SCREEN_SAVE_HEIGHT)/2 - dy/2 ;
 
-	AffGraph( 0, x, y, ptr ) ;
+    AffGraph( 0, x, y, ptr ) ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -585,25 +598,25 @@ S32     InputPlayerName( S32 choice, char *name )
         AsciiMode = TRUE ;
         while( GetAscii() ) ;
 
-	strcpy( memoplayername, name ) ;
+    strcpy( memoplayername, name ) ;
         strcpy( PlayerName, name ) ;
 
 #ifdef	YAZ_WIN32
-	FindPlayerFile() ;
+    FindPlayerFile() ;
 
-	// pour pouvoir effacer une sauvegarde sous Windows si le joueur
-	// change le nom de la sauvegarde
-	if( stricmp(PlayerName,AUTOSAVE_NAME)		// on n'efface pas l'autosave !
-	AND stricmp(PlayerName,CURRENTSAVE_NAME)	// ni le currentsave !
-	AND stricmp(PlayerName,"")
-	AND stricmp(GamePathname,AUTOSAVE_FILENAME)		// on n'efface pas l'autosave !
-	AND stricmp(GamePathname,CURRENTSAVE_FILENAME) )	// ni le currentsave !
-	{
-		strcpy( OldGamePathname, GamePathname ) ;
-	}
+    // pour pouvoir effacer une sauvegarde sous Windows si le joueur
+    // change le nom de la sauvegarde
+    if( stricmp(PlayerName,AUTOSAVE_NAME)		// on n'efface pas l'autosave !
+    AND stricmp(PlayerName,CURRENTSAVE_NAME)	// ni le currentsave !
+    AND stricmp(PlayerName,"")
+    AND stricmp(GamePathname,AUTOSAVE_FILENAME)		// on n'efface pas l'autosave !
+    AND stricmp(GamePathname,CURRENTSAVE_FILENAME) )	// ni le currentsave !
+    {
+        strcpy( OldGamePathname, GamePathname ) ;
+    }
 #endif
 
-	len = strlen( PlayerName ) ;
+    len = strlen( PlayerName ) ;
 
         y = Y_START_CHOICE+choice*60 ;
 
@@ -670,10 +683,10 @@ S32     InputPlayerName( S32 choice, char *name )
                                         flag = -1 ;
                                 }
                                 else
-				{
-					PlayErrorSample() ;
-					strcpy( PlayerName, memoplayername ) ;
-					len = strlen( PlayerName ) ;
+                {
+                    PlayErrorSample() ;
+                    strcpy( PlayerName, memoplayername ) ;
+                    len = strlen( PlayerName ) ;
                                         flag = 1 ;
                                 }
                                 break ;
@@ -716,8 +729,18 @@ S32     InputPlayerName( S32 choice, char *name )
 #define TEMPO_SCREEN_SAVE       110
 #define TEMPO_REPEAT_KEY        150
 
-S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
+S32     ChooseSaveGameName( S32 mess, S32 flagflip, S32 flagnew )
 {
+	// Ida - allow to choose a save game name
+	std::string saveGameName = idaSpy->getSaveGameNameOnce();
+    if (!saveGameName.empty()) {
+		strcpy(PlayerName, saveGameName.c_str());
+        strcpy(GamePathname, PathSave);
+        strcat(GamePathname, saveGameName.c_str());
+        strcat(GamePathname, ".LBA");
+		return 1;
+	}
+
 #if 1 // yaz
         S32     flag = 3 ;
         char    *listplayername ;
@@ -729,7 +752,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
         S32     retval = 0 ;
         char    string[256] ;
         U8      *ptr ;
-	S32     timerzoom ;
+    S32     timerzoom ;
         S32     timeranotherkey ;
         S32     timerdraw = 1 ;
         U32     draw = 1 ;
@@ -737,10 +760,10 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
         char    memoplayername[MAX_SIZE_PLAYER_NAME+1] ;
 
 #ifdef	YAZ_WIN32
-	strcpy( OldGamePathname, "" ) ;
+    strcpy( OldGamePathname, "" ) ;
 #endif
 
-	strcpy( memoplayername, PlayerName ) ;
+    strcpy( memoplayername, PlayerName ) ;
 
         CopyScreen( Screen, Log ) ;
 
@@ -774,7 +797,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
 /*      if( !listplayername OR !ptrlist )
         {
                 TheEnd( NOT_ENOUGH_MEM, "Choose Player Name" ) ;
-	}
+    }
 */
 
         nb = PlayerGameList( ptrlist, listplayername, flagnew ) ;
@@ -783,9 +806,9 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
 
         if( !nb AND !flagnew )  return FALSE ;
 
-	if( flagnew AND nb<MAX_PLAYER-1 )
+    if( flagnew AND nb<MAX_PLAYER-1 )
         {
-		ptrlist[nb] = NewGameTxt ;
+        ptrlist[nb] = NewGameTxt ;
                 nb++ ;
         }
         else    flagnew = 0 ;
@@ -819,7 +842,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                 ManageTime() ;
 
                 if( flag == 3 )
-		{
+        {
                         DrawSingleString( 320, 25, (char*)GetMultiText( mess,string ) ) ;
                         flag = 1 ;
                 }
@@ -828,7 +851,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                 {
                         for( n=0; n<NB_GAME_CHOICE; n++ )
                         {
-				if( n+start >= nb )     break ;
+                if( n+start >= nb )     break ;
 
                                 draw = ((n+start) == select) ;
 
@@ -864,7 +887,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                 {
                         strcpy( PlayerName, ptrlist[select] ) ;
 
-			if( !flagnew OR select<nb-1 )
+            if( !flagnew OR select<nb-1 )
                         {
                                 FindPlayerFile() ;
                                 ptr = LoadGameScreen( ) ;
@@ -875,7 +898,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
 //                                DrawCadreSave( 240, 50 ) ;
 //				DrawSingleString( 320, 105, "New" ) ;
 
-				DrawCadreNewGame() ;
+                DrawCadreNewGame() ;
                                 CopyBlock( 240+80-40, 50+60-15, 240+80+40, 50+60+15, Log, 0, 0, Log ) ;
                         }
 
@@ -887,7 +910,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                 DrawOneString( 320, ys, ptrlist[select], draw ) ;
                 BoxUpdate() ;
 
-		if( Input & I_DOWN OR MyKey==K_GRAY_DOWN )
+        if( Input & I_DOWN OR MyKey==K_GRAY_DOWN )
                 {
                         if( select < (nb-1) )
                         {
@@ -911,7 +934,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                         }
                 }
 
-		if( Input & I_UP OR MyKey==K_GRAY_UP )
+        if( Input & I_UP OR MyKey==K_GRAY_UP )
                 {
                         if( select > 0 )
                         {
@@ -956,7 +979,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                                         flag = 1 ;
 
                                         if( flagnew AND select==nb-1 )  timerzoom = TimerRefHR ;
-					else                    timerzoom = 0 ;
+                    else                    timerzoom = 0 ;
                                         timerdraw = TimerRefHR + TEMPO_SCREEN_SAVE ;
                                 }
                         }
@@ -1001,7 +1024,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
 
                                         flag = 1 ;
                                         if( flagnew AND select==nb-1 )  timerzoom = TimerRefHR ;
-					else                    timerzoom = 0 ;
+                    else                    timerzoom = 0 ;
                                         timerdraw = TimerRefHR + TEMPO_SCREEN_SAVE ;
                                 }
                         }
@@ -1046,7 +1069,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                                 if( nb>1 AND select<nb-1 )
                                 {
                                         memcpy( &ptrlist[select], &ptrlist[select+1], ((nb-1)-select)*sizeof(char*) ) ;
-				}
+                }
 
                                 // recharge list player
                                 nb-- ;
@@ -1087,11 +1110,11 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                                         if( ptr )       DrawScreenSave( ptr, 240, 50 ) ;
                                 }
                                 else    // Nouvelle partie
-				{
+                {
 //					DrawCadreSave( 240, 50 ) ;
 //					DrawSingleString( 320, 105, "New" ) ;
-					DrawCadreNewGame() ;
-				}
+                    DrawCadreNewGame() ;
+                }
 
                                 timerdraw = 0 ;
                         }
@@ -1123,18 +1146,18 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                                                         strcat( GamePathname, "S" ) ;
                                                         strcat( GamePathname, Itoa( MyRnd(10000) ) ) ;
 #endif
-							AddExt( GamePathname, ".LBA" ) ;
+                            AddExt( GamePathname, ".LBA" ) ;
                                                 }
                                                 while( FileSize( GamePathname ) != 0 ) ;
                                         }
                                         else    // renommer une sauvegarde
-					{
+                    {
 #ifdef  YAZ_WIN32  // Gestion des noms longs (renomme la sauvegarde)
-						strcpy( GamePathname, PathSave ) ;
-						strncat( GamePathname, PlayerName, _MAX_PATH-(strlen(GamePathname)+1) ) ;
-						AddExt( GamePathname, ".LBA" ) ;
+                        strcpy( GamePathname, PathSave ) ;
+                        strncat( GamePathname, PlayerName, _MAX_PATH-(strlen(GamePathname)+1) ) ;
+                        AddExt( GamePathname, ".LBA" ) ;
 #else
-						strcpy( GamePathname, memoname ) ;
+                        strcpy( GamePathname, memoname ) ;
 #endif
                                         }
 
@@ -1144,7 +1167,7 @@ S32     ChoosePlayerName( S32 mess, S32 flagflip, S32 flagnew )
                                 else
                                 {
                                         while( Input & I_FIRE OR MyKey==K_ENTER )       MyGetInput() ;
-					if( select==nb-1 )      strcpy( PlayerName, NewGameTxt ) ;
+                    if( select==nb-1 )      strcpy( PlayerName, NewGameTxt ) ;
                                         timerdraw = 1 ;
                                         flag = 3 ;      // Rafraichissement ecran
                                 }
@@ -1345,31 +1368,31 @@ void    DrawOneChoice( S32 x, S32 y, S32 type, S32 num, S32 select )
                                                 break ;
 
 #ifndef DEMO
-					case 3: // voice volume
-						// bruitons un peu la situation (violement)
+                    case 3: // voice volume
+                        // bruitons un peu la situation (violement)
 
-						if( (TimerRefHR-TimerSample) > 5000
-						AND !IsSamplePlaying(VoiceMenu) )
-						{
-							TimerSample = TimerRefHR ;
+                        if( (TimerRefHR-TimerSample) > 5000
+                        AND !IsSamplePlaying(VoiceMenu) )
+                        {
+                            TimerSample = TimerRefHR ;
 
 #ifdef	CDROM // yaz
-							VoiceMenu = SAMPLE_VOICE_MENU+LanguageCD ;
+                            VoiceMenu = SAMPLE_VOICE_MENU+LanguageCD ;
 #endif
 
-							PanMenu    = 20+MyRnd(88) ;
+                            PanMenu    = 20+MyRnd(88) ;
 
-							PlaySample((U8*)GivePtrSample(VoiceMenu), VoiceMenu, 0x1000, 1, VoiceVolume, PanMenu) ;
-						}
-						else    if( VoiceVolume!=LastVoiceVolume )
-						{
-							ChangeVolumePanSample( VoiceMenu, VoiceVolume, PanMenu ) ;
-							LastVoiceVolume = VoiceVolume ;
-						}
-						break ;
+                            PlaySample((U8*)GivePtrSample(VoiceMenu), VoiceMenu, 0x1000, 1, VoiceVolume, PanMenu) ;
+                        }
+                        else    if( VoiceVolume!=LastVoiceVolume )
+                        {
+                            ChangeVolumePanSample( VoiceMenu, VoiceVolume, PanMenu ) ;
+                            LastVoiceVolume = VoiceVolume ;
+                        }
+                        break ;
 #endif
 
-					case 4: // Music Volume
+                    case 4: // Music Volume
                                                 if( (TimerRefHR-TimerSample) > 1000 )
                                                 {
                                                         TimerSample = TimerRefHR ;
@@ -1411,34 +1434,34 @@ void    DrawOneChoice( S32 x, S32 y, S32 type, S32 num, S32 select )
         GetMultiText( num, string ) ;
 
 //----------------------------------------------------------------------------
-	MemoClip()                      ;
-	SetClip( x0+1, y0, x1-1, y1 )   ;
+    MemoClip()                      ;
+    SetClip( x0+1, y0, x1-1, y1 )   ;
 
-	dx = SizeFont( string ) ;
+    dx = SizeFont( string ) ;
 
-	if ( dx > LargeurMenu )//       Biggest than window
-	{
-		if ( !select )  Font( x0+8, y-18, string ) ;// To the Left
-		else
-		{//     Shake Baby, shake...
-			if ( WayChoice == -1 )
-				DeltaChoice -= GetDeltaMove( &MoveChoice ) ;
-			else    DeltaChoice += GetDeltaMove( &MoveChoice ) ;
+    if ( dx > LargeurMenu )//       Biggest than window
+    {
+        if ( !select )  Font( x0+8, y-18, string ) ;// To the Left
+        else
+        {//     Shake Baby, shake...
+            if ( WayChoice == -1 )
+                DeltaChoice -= GetDeltaMove( &MoveChoice ) ;
+            else    DeltaChoice += GetDeltaMove( &MoveChoice ) ;
 
-			if ( DeltaChoice < LargeurMenu-dx-8 )
-			{
-				DeltaChoice = LargeurMenu-dx-8  ;
-				WayChoice = 1                   ;// Right
-			}
-			if ( DeltaChoice > 8 )
-			{
-				DeltaChoice = 8         ;
-				WayChoice = -1                  ;// Left
-			}
-			Font( x0 + DeltaChoice, y-18, string )  ;
-		}
-	}
-	else    Font( x - SizeFont( string )/2, y-18, string ) ;
+            if ( DeltaChoice < LargeurMenu-dx-8 )
+            {
+                DeltaChoice = LargeurMenu-dx-8  ;
+                WayChoice = 1                   ;// Right
+            }
+            if ( DeltaChoice > 8 )
+            {
+                DeltaChoice = 8         ;
+                WayChoice = -1                  ;// Left
+            }
+            Font( x0 + DeltaChoice, y-18, string )  ;
+        }
+    }
+    else    Font( x - SizeFont( string )/2, y-18, string ) ;
 
         RestoreClip()   ;
 //----------------------------------------------------------------------------
@@ -1542,7 +1565,7 @@ S32     DoGameMenu( U16 *ptrmenu )
 
         timerkey = TimerRefHR + VOLUME_TIMER_KEY ;
 
-	InitShakeChoice()       ;//     NEW
+    InitShakeChoice()       ;//     NEW
 
 #ifdef  YAZ_WIN32
         AsciiMode = TRUE        ;
@@ -1553,8 +1576,21 @@ S32     DoGameMenu( U16 *ptrmenu )
                 ManageTime() ;
                 MyGetInput() ;
 
+                // Processing js queues while in menu (used for unit tests and for future if we have some menu mods)
+                ida->processTasks(LoopType::GameMenu);
+
+                // Allow Ida to control which main menu command to run
+                if (ptrmenu == GameMainMenu) 
+                {
+                    int menuCommand = idaSpy->doMainMenu();
+                    if (menuCommand > 0) 
+                    {
+                        return menuCommand;
+                    }
+                }
+
 #ifdef  DEBUG_TOOLS
-		CheckSaveLogPcx( PtrPalNormal ) ;
+        CheckSaveLogPcx( PtrPalNormal ) ;
 #endif
 
                 // rustine Démo non jouable ...
@@ -1566,9 +1602,9 @@ S32     DoGameMenu( U16 *ptrmenu )
 #ifdef  DEMO
 //                                if( SlideShow() )
 //					DemoBumper() ;
-				SlideShow() ;
+                SlideShow() ;
 
-				Load_HQR( SCREEN_HQR_NAME, Log, PCR_MENU ) ;
+                Load_HQR( SCREEN_HQR_NAME, Log, PCR_MENU ) ;
                                 CopyScreen( Log, Screen ) ;
                                 BoxStaticAdd( 0, 0, ModeDesiredX-1, ModeDesiredY-1 ) ;
 
@@ -1731,15 +1767,15 @@ S32     DoGameMenu( U16 *ptrmenu )
 #ifdef  CDROM
                                         SetVolumeCD( CDVolume ) ;
 #endif
-				}
-				if( (Input & I_RIGHT OR MyKey==K_GRAY_RIGHT)
-				AND TimerRefHR>timerkey AND MasterVolume<127 )
-				{
-					timerkey = TimerRefHR + VOLUME_TIMER_KEY ;
-					MasterVolume += 1 ;
-					SetMasterVolumeSample( MasterVolume ) ;
+                }
+                if( (Input & I_RIGHT OR MyKey==K_GRAY_RIGHT)
+                AND TimerRefHR>timerkey AND MasterVolume<127 )
+                {
+                    timerkey = TimerRefHR + VOLUME_TIMER_KEY ;
+                    MasterVolume += 1 ;
+                    SetMasterVolumeSample( MasterVolume ) ;
 #ifdef  CDROM
-					SetVolumeCD( CDVolume ) ;
+                    SetVolumeCD( CDVolume ) ;
 #endif
                                 }
                                 break ;
@@ -1781,7 +1817,7 @@ S32     DoGameMenu( U16 *ptrmenu )
                                 strcpy( memoplayername, PlayerName ) ;
                                 strcpy( memogamepathname, GamePathname ) ;
 
-                                strcpy( GamePathname, CURRENTSAVE_FILENAME ) ;
+                                strcpy(GamePathname, getCurrentSavePath().c_str());
 
                                 ptr = LoadGameScreen( ) ;
                                 if( ptr )       DrawScreenSave( ptr, 240, 10 ) ;
@@ -1934,28 +1970,28 @@ S32     GereVolumeMenu( void )
 #endif
 
 #ifndef	DEMO
-	if( FlagSpeak )
-	{
-		VolumeMenu = VolumeMenuVoice ;// integre volume des voix
-	}
-	else
-	{
-		VolumeMenu = VolumeMenuNoVoice ;// pas de volume des voix
-	}
+    if( FlagSpeak )
+    {
+        VolumeMenu = VolumeMenuVoice ;// integre volume des voix
+    }
+    else
+    {
+        VolumeMenu = VolumeMenuNoVoice ;// pas de volume des voix
+    }
 #endif
 
-	while( !flag )
-	{
-		select = DoGameMenu( VolumeMenu ) ;
+    while( !flag )
+    {
+        select = DoGameMenu( VolumeMenu ) ;
 
-		switch( select )        // num mess
-		{
-			case 26:   // menu precedent
-			case 1000: // <ESC>
-				flag = 1 ;
-				break ;
-		}
-	}
+        switch( select )        // num mess
+        {
+            case 26:   // menu precedent
+            case 1000: // <ESC>
+                flag = 1 ;
+                break ;
+        }
+    }
 
         CopyScreen( Screen, Log ) ;
         BoxStaticAdd( 0, 0, ModeDesiredX-1, ModeDesiredY-1 ) ;
@@ -1974,11 +2010,11 @@ S32     OptionsMenu( S32 flagflip )
         S32 select ;
         S32 flag = 0 ;
 
-	BackupScreen( TRUE ) ;
+    BackupScreen( TRUE ) ;
 
 /*        CopyScreen( Log, Screen ) ;
 
-	BoxReset() ;
+    BoxReset() ;
 */
         if( FlagShadeMenu )
         {
@@ -1998,18 +2034,18 @@ S32     OptionsMenu( S32 flagflip )
 #ifdef  DEMO
         GameOptionMenu[1] = 6 ;
 #else
-	// interdire option FlagDisplayText si pas de voix
+    // interdire option FlagDisplayText si pas de voix
 
-	if( FlagSpeak )	GameOptionMenu[1] = 8 ;
-	else 		GameOptionMenu[1] = 7 ;
+    if( FlagSpeak )	GameOptionMenu[1] = 8 ;
+    else 		GameOptionMenu[1] = 7 ;
 #endif
 
         while( !flag )
         {
                 GameOptionMenu[4+0+MENU_CAMERA*2+1] = (S16)(46+AllCameras) ;
                 GameOptionMenu[4+0+MENU_STEREO*2+1] = (S16)(12+ReverseStereo) ;
-		GameOptionMenu[4+0+MENU_DISPLAY_TEXT*2+1] = (S16)(16+FlagDisplayText) ;
-		GameOptionMenu[4+0+MENU_FULL_SCREEN*2+1] = (S16)(27+VideoFullScreen) ;
+        GameOptionMenu[4+0+MENU_DISPLAY_TEXT*2+1] = (S16)(16+FlagDisplayText) ;
+        GameOptionMenu[4+0+MENU_FULL_SCREEN*2+1] = (S16)(27+VideoFullScreen) ;
 
                 select = DoGameMenu( GameOptionMenu ) ;
 
@@ -2043,13 +2079,13 @@ S32     OptionsMenu( S32 flagflip )
                         case 16:   // Display Text Off
                         case 17:   // Display Text On
                                 FlagDisplayText ^= 1 ;
-				break ;
+                break ;
 
-			case 27:   // Vidéos réduites
-			case 28:   // Vidéos Plein Ecran
-				VideoFullScreen ^= 1 ;
+            case 27:   // Vidéos réduites
+            case 28:   // Vidéos Plein Ecran
+                VideoFullScreen ^= 1 ;
                                 break ;
-		}
+        }
         }
 
         HQ_StopSample() ;
@@ -2060,11 +2096,11 @@ S32     OptionsMenu( S32 flagflip )
                 CopyScreen( Screen, Log ) ;
                 BoxStaticFullflip() ;
         }
-	else
-	{
-		// on vient du jeu
-		RestoreClipWindow() ;
-		RestoreScreen() ;
+    else
+    {
+        // on vient du jeu
+        RestoreClipWindow() ;
+        RestoreScreen() ;
         }
 
         WaitNoInput() ;
@@ -2192,7 +2228,7 @@ void    DrawCadreSave( S32 x, S32 y )
 S32     IsExistSavedGame( void )
 {
         // a optimiser
-	return PlayerGameList( (char **)BufSpeak, (char *)BufSpeak+100000L, FALSE ) ;
+    return PlayerGameList( (char **)BufSpeak, (char *)BufSpeak+100000L, FALSE ) ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -2200,16 +2236,16 @@ S32	FirstGame = FALSE ;
 
 S32	IsFirstGameLaunched( void )
 {
-	if( !FirstGame )
-	{
-		if( !IsExistSavedGame()
-		AND !FileSize( CURRENTSAVE_FILENAME ) )
-		{
-			FirstGame = TRUE ;
-		}
-	}
+    if( !FirstGame )
+    {
+        if( !IsExistSavedGame()
+        AND !FileSize((char*)getCurrentSavePath().c_str()))
+        {
+            FirstGame = TRUE ;
+        }
+    }
 
-	return FirstGame ;
+    return FirstGame ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -2242,7 +2278,7 @@ void    BuildGameMainMenu( S32 firstloop )
 
         // reprendre partie
 
-        if( FileSize( CURRENTSAVE_FILENAME ) )
+        if( FileSize((char*)getCurrentSavePath().c_str()) )
         {
                 *ptrmain++ = *ptrreal ;
                 *ptrmain++ = *(ptrreal+1) ;
@@ -2303,18 +2339,15 @@ S32     GameInProgress = FALSE ;
 
 S32     MainGameMenu( S32 load )
 {
-        S32     select ;
-        S32     flag = 0 ;
-        S32     firstloop = TRUE ;
-        S32     savenewcube ;
-        S32     gogame = FALSE ;
-        S32     ret ;
-
         HQ_StopSample() ;
         StopMusic() ;   // Pour Stopper la music du Logo
 
         InitPlasmaMenu() ;
         FlagShadeMenu = FALSE ;
+
+        bool needQuit = false;
+        bool startGameImmediately = false;
+        bool loadGameImmediately = false;
 
 #ifdef  DEMO
         if( !FileSize( CURRENTSAVE_FILENAME )
@@ -2326,393 +2359,450 @@ S32     MainGameMenu( S32 load )
 #ifndef DEBUG_TOOLS
                 load = 0 ;
 #endif
-                FlagBlackPal = FALSE ;
-                SetDemoSaveGame( load ) ;
-                goto load_game  ;
+                // FlagBlackPal = FALSE ;
+                // SetDemoSaveGame( load ) ;
+                // goto load_game  ;
         }
 #else
-	if( IsFirstGameLaunched() )
-	{
-		FlagPlayAcf = TRUE ;
-		goto new_game ;
-        }
+    if (!idaOmitLogo && IsFirstGameLaunched())
+    {
+        FlagPlayAcf = TRUE ;
+        startGameImmediately = true;
+    }
 #endif
 
 #ifndef DEMO
-        if( load )                      goto load_game ;
+    if (!startGameImmediately && load) {
+        loadGameImmediately = true;
+    }
 #endif
 
+    if (!startGameImmediately && !loadGameImmediately) {
         Load_HQR( SCREEN_HQR_NAME, Screen, PCR_MENU ) ;
         CopyScreen( Screen, Log ) ;
         BoxStaticFullflip() ;
         FadeToPal( PtrPalNormal ) ;
 
-	PtrPal = PtrPalNormal ;
+        PtrPal = PtrPalNormal ;
 
         BackupScreen( FALSE ) ;
         CopyScreen( Log, Screen ) ;
+    }
 
-        while( !flag )
+    S32 firstloop = TRUE;
+    S32 gogame = FALSE;
+
+    // Ida loop - start
+    do { ida->run([&needQuit, &startGameImmediately, &loadGameImmediately, &firstloop, &gogame]() 
+    {
+        S32 flag = 0;
+        while (!flag)
         {
-                if( gogame )
+            if (gogame)
+            {
+                DemoSlide = FALSE;
+                GameInProgress = FALSE;
+
+                ClearPlasmaMenu();     // vire plasma menu
+
+                FlagShadeMenu = TRUE;
+
+                // Start the game main loop
+                S32 ret = MainLoop();
+
+                BackupScreen(FALSE);
+
+                switch (ret)
                 {
-                        DemoSlide = FALSE ;
-                        GameInProgress = FALSE ;
+                case 0: // <ESC>
+                    if (SavingEnable)      CurrentSaveGame();     // sauve dans current.lba
+                    break;
 
-                        ClearPlasmaMenu() ;     // vire plasma menu
-
-                        FlagShadeMenu = TRUE ;
-
-                        ret = MainLoop() ;
-
-                        BackupScreen( FALSE ) ;
-
-                        switch( ret )
-                        {
-                                case 0: // <ESC>
-                                        if( SavingEnable )      CurrentSaveGame() ;     // sauve dans current.lba
-                                        break ;
-
-                                case 1: // Gagné !!!!
+                case 1: // Gagné !!!!
 #ifdef  DEMO
-                                        SlideShow() ;
-//                                        DemoBumper() ;
-					unlink( CURRENTSAVE_FILENAME ) ;
-					FlagShowEndDemo = TRUE ;
+                    SlideShow();
+                    //                                        DemoBumper() ;
+                    unlink(CURRENTSAVE_FILENAME);
+                    FlagShowEndDemo = TRUE;
 
-					Load_HQR( SCREEN_HQR_NAME, Log, PCR_MENU ) ;
-					CopyScreen( Log, Screen ) ;
-					BoxStaticAdd( 0, 0, ModeDesiredX-1, ModeDesiredY-1 ) ;
+                    Load_HQR(SCREEN_HQR_NAME, Log, PCR_MENU);
+                    CopyScreen(Log, Screen);
+                    BoxStaticAdd(0, 0, ModeDesiredX - 1, ModeDesiredY - 1);
 
-					PtrPal = PtrPalNormal ;
-					if( !FlagBlackPal )     FadeToBlack( PtrPal ) ;
+                    PtrPal = PtrPalNormal;
+                    if (!FlagBlackPal)     FadeToBlack(PtrPal);
 
-					FadeMenu = TRUE ;
+                    FadeMenu = TRUE;
 #else
-					Credits( TRUE ) ;
-					PlayAcf( "BABY" ) ;
-					Load_HQR( SCREEN_HQR_NAME, Screen, PCR_MENU ) ;
-					CopyScreen( Screen, Log ) ;
-					BoxStaticFullflip() ;
-					EscTimer = 0 ;
+                    Credits(TRUE);
+                    PlayAcf("BABY");
+                    Load_HQR(SCREEN_HQR_NAME, Screen, PCR_MENU);
+                    CopyScreen(Screen, Log);
+                    BoxStaticFullflip();
+                    EscTimer = 0;
 #endif
-                                        break ;
+                    break;
 
-                                case 2: // GameOver :(
-                                        // Pour ne pouvoir ni reprendre la partie
-                                        // ni la sauver
-                                        firstloop = TRUE ;
-                                        EscTimer = 0 ;
-                                        break ;
-                        }
-
-                        CopyScreen( Log, Screen ) ;
-                        BoxReset() ;
-
-                        MemoClipWindow() ;
-                        UnsetClipWindow() ;
-
-                        ShadeBoxBlk( 0, 0, 639, 479, SCREEN_SHADE_LVL ) ;
-                        BoxStaticFullflip() ;
-
-                        if( !FadeMenu ) PaletteSync( PtrPalNormal ) ;
-
-                        HQ_PauseSamples() ;
-                        FlagShadeMenu = TRUE ;
-                        gogame = FALSE ;
-                        InitPlasmaMenu() ;
+                case 2: // GameOver :(
+                    // Pour ne pouvoir ni reprendre la partie
+                    // ni la sauver
+                    firstloop = TRUE;
+                    EscTimer = 0;
+                    break;
                 }
 
-                BuildGameMainMenu( firstloop ) ;
+                CopyScreen(Log, Screen);
+                BoxReset();
 
-                InitDial( 0 )           ;//     SYS
+                MemoClipWindow();
+                UnsetClipWindow();
+
+                ShadeBoxBlk(0, 0, 639, 479, SCREEN_SHADE_LVL);
+                BoxStaticFullflip();
+
+                if (!FadeMenu) PaletteSync(PtrPalNormal);
+
+                HQ_PauseSamples();
+                FlagShadeMenu = TRUE;
+                gogame = FALSE;
+                InitPlasmaMenu();
+            }
+
+            if (!startGameImmediately && !loadGameImmediately) {
+                BuildGameMainMenu(firstloop);
+
+                InitDial(0);  // SYS
 
 #ifdef  CDROM
-                if( IsStreamPlaying() ) StopMusic() ;
-                PlayMusic( CD_TRACK_MENU, TRUE ) ;
-
+                if (IsStreamPlaying()) StopMusic();
+                PlayMusic(CD_TRACK_MENU, TRUE);
 #endif
 
-                HQ_StopSample() ;
+                HQ_StopSample();
+            }
 
-//              GetMultiText( 49, PleaseWait ) ;
+            S32 select;
+            if (startGameImmediately) {
+                select = 71;
+            }
+            else if (loadGameImmediately) {
+                select = 72;
+            }
+            else {
+                select = DoGameMenu(GameMainMenu);
+            }
 
-                select = DoGameMenu( GameMainMenu ) ;
-                switch( select )        // num mess
+            switch (select)        // num mess
+            {
+            case 1000: // <ESC>, on reprend la partie en cours
+                if (firstloop)
                 {
-                        case 1000: // <ESC>, on reprend la partie en cours
-                                if( firstloop )
-                                {
-                                        firstloop = 2 ;
-                                        break ;
-                                }
+                    firstloop = 2;
+                    break;
+                }
 
-                        case 70:   // reprendre partie
-                                if( !firstloop AND !GameInProgress AND !DemoSlide )
-                                {
-                                        ChoicePalette() ;
-                                        FlagPal = TRUE ;
-                                        InitDial( START_FILE_ISLAND+Island ) ;
-                                        HQ_ResumeSamples() ;
+            case 70:   // reprendre partie
+                if (!firstloop AND !GameInProgress AND !DemoSlide)
+                {
+                    ChoicePalette();
+                    FlagPal = TRUE;
+                    InitDial(START_FILE_ISLAND + Island);
+                    HQ_ResumeSamples();
 
-                                        StopMusic() ;
+                    StopMusic();
 
-                                        RestoreClipWindow() ;
-                                        FlagFade = FALSE ;
-                                        gogame = TRUE ;
-                                        RestoreTimer() ;
-                                }
-                                else if( FileSize( CURRENTSAVE_FILENAME ) > 0 )
-                                {
-                                        char    memoplayername[256] ;
-                                        char    memogamepathname[256] ;
+                    RestoreClipWindow();
+                    FlagFade = FALSE;
+                    gogame = TRUE;
+                    RestoreTimer();
+                }
+                else if (FileSize((char*)getCurrentSavePath().c_str()) > 0)
+                {
+                    char    memoplayername[256];
+                    char    memogamepathname[256];
 
-                                        DemoSlide = FALSE ;
+                    DemoSlide = FALSE;
 
-                                        strcpy( memoplayername, PlayerName ) ;
-                                        strcpy( memogamepathname, GamePathname ) ;
+                    strcpy(memoplayername, PlayerName);
+                    strcpy(memogamepathname, GamePathname);
 
-                                        StopMusic() ;
+                    StopMusic();
 
-                                        firstloop = FALSE ;
-                                        strcpy( PlayerName, CURRENTSAVE_NAME ) ;
-                                        strcpy( GamePathname, CURRENTSAVE_FILENAME ) ;
-                                        InitGame( -1 ) ;
-                                        ChangeCube( ) ;
+                    firstloop = FALSE;
+                    strcpy(PlayerName, CURRENTSAVE_NAME);
+                    strcpy(GamePathname, getCurrentSavePath().c_str());
+                    InitGame(-1);
+                    ChangeCube();
 
 #ifdef  DEMO
-                                        // Grosse rustine pour savoir dans quelle
-                                        // sauvegarde on se trouve
-                                        switch( NumCube )
-                                        {
-                                                case 183:
-                                                case 184:
-                                                        CurrentDemoSave = 1 ;
-                                                        break ;
+                    // Grosse rustine pour savoir dans quelle
+                    // sauvegarde on se trouve
+                    switch (NumCube)
+                    {
+                    case 183:
+                    case 184:
+                        CurrentDemoSave = 1;
+                        break;
 
-                                                case 125:
-                                                        CurrentDemoSave = 2 ;
-                                                        break ;
+                    case 125:
+                        CurrentDemoSave = 2;
+                        break;
 
-                                                default:
-                                                        CurrentDemoSave = 0 ;
-                                        }
+                    default:
+                        CurrentDemoSave = 0;
+                    }
 
-                                        NewDemoSave = CurrentDemoSave ;
-                                        FlagShowEndDemo = FALSE ;
+                    NewDemoSave = CurrentDemoSave;
+                    FlagShowEndDemo = FALSE;
 #endif
 
-                                        CopyScreen( Log, ScreenAux ) ;
+                    CopyScreen(Log, ScreenAux);
 
-                                        RestoreTimer() ;
-                                        SaveTimer() ;
-                                        AffScene( AFF_ALL_NO_FLIP ) ;
-                                        FixeCinemaMode( FALSE ) ;
-                                        CopyScreen( Log, Screen ) ;
+                    RestoreTimer();
+                    SaveTimer();
+                    AffScene(AFF_ALL_NO_FLIP);
+                    FixeCinemaMode(FALSE);
+                    CopyScreen(Log, Screen);
 
-                                        // au cas ou le mec meurre avant de faire <ESC>
-                                        CurrentSaveGame() ;
+                    // au cas ou le mec meurre avant de faire <ESC>
+                    CurrentSaveGame();
 
-                                        BoxReset() ;    // pas de flip
+                    BoxReset();    // pas de flip
 
-                                        ZoomSavedGame( 240, 10 ) ;
+                    ZoomSavedGame(240, 10);
 
-                                        RestoreTimer() ;
+                    RestoreTimer();
 
-                                        FlagFade = FALSE ;
-                                        RestartRainSample = TRUE ;
+                    FlagFade = FALSE;
+                    RestartRainSample = TRUE;
 
-                                        strcpy( PlayerName, memoplayername ) ;
-                                        strcpy( GamePathname, memogamepathname ) ;
+                    strcpy(PlayerName, memoplayername);
+                    strcpy(GamePathname, memogamepathname);
 
-                                        gogame = TRUE ;
-                                        EscTimer = 0 ;
-                                }
-                                break ;
+                    gogame = TRUE;
+                    EscTimer = 0;
+                }
+                break;
 
-                        case 71: // newgame
+            case 71: // newgame
 #ifdef  DEMO
-                                FlagShowEndDemo = FALSE ;
-                                SetDemoSaveGame( 0 ) ;
-                                goto load_game ;
+                // TODO - remove DEMO code everywhere, as this is not supported
+                // FlagShowEndDemo = FALSE ;
+                // SetDemoSaveGame( 0 ) ;
+                // goto load_game ;
 #else
-new_game:
-                                firstloop = FALSE ;
-                                strcpy( PlayerName, "" ) ;
-                                PtrPal = PtrPalNormal ;
-                                StopMusic() ;
-                                InitGame( 1 ) ;
-                                Introduction() ;
-                                HQ_StopSample() ;
-                                FlagFade = TRUE ;
-                                gogame = TRUE ;
-                                EscTimer = 0 ;
-                                break ;
+// new_game:
+                // Ida
+                if (idaSpy->isHotReloadEnabled() && !firstloop && !startGameImmediately) {
+                    // Reload the Ida scripts when starting new game from an existing one
+                    flag = 1;
+                    startGameImmediately = true;
+                    break;
+                }
+
+                startGameImmediately = false;
+                firstloop = FALSE;
+                strcpy(PlayerName, "");
+                PtrPal = PtrPalNormal;
+                StopMusic();
+                InitGame(1);
+                Introduction();
+                HQ_StopSample();
+                FlagFade = TRUE;
+                gogame = TRUE;
+                EscTimer = 0;
+
+                break;
 #endif
 
-                        case 72: // load
-                                switch( ChoosePlayerName( 41, FALSE, FALSE ) )
-                                {
-                                        case 0:
-                                                CopyScreen( Screen, Log ) ;
-                                                if( FlagShadeMenu )     ShadeBoxBlk( 0, 0, 639, 479, SCREEN_SHADE_LVL ) ;
-                                                BoxStaticFullflip() ;
-                                                break ;
+            case 72: // load
+                S32 chosePlayerNameResult;
+                if (loadGameImmediately) {
+                    chosePlayerNameResult = 1; // To not get into the case 0 (escape menu)
+                }
+                else {
+                    chosePlayerNameResult = ChooseSaveGameName(41, FALSE, FALSE);
+                }
 
-                                        default:// load game
-load_game:                                      firstloop = FALSE ;
-                                                DemoSlide = FALSE ;
-                                                StopMusic() ;
-                                                InitGame( -1 ) ;
-                                                ChangeCube( ) ;
+                switch (chosePlayerNameResult)
+                {
+                case 0:
+                    CopyScreen(Screen, Log);
+                    if (FlagShadeMenu)     ShadeBoxBlk(0, 0, 639, 479, SCREEN_SHADE_LVL);
+                    BoxStaticFullflip();
+                    break;
+
+                default:// load game
+// load_game:                              
+                    // Ida
+                    if (idaSpy->isHotReloadEnabled() && !firstloop && !loadGameImmediately) {
+                        // Reload the Ida scripts when loading a savegame from the menu, while already running a game
+                        flag = 1;
+                        loadGameImmediately = true;
+                        break;
+                    }
+
+					loadGameImmediately = false;
+                    firstloop = FALSE;
+                    DemoSlide = FALSE;
+                    StopMusic();
+                    InitGame(-1);
+                    ChangeCube();
 
 #ifdef	DEMO
-						TakeAllDarts() ;
+                    TakeAllDarts();
 #endif
 
-                                                CopyScreen( Log, ScreenAux ) ;
+                    CopyScreen(Log, ScreenAux);
 
-                                                RestoreTimer() ;
-                                                SaveTimer() ;
-                                                AffScene( AFF_ALL_NO_FLIP ) ;
-                                                FixeCinemaMode( FALSE ) ;
-                                                CopyScreen( Log, Screen ) ;
+                    RestoreTimer();
+                    SaveTimer();
+                    AffScene(AFF_ALL_NO_FLIP);
+                    FixeCinemaMode(FALSE);
+                    CopyScreen(Log, Screen);
 
-                                                // au cas ou le mec meurre avant de faire <ESC>
-                                                CurrentSaveGame() ;
+                    // au cas ou le mec meurre avant de faire <ESC>
+                    CurrentSaveGame();
 
-                                                BoxReset() ;    // pas de flip
+                    BoxReset();    // pas de flip
 
-                                                ZoomSavedGame( 240, 50 ) ;
+                    ZoomSavedGame(240, 50);
 
-                                                HQ_ResumeSamples() ;
-                                                RestoreTimer() ;
+                    HQ_ResumeSamples();
+                    RestoreTimer();
 
-                                                FlagFade = FALSE ;
+                    FlagFade = FALSE;
 
-                                                gogame = TRUE ;
-                                                EscTimer = 0 ;
-                                                break ;
-                                }
-                                break ;
+                    gogame = TRUE;
+                    EscTimer = 0;
+                    break;
+                }
+                break;
 
-                        case 73:   // Save Game
-                                if( !firstloop )
-                                {
-                                        savenewcube = NewCube ;
+            case 73:   // Save Game
+                if (!firstloop)
+                {
+                    S32 savenewcube = NewCube;
 
-                                        if( ChoosePlayerName( 42, FALSE, TRUE ) )
-                                        {
-                                                NumVersion = NUM_VERSION|SAVE_COMPRESS ;
-						CopyScreen( Screen, Log ) ;
+                    if (ChooseSaveGameName(42, FALSE, TRUE))
+                    {
+                        NumVersion = NUM_VERSION | SAVE_COMPRESS;
+                        CopyScreen(Screen, Log);
 #ifdef	YAZ_WIN32
-						if( FileSize(OldGamePathname) )	Delete( OldGamePathname ) ;
+                        if (FileSize(OldGamePathname))	Delete(OldGamePathname);
 #endif
-                                                SaveGame( TRUE ) ;
-                                                HQ_ResumeSamples() ;
-                                                UnsetClipWindow() ;
-                                        }
+                        SaveGame(TRUE);
+                        HQ_ResumeSamples();
+                        UnsetClipWindow();
+                    }
 
-                                        CopyScreen( Screen, Log ) ;
+                    CopyScreen(Screen, Log);
 
-                                        ShadeBoxBlk( 0, 0, 639, 479, SCREEN_SHADE_LVL ) ;
-                                        NewCube = savenewcube ;
-                                        BoxStaticFullflip() ;
-                                        RestoreTimer() ;
-                                }
-                                break ;
+                    ShadeBoxBlk(0, 0, 639, 479, SCREEN_SHADE_LVL);
+                    NewCube = savenewcube;
+                    BoxStaticFullflip();
+                    RestoreTimer();
+                }
+                break;
 
-                        case 74:        // Options
-                                CopyScreen( Screen, Log ) ;
-                                BoxStaticFullflip() ;
-                                OptionsMenu( TRUE ) ;
-                                break ;
+            case 74:        // Options
+                CopyScreen(Screen, Log);
+                BoxStaticFullflip();
+                OptionsMenu(TRUE);
+                break;
 
-			case 75: // quitter
-				FadeToBlack( PtrPalNormal ) ;
-				Cls() ;
-				BoxUpdate() ;
-				flag = 1 ;
-				break ;
+            case 75: // quitter
+                FadeToBlack(PtrPalNormal);
+                Cls();
+                BoxUpdate();
+                flag = 1;
+                
+                // Ida
+                needQuit = true;
+                break;
 
 #ifdef  DEBUG_TOOLS
-                        // Gestion des sauvegardes de bugs
-                        case 2000:      // chargement d'un bug
-                                strcpy( PathSave, PATH_SAVE_BUGS ) ;
+                // Gestion des sauvegardes de bugs
+            case 2000:      // chargement d'un bug
+                strcpy(PathSave, PATH_SAVE_BUGS);
 
-                                switch( ChoosePlayerName( 41|0x80000000, FALSE, FALSE ) )
-                                {
-                                        case 0:
-                                                CopyScreen( Screen, Log ) ;
-                                                if( FlagShadeMenu )     ShadeBoxBlk( 0, 0, 639, 479, SCREEN_SHADE_LVL ) ;
-                                                BoxStaticFullflip() ;
-                                                break ;
+                switch (ChoosePlayerName(41 | 0x80000000, FALSE, FALSE))
+                {
+                case 0:
+                    CopyScreen(Screen, Log);
+                    if (FlagShadeMenu)     ShadeBoxBlk(0, 0, 639, 479, SCREEN_SHADE_LVL);
+                    BoxStaticFullflip();
+                    break;
 
-                                        default:// load game
-                                                firstloop = FALSE ;
-                                                DemoSlide = FALSE ;
-                                                StopMusic() ;
-                                                InitGame( -1 ) ;
-                                                ChangeCube( ) ;
+                default:// load game
+                    firstloop = FALSE;
+                    DemoSlide = FALSE;
+                    StopMusic();
+                    InitGame(-1);
+                    ChangeCube();
 
-                                                CopyScreen( Log, ScreenAux ) ;
+                    CopyScreen(Log, ScreenAux);
 
-                                                RestoreTimer() ;
-                                                SaveTimer() ;
-                                                AffScene( AFF_ALL_NO_FLIP ) ;
-                                                FixeCinemaMode( FALSE ) ;
-                                                CopyScreen( Log, Screen ) ;
+                    RestoreTimer();
+                    SaveTimer();
+                    AffScene(AFF_ALL_NO_FLIP);
+                    FixeCinemaMode(FALSE);
+                    CopyScreen(Log, Screen);
 
-                                                // au cas ou le mec meurre avant de faire <ESC>
-                                                CurrentSaveGame() ;
+                    // au cas ou le mec meurre avant de faire <ESC>
+                    CurrentSaveGame();
 
-                                                BoxReset() ;    // pas de flip
+                    BoxReset();    // pas de flip
 
-                                                ZoomSavedGame( 240, 50 ) ;
+                    ZoomSavedGame(240, 50);
 
-                                                HQ_ResumeSamples() ;
-                                                RestoreTimer() ;
+                    HQ_ResumeSamples();
+                    RestoreTimer();
 
-                                                FlagFade = FALSE ;
+                    FlagFade = FALSE;
 
-                                                gogame = TRUE ;
-                                                EscTimer = 0 ;
-                                                break ;
-                                }
-
-                                strcpy( PathSave, PATH_SAVE ) ;
-                                break ;
-
-                        case 2001:      // sauvegarde d'un bug
-                                strcpy( PathSave, PATH_SAVE_BUGS ) ;
-
-                                if( !firstloop )
-                                {
-                                        savenewcube = NewCube ;
-
-                                        if( ChoosePlayerName( 42|0x40000000, FALSE, TRUE ) )
-                                        {
-                                                NumVersion = NUM_VERSION|SAVE_COMPRESS ;
-                                                CopyScreen( Screen, Log ) ;
-                                                SaveGame( TRUE ) ;
-                                                NewCube = savenewcube ;
-                                                HQ_ResumeSamples() ;
-                                        }
-
-                                        CopyScreen( Screen, Log ) ;
-
-                                        ShadeBoxBlk( 0, 0, 639, 479, SCREEN_SHADE_LVL ) ;
-                                        NewCube = savenewcube ;
-                                        BoxStaticFullflip() ;
-                                        RestoreTimer() ;
-                                }
-
-                                strcpy( PathSave, PATH_SAVE ) ;
-                                break ;
-#endif
+                    gogame = TRUE;
+                    EscTimer = 0;
+                    break;
                 }
+
+                strcpy(PathSave, PATH_SAVE);
+                break;
+
+            case 2001:      // sauvegarde d'un bug
+                strcpy(PathSave, PATH_SAVE_BUGS);
+
+                if (!firstloop)
+                {
+                    savenewcube = NewCube;
+
+                    if (ChoosePlayerName(42 | 0x40000000, FALSE, TRUE))
+                    {
+                        NumVersion = NUM_VERSION | SAVE_COMPRESS;
+                        CopyScreen(Screen, Log);
+                        SaveGame(TRUE);
+                        NewCube = savenewcube;
+                        HQ_ResumeSamples();
+                    }
+
+                    CopyScreen(Screen, Log);
+
+                    ShadeBoxBlk(0, 0, 639, 479, SCREEN_SHADE_LVL);
+                    NewCube = savenewcube;
+                    BoxStaticFullflip();
+                    RestoreTimer();
+                }
+
+                strcpy(PathSave, PATH_SAVE);
+                break;
+#endif
+            }
         }
-        return FALSE ;
+
+    // Ida loop - end
+    }); } while (!needQuit);
+
+    return FALSE;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -2785,43 +2875,43 @@ void    GameOver()
         S32     zoom ;
         U32     chrono ;
 
-	HQ_StopSample() ;
+    HQ_StopSample() ;
 
-	if( ListVarGame[160]>0 )
-	{
-		SaveTimer() ;
+    if( ListVarGame[160]>0 )
+    {
+        SaveTimer() ;
 
-		if( !FlagBlackPal )	FadeToBlack( PtrPal ) ;
+        if( !FlagBlackPal )	FadeToBlack( PtrPal ) ;
 
-		PlayAcf( "DELUGE" ) ;
+        PlayAcf( "DELUGE" ) ;
 
-		if( CubeMode==CUBE_INTERIEUR )
-		{
-			InitGrille( NumCube ) ;
-		}
-		RazListPartFlow() ;
-		ChoicePalette()   ;
+        if( CubeMode==CUBE_INTERIEUR )
+        {
+            InitGrille( NumCube ) ;
+        }
+        RazListPartFlow() ;
+        ChoicePalette()   ;
 
-		RestoreTimer() ;
-		FlagFade = TRUE ;
-		AffScene( AFF_ALL_NO_FLIP ) ;
-		CopyScreen( Log, Screen ) ;
-		BoxBlit() ;
-		BoxReset() ;
-	}
-	else
-	{
-		BackupScreen( FALSE ) ;
-		CopyScreen( Log, Screen ) ;
-		BoxReset() ;
-	}
+        RestoreTimer() ;
+        FlagFade = TRUE ;
+        AffScene( AFF_ALL_NO_FLIP ) ;
+        CopyScreen( Log, Screen ) ;
+        BoxBlit() ;
+        BoxReset() ;
+    }
+    else
+    {
+        BackupScreen( FALSE ) ;
+        CopyScreen( Log, Screen ) ;
+        BoxReset() ;
+    }
 
-	PaletteSync( PtrPal ) ;
+    PaletteSync( PtrPal ) ;
 
         ptr3do = (S16 *)LoadMalloc_HQR( RESS_HQR_NAME, RESS_GAME_OVER ) ;
         if( !ptr3do )   return ;
 
-	// lance un sample ou music de game over ??
+    // lance un sample ou music de game over ??
 
         zoom = GAMEOVER_MINZOOM ;
 
@@ -2902,7 +2992,7 @@ void    GameOver()
         PtrPal = PtrPalNormal ;
         FadeMenu = TRUE ;
 
-	UnsetClip() ;
+    UnsetClip() ;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -2958,12 +3048,12 @@ void    Credits( S32 mode )
 
         GameInProgress = TRUE ;
 
-	if( !mode )
-	{
-		Load_HQR( SCREEN_HQR_NAME, Screen, PCR_MENU ) ;
-		CopyScreen( Screen, Log ) ;
-		BoxStaticFullflip() ;
-	}
+    if( !mode )
+    {
+        Load_HQR( SCREEN_HQR_NAME, Screen, PCR_MENU ) ;
+        CopyScreen( Screen, Log ) ;
+        BoxStaticFullflip() ;
+    }
 
         FadeMenu = TRUE ;
 
@@ -2979,110 +3069,110 @@ void    Credits( S32 mode )
 
 S32     SlideShow( void )
 {
-	U8	pal[768+RECOVER_AREA] ;
+    U8	pal[768+RECOVER_AREA] ;
         S32     n ;
         S32     endtimer ;
         U32     nbshots  ;
-	U32     handle   ;
-	S32	ret = TRUE ;
-	S32	memofirsttime = FirstTime ;
-	U8	fadepal = FALSE ;
-	U8	memobulle = Bulle ;
-	U8	memocoul ;
+    U32     handle   ;
+    S32	ret = TRUE ;
+    S32	memofirsttime = FirstTime ;
+    U8	fadepal = FALSE ;
+    U8	memobulle = Bulle ;
+    U8	memocoul ;
 
         // recupere nombre de screen shot dans le .HQR directement
         handle = OpenRead( SCRSHOT_HQR_NAME ) ;
         if( handle )
         {
                 Read( handle, &nbshots, 4 ) ;
-		nbshots = ((nbshots/4)-1)/2 ;// /2 car il y a aussi les palettes
-		Close ( handle ) ;
-	}
-	else    return TRUE ;
+        nbshots = ((nbshots/4)-1)/2 ;// /2 car il y a aussi les palettes
+        Close ( handle ) ;
+    }
+    else    return TRUE ;
 
-	InitDial( 2 ) ;	// pour les textes sur les screen shots
+    InitDial( 2 ) ;	// pour les textes sur les screen shots
 
-	Bulle = FALSE ;
+    Bulle = FALSE ;
 
 #ifdef	DEMO
-	FlagSlideShow = TRUE ;// pour les tempos des messages
+    FlagSlideShow = TRUE ;// pour les tempos des messages
 #endif
 
-	FirstTime = AFF_OBJETS_NO_FLIP ;
+    FirstTime = AFF_OBJETS_NO_FLIP ;
 
-	memocoul = ListObjet[NUM_PERSO].CoulObj ;
-	ListObjet[NUM_PERSO].CoulObj = 0 ;
+    memocoul = ListObjet[NUM_PERSO].CoulObj ;
+    ListObjet[NUM_PERSO].CoulObj = 0 ;
 
-	NumObjDial = NUM_PERSO ;
+    NumObjDial = NUM_PERSO ;
 
-	Init3DView() ;
+    Init3DView() ;
 
-	for( n=0; n<nbshots; n++ )
-	{
-		InitWaitNoKey() ;
+    for( n=0; n<nbshots; n++ )
+    {
+        InitWaitNoKey() ;
 
-		FadeToBlack( PtrPal ) ;
+        FadeToBlack( PtrPal ) ;
 
-		// charge image
-		Load_HQR( SCRSHOT_HQR_NAME, Log, (n*2) ) ;
+        // charge image
+        Load_HQR( SCRSHOT_HQR_NAME, Log, (n*2) ) ;
 
-		// on peut pas afficher le logo LBA2 car il est dans la palette
-		// du jeu
+        // on peut pas afficher le logo LBA2 car il est dans la palette
+        // du jeu
 //		AffGraph( 0, 639-105, 3, HQR_Get(HQRPtrSprite,11) ) ;
 
-		Dial( START_SLIDESHOW_TEXT+n, FALSE ) ;
+        Dial( START_SLIDESHOW_TEXT+n, FALSE ) ;
 
-		// charge palette
-		Load_HQR( SCRSHOT_HQR_NAME, pal, (n*2)+1 ) ;
+        // charge palette
+        Load_HQR( SCRSHOT_HQR_NAME, pal, (n*2)+1 ) ;
 
-		// reforce en blanc la couleur 12
-		pal[12*3]   = 255 ;
-		pal[12*3+1] = 255 ;
-		pal[12*3+2] = 255 ;
+        // reforce en blanc la couleur 12
+        pal[12*3]   = 255 ;
+        pal[12*3+1] = 255 ;
+        pal[12*3+2] = 255 ;
 
-		BoxStaticFullflip() ;
-		FadeToPal( pal ) ;
+        BoxStaticFullflip() ;
+        FadeToPal( pal ) ;
 
-		fadepal = TRUE 	;
-		PtrPal  = pal 	;
+        fadepal = TRUE 	;
+        PtrPal  = pal 	;
 
-		ManageTime() ;
-		endtimer = TimerRefHR + 4*1000 ;
+        ManageTime() ;
+        endtimer = TimerRefHR + 4*1000 ;
 
-		while( (TimerRefHR<endtimer) AND !MyKey )
-		{
-			ManageTime() ;
-			MyGetInput() ;
-		}
+        while( (TimerRefHR<endtimer) AND !MyKey )
+        {
+            ManageTime() ;
+            MyGetInput() ;
+        }
 
-		if( MyKey==K_ESC OR (Input&I_MENUS) )
-		{
-			ret = FALSE ;
-			break ;
-		}
+        if( MyKey==K_ESC OR (Input&I_MENUS) )
+        {
+            ret = FALSE ;
+            break ;
+        }
 
-		if( MyKey==K_D )	break ;
-	}
+        if( MyKey==K_D )	break ;
+    }
 
-	FirstTime = memofirsttime ;
-	Bulle = memobulle ;
-	ListObjet[NUM_PERSO].CoulObj = memocoul ;
+    FirstTime = memofirsttime ;
+    Bulle = memobulle ;
+    ListObjet[NUM_PERSO].CoulObj = memocoul ;
 
 #ifdef	DEMO
-	FlagSlideShow = FALSE ;
+    FlagSlideShow = FALSE ;
 #endif
 
-	InitDial( 0 ) ;
+    InitDial( 0 ) ;
 
-	if( fadepal )
-	{
-		FadeToBlack( pal ) ;
-		PtrPal = PtrPalNormal ;
-	}
+    if( fadepal )
+    {
+        FadeToBlack( pal ) ;
+        PtrPal = PtrPalNormal ;
+    }
 
-	GameInProgress = TRUE ;// pour recharger la partie en cours
+    GameInProgress = TRUE ;// pour recharger la partie en cours
 
-	return ret ;
+    return ret ;
 }
 
 void    SlideDemo( int argc, char *argv[] )
@@ -3181,8 +3271,8 @@ S32     AdelineLogo( void )
         BoxStaticFullflip() ;
 
         ManageTime() ;
-	endtimer = TimerRefHR + 3*1000 ;// 3s
-	while( (TimerRefHR<=endtimer OR IsStreamPlaying()) AND !MyKey )
+    endtimer = TimerRefHR + 3*1000 ;// 3s
+    while( (TimerRefHR<=endtimer OR IsStreamPlaying()) AND !MyKey )
         {
                 ManageTime() ;
                 MyGetInput() ;
@@ -3201,13 +3291,13 @@ S32     AdelineLogo( void )
         }
         if( MyKey==K_ESC OR (Input&I_MENUS) )   ret = FALSE ;
 
-	FadeOutVolumeMusic() ;
-	StopMusic() ;
+    FadeOutVolumeMusic() ;
+    StopMusic() ;
 
 #ifdef	CDROM
-	SetVolumeCD( CDVolume ) ;
+    SetVolumeCD( CDVolume ) ;
 #endif
-	SetVolumeJingle( JingleVolume ) ;
+    SetVolumeJingle( JingleVolume ) ;
 
 //      HQ_StopSample() ;
 //      StopMusic() ;
@@ -3221,34 +3311,34 @@ S32     AdelineLogo( void )
 
 S32     ShowLogo( S32 numscr, S32 nsec )
 {
-	U32     endtimer ;
-	S32     ret = TRUE ;
+    U32     endtimer ;
+    S32     ret = TRUE ;
 
-	if( Load_HQR( SCREEN_HQR_NAME, Log, numscr )
-	AND Load_HQR( SCREEN_HQR_NAME, PalettePcx, numscr+1) )
-	{
-		WaitNoInput() ;
+    if( Load_HQR( SCREEN_HQR_NAME, Log, numscr )
+    AND Load_HQR( SCREEN_HQR_NAME, PalettePcx, numscr+1) )
+    {
+        WaitNoInput() ;
 
-		PtrPal = PalettePcx ;
+        PtrPal = PalettePcx ;
 
-		BoxStaticFullflip() ;
-		FadeToPal( PalettePcx ) ;
+        BoxStaticFullflip() ;
+        FadeToPal( PalettePcx ) ;
 
-		ManageTime() ;
-		endtimer = TimerRefHR + nsec*1000 ;// wait nsec
+        ManageTime() ;
+        endtimer = TimerRefHR + nsec*1000 ;// wait nsec
 
-		while( TimerRefHR<=endtimer AND !MyKey )
-		{
-			ManageTime() ;
-			MyGetInput() ;
-		}
+        while( TimerRefHR<=endtimer AND !MyKey )
+        {
+            ManageTime() ;
+            MyGetInput() ;
+        }
 
-		if( MyKey==K_ESC OR (Input&I_MENUS) )   ret = FALSE ;
+        if( MyKey==K_ESC OR (Input&I_MENUS) )   ret = FALSE ;
 
-		FadeToBlack( PalettePcx ) ;
-	}
+        FadeToBlack( PalettePcx ) ;
+    }
 
-	return ret ;
+    return ret ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -3256,26 +3346,26 @@ S32     ShowLogo( S32 numscr, S32 nsec )
 void    DistribLogo( void )
 {
 #ifdef	DEMO
-	// Bumper 3 Distributeurs
-	ShowLogo( 3*2, 5 ) ;
+    // Bumper 3 Distributeurs
+    ShowLogo( 3*2, 5 ) ;
 #else
-	// depend de la version
-	switch( DistribVersion )
-	{
-		case ACTIVISION_VERSION:
-		case ACTIVISION_SUD_VERSION:
-			ShowLogo( PCR_ACTIVISION, 2 ) ;
-			break ;
+    // depend de la version
+    switch( DistribVersion )
+    {
+        case ACTIVISION_VERSION:
+        case ACTIVISION_SUD_VERSION:
+            ShowLogo( PCR_ACTIVISION, 2 ) ;
+            break ;
 
-		case EA_VERSION:
-			ShowLogo( PCR_EA, 2 ) ;
-			break ;
+        case EA_VERSION:
+            ShowLogo( PCR_EA, 2 ) ;
+            break ;
 
-		case VIRGIN_VERSION:
-		case VIRGIN_ASIA_VERSION:
-			ShowLogo( PCR_VIRGIN, 2 ) ;
-			break ;
-	}
+        case VIRGIN_VERSION:
+        case VIRGIN_ASIA_VERSION:
+            ShowLogo( PCR_VIRGIN, 2 ) ;
+            break ;
+    }
 #endif
 }
 
@@ -3284,37 +3374,37 @@ void    DistribLogo( void )
 S32     BumperLogo( void )
 {
 /*	U32     endtimer ;
-	S32     ret = TRUE ;
+    S32     ret = TRUE ;
 
-	if( !Load_HQR( SCREEN_HQR_NAME, Log, PCR_BUMPER ) )
-		TheEndCheckFile( SCREEN_HQR_NAME ) ;
+    if( !Load_HQR( SCREEN_HQR_NAME, Log, PCR_BUMPER ) )
+        TheEndCheckFile( SCREEN_HQR_NAME ) ;
 
-	if( !Load_HQR( SCREEN_HQR_NAME, PalettePcx, PCR_BUMPER+1) )
-		TheEndCheckFile( SCREEN_HQR_NAME ) ;
+    if( !Load_HQR( SCREEN_HQR_NAME, PalettePcx, PCR_BUMPER+1) )
+        TheEndCheckFile( SCREEN_HQR_NAME ) ;
 
-	WaitNoInput() ;
+    WaitNoInput() ;
 
-	PtrPal = PalettePcx ;
+    PtrPal = PalettePcx ;
 
-	BoxStaticFullflip() ;
-	FadeToPal( PalettePcx ) ;
+    BoxStaticFullflip() ;
+    FadeToPal( PalettePcx ) ;
 
-	ManageTime() ;
-	endtimer = TimerRefHR + 3*1000 ;
+    ManageTime() ;
+    endtimer = TimerRefHR + 3*1000 ;
 
-	while( TimerRefHR<=endtimer AND !MyKey )
-	{
-		ManageTime() ;
-		MyGetInput() ;
-	}
+    while( TimerRefHR<=endtimer AND !MyKey )
+    {
+        ManageTime() ;
+        MyGetInput() ;
+    }
 
-	if( MyKey==K_ESC OR (Input&I_MENUS) )   ret = FALSE ;
+    if( MyKey==K_ESC OR (Input&I_MENUS) )   ret = FALSE ;
 
-	FadeToBlack( PalettePcx ) ;
+    FadeToBlack( PalettePcx ) ;
 
-	return ret ;
+    return ret ;
 */
-	return( ShowLogo( PCR_BUMPER, 5 ) ) ;
+    return( ShowLogo( PCR_BUMPER, 5 ) ) ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -3322,50 +3412,50 @@ S32     BumperLogo( void )
 #ifdef  DEMO
 void    DemoLogo( void )
 {
-	char string[30] ;
-	S32     x0, y0, x1, y1 ;
-	S32     endtimer ;
+    char string[30] ;
+    S32     x0, y0, x1, y1 ;
+    S32     endtimer ;
 
-	FlagBlackPal = FALSE ;
+    FlagBlackPal = FALSE ;
 
-	FadeToBlackAndSamples( PtrPal ) ;
-	BoxReset() ;
-	Cls() ;
+    FadeToBlackAndSamples( PtrPal ) ;
+    BoxReset() ;
+    Cls() ;
 
-	strcpy( string, "      Demo  Version      " ) ;
-	ColorFont( LBAWHITE ) ;
+    strcpy( string, "      Demo  Version      " ) ;
+    ColorFont( LBAWHITE ) ;
 
-	// cadre
-	x0 = 320 - SizeFont( string )/2 - 50 ;
-	x1 = 320 + SizeFont( string )/2 + 50 ;
-	y0 = 240-25 ;
-	y1 = 240+25 ;
+    // cadre
+    x0 = 320 - SizeFont( string )/2 - 50 ;
+    x1 = 320 + SizeFont( string )/2 + 50 ;
+    y0 = 240-25 ;
+    y1 = 240+25 ;
 //      ShadeBoxBlk( 0, 0, 639, 479, SCREEN_SHADE_LVL ) ;
-	BackupAngles( x0, y0, x1, y1 ) ;
-	ShadeBoxBlk( x0, y0, x1, y1, MENU_SHADE_LVL ) ;
-	DrawCadre( x0, y0, x1, y1, ALL_ANGLES ) ;
-	RestoreAngles( x0, y0, x1, y1 ) ;
-	Font( x0+50, y0+7, string ) ;
-	BoxStaticFullflip() ;
+    BackupAngles( x0, y0, x1, y1 ) ;
+    ShadeBoxBlk( x0, y0, x1, y1, MENU_SHADE_LVL ) ;
+    DrawCadre( x0, y0, x1, y1, ALL_ANGLES ) ;
+    RestoreAngles( x0, y0, x1, y1 ) ;
+    Font( x0+50, y0+7, string ) ;
+    BoxStaticFullflip() ;
 
-	FadeToPal( PtrPal ) ;
+    FadeToPal( PtrPal ) ;
 
-	InitWaitNoKey() ;
+    InitWaitNoKey() ;
 
-	ManageTime() ;
-	endtimer = TimerRefHR + 2*1000 ;
+    ManageTime() ;
+    endtimer = TimerRefHR + 2*1000 ;
 
-	// wait a key or tempo
-	while( TimerRefHR<=endtimer AND !MyKey )
-	{
-		ManageTime() ;
-		MyGetInput() ;
-	}
+    // wait a key or tempo
+    while( TimerRefHR<=endtimer AND !MyKey )
+    {
+        ManageTime() ;
+        MyGetInput() ;
+    }
 
-	FadeToBlack( PtrPal ) ;
-	Cls() ;
-	BoxUpdate() ;
-	FlagBlackPal = FALSE ;
+    FadeToBlack( PtrPal ) ;
+    Cls() ;
+    BoxUpdate() ;
+    FlagBlackPal = FALSE ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -3373,37 +3463,37 @@ void    DemoLogo( void )
 void    DemoBumper( void )
 {
 /*
-	U8      pal[768+RECOVER_AREA] ;
+    U8      pal[768+RECOVER_AREA] ;
 
-	if( Load_HQR( SCREEN_HQR_NAME, Log, PCR_BUMPER )
-	AND Load_HQR( SCREEN_HQR_NAME, pal, PCR_BUMPER+1 ) )
-	{
-		S32     endtimer ;
+    if( Load_HQR( SCREEN_HQR_NAME, Log, PCR_BUMPER )
+    AND Load_HQR( SCREEN_HQR_NAME, pal, PCR_BUMPER+1 ) )
+    {
+        S32     endtimer ;
 
-		WaitNoInput() ;
+        WaitNoInput() ;
 
-		FadeToBlack( PtrPal ) ;
-		BoxStaticFullflip() ;
-		FadeToPal( pal ) ;
+        FadeToBlack( PtrPal ) ;
+        BoxStaticFullflip() ;
+        FadeToPal( pal ) ;
 
-		PtrPal = PtrPalNormal ;
+        PtrPal = PtrPalNormal ;
 
-		ManageTime() ;
-		endtimer = TimerRefHR + 2*1000 ;
+        ManageTime() ;
+        endtimer = TimerRefHR + 2*1000 ;
 
-		while( (TimerRefHR<endtimer) AND !MyKey )
-		{
-			ManageTime() ;
-			MyGetInput() ;
-		}
+        while( (TimerRefHR<endtimer) AND !MyKey )
+        {
+            ManageTime() ;
+            MyGetInput() ;
+        }
 
-		FadeToBlack( pal ) ;
+        FadeToBlack( pal ) ;
 
-		Load_HQR( SCREEN_HQR_NAME, Log, PCR_MENU ) ;
-	}
+        Load_HQR( SCREEN_HQR_NAME, Log, PCR_MENU ) ;
+    }
 */
-	ShowLogo( PCR_BUMPER, 5 ) ;
-	Load_HQR( SCREEN_HQR_NAME, Log, PCR_MENU ) ;
+    ShowLogo( PCR_BUMPER, 5 ) ;
+    Load_HQR( SCREEN_HQR_NAME, Log, PCR_MENU ) ;
 }
 #endif  // DEMO
 
@@ -3417,21 +3507,47 @@ void    EffectPcx( U8 numpcx, U8 *screen, U8 effect, U8 flagbcl )
 {
         SaveTimer() ;
 
+        // Ida - checking if user mod has an image for us
+        const PcxHandle *pcxHandle = ida->getImage(numpcx);
+        
         numpcx *= 2 ;   // car il y a les palettes intercalées
 
         if( !FlagFade ) FadeToBlackAndSamples( PtrPal ) ;
 
         BoxReset() ;    // pour virer les boites de la scene
 
-        // charge palette qui se trouve derriere dans le .HQR
-        if( !Load_HQR( SCREEN_HQR_NAME, PalettePcx, numpcx+1 ) )
+        if (pcxHandle)
+        {
+            memcpy(PalettePcx, pcxHandle->paletteData, pcxHandle->paletteDataSize);
+            if (idaSpy->isImageSpyEnabled()) 
+            {
+                idaSpy->spyImagePalette(pcxHandle->paletteDataSize, pcxHandle->paletteData);
+            }
+        }
+        else
+        {
+            // charge palette qui se trouve derriere dans le .HQR
+            if( !Load_HQR( SCREEN_HQR_NAME, PalettePcx, numpcx+1 ) )
                 TheEndCheckFile( SCREEN_HQR_NAME ) ;
+        }
 
         switch( effect )
         {
                 case PCX_FADE:
+                
+                  if (pcxHandle)
+                  {
+                        memcpy(Log, pcxHandle->imageData, pcxHandle->imageDataSize);
+                        if (idaSpy->isImageSpyEnabled())
+                        {
+                            idaSpy->spyImage(PCX_FADE, pcxHandle->imageDataSize, pcxHandle->imageData);
+                        }
+                  }
+                  else
+                  {
                         if( !Load_HQR( SCREEN_HQR_NAME, Log, numpcx ) )
                                 TheEndCheckFile( SCREEN_HQR_NAME ) ;
+                  }
 
                         BoxStaticFullflip() ;
                         FadeToPal( PalettePcx ) ;
@@ -3442,8 +3558,17 @@ void    EffectPcx( U8 numpcx, U8 *screen, U8 effect, U8 flagbcl )
                         S32     x, y ;
                         U8      *ptr = screen ;
 
-                        if( !Load_HQR( SCREEN_HQR_NAME, screen, numpcx ) )
-                                TheEndCheckFile( SCREEN_HQR_NAME ) ;
+                        if (pcxHandle)
+                        {
+                            memcpy(screen, pcxHandle->imageData, pcxHandle->imageDataSize);
+                            // TODO - add spy here when we fix this effect and include into integration tests
+                            // Since this effect is not pretty now, we don't need to test it yet
+                        }
+                        else 
+                        {
+                            if (!Load_HQR(SCREEN_HQR_NAME, screen, numpcx))
+                                TheEndCheckFile(SCREEN_HQR_NAME);
+                        }
 
                         PaletteSync( PalettePcx ) ;
 
@@ -3468,7 +3593,17 @@ void    EffectPcx( U8 numpcx, U8 *screen, U8 effect, U8 flagbcl )
         if( flagbcl )
         {
                 WaitNoInput()   ;
-                WaitInput()     ;
+                if (!idaSpy->isImageSpyEnabled()) 
+                {
+                    WaitInput();
+                }
+                else 
+                {
+                    while (idaSpy->shouldWaitImageSpy(TimerRefHR)) 
+                    {
+                        ManageTime();
+                    }
+                }
                 FadeToBlack( PalettePcx ) ;
                 RestoreTimer()  ;
                 AffScene( AFF_ALL_FLIP ) ;
@@ -3500,7 +3635,7 @@ void    EffectPcxMess( U8 numpcx, U8 *screen, U8 effect, S32 mess )
 
         Dial( mess, FALSE )             ;
 
-	RestartRainSample = TRUE        ;
+    RestartRainSample = TRUE        ;
 
 #ifdef  CDROM
         FlagDisplayText = memoflagdisplaytext ;
@@ -3522,6 +3657,11 @@ void    EffectPcxMess( U8 numpcx, U8 *screen, U8 effect, S32 mess )
 
 void    Introduction( void )
 {
-	PlayAcf( "INTRO" ) ;
-	FlagPlayAcf = FALSE ;
+	// Ida - allow modder to select which video to play when the new game starts
+    std::string introVideoName = ida->getIntroVideo();
+	if (!introVideoName.empty())
+	{
+        PlayAcf((char*)introVideoName.c_str()) ;
+	}
+    FlagPlayAcf = FALSE ;
 }

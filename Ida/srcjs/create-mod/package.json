@@ -1,0 +1,38 @@
+{
+  "name": "@idajs/create-mod",
+  "version": "0.0.0",
+  "description": "Scaffolding tool for creating IdaJS game mods for Little Big Adventure 2. Use with: npx @idajs/create-mod",
+  "author": "Andriy Tevelyev",
+  "license": "GPL-2.0",
+  "preferGlobal": true,
+  "keywords": [
+    "idajs",
+    "lba",
+    "lba2",
+    "mod",
+    "create",
+    "scaffold",
+    "cli"
+  ],
+  "bin": {
+    "create-mod": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "install.js",
+    "_project.config",
+    "_project.template",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "@idajs/sync": "^1.1.0",
+    "prompts": "^2.4.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

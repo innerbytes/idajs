@@ -47,6 +47,7 @@ typedef struct {
 			S32		Y			;
 			S32		Z			;
 
+			// Direction angle is expressed like this - 0: West (X+); 1024: South (Z+); 2048: East (X-); 3072: North(Z-); 4096: Wraps around to 0 (West again)
 			S32		Alpha			;	// local angles
 			S32		Beta			;
 			S32		Gamma			;

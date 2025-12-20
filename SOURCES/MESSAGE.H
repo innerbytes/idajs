@@ -11,10 +11,10 @@ extern	S32    Dial_Y1		;
 
 extern	S32	FlagAnimWhoSpeak;
 
-extern	S32	Language 	; // English
+extern	S32	Language;   // Text language
 
 #ifdef	CDROM
-extern	S32	LanguageCD 	; // Français, a changer of course!
+extern	S32	LanguageCD; // Voice language
 #endif
 
 extern	S32	FlagRestoreCD	;
@@ -45,6 +45,7 @@ extern	void	CloseFdNar()		;
 extern	S32 IsVoiceFileOnHD( S32 island );
 extern void InitLanguage(void);
 extern S32  FindText(S32 text);
+extern int IdaInitAllDialogs();
 extern void InitDial(S32 file);
 extern void ClearDial(void);
 extern void GetNextWord(char *ptchaine,char *mot);

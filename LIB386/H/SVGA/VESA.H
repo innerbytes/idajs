@@ -150,7 +150,7 @@ extern	S32	InitVESAMode(U32 Mode);
 // Return new mode set with bit 14 correctly set (VESAMODE_LINEAR)
 
 //--------------------------------------------------------------------------
-extern	S32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory);
+extern	S32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory, U32 fullScreen);
 
 #pragma aux 	DetectInitVESAMode	"*"	\
 	parm caller	[eax] [ebx] [ecx] [edx]		\

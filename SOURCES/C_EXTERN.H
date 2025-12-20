@@ -1,5 +1,15 @@
 #include        "defines.h"
 
+/*--------- Ida modding engine ----------------------------------*/
+
+#include "engine/Ida.h"
+#include "engine/introspection/IdaSpy.h"
+#include "engine/idaTypes.h"
+
+extern Ida::Ida *ida;
+extern Ida::IdaSpy *idaSpy;
+extern bool idaOmitLogo;
+
 /*--------- divers ---------------------------------------------*/
 extern	S32	BodyComportement;
 
@@ -35,6 +45,9 @@ extern "C" U8   *BufSpeak       ;
 
 extern  char   	PathSave[] ;
 extern  char   	GamePathname[] ;
+extern std::string getCurrentSavePath();
+extern std::string getAutoSavePath();
+
 #ifdef	YAZ_WIN32
 extern  char   	OldGamePathname[] ;
 #endif
@@ -66,6 +79,11 @@ extern  S32	LastMyFire ;
 
 extern  char   	String[] ;
 extern  S32    	Value ;
+
+// Ida - needed to expose, to control life functions from Ida mods
+extern U8 *PtrPrg;
+extern U8 TypeAnswer;
+// --- end Ida block
 
 extern	S32	Nxw, Nyw, Nzw ;
 extern	S32	SaveNxw, SaveNyw, SaveNzw ;

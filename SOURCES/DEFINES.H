@@ -240,10 +240,10 @@
 #define	MAX_SIZE_PLAYER_NAME	100	// Calculé avec des ',' par Isabelle
 
 #define	AUTOSAVE_NAME		"AUTOSAVE"
-#define	AUTOSAVE_FILENAME	PATH_SAVE"autosave.lba"
+// #define	AUTOSAVE_FILENAME	PATH_SAVE"autosave.lba"
 
 #define	CURRENTSAVE_NAME	"CURRENT"
-#define	CURRENTSAVE_FILENAME	PATH_SAVE"current.lba"
+// #define	CURRENTSAVE_FILENAME	PATH_SAVE"current.lba"
 
 /*---------------- CONSTANTE ------------------*/
 

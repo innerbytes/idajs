@@ -50,7 +50,7 @@ extern	void	ScanVESAModes(MODE_CALLBACK *callback)	;
 // Will scan all available modes and call callback with info on each mode
 
 //--------------------------------------------------------------------------
-extern	S32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory);
+extern	S32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory, U32 fullScreen);
 
 // Will find the best (lowest) resolution containing the required res
 // with same Depth. Memory indicate if linear, windowed, or don't care

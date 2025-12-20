@@ -308,8 +308,8 @@ typedef	struct	{
 #define	TEMPETE_ACTIVE	(ListVarGame[FLAG_CHAPTER].Value<2 OR FlagRain)
 #define	TEMPETE_FINIE	(ListVarGame[FLAG_CHAPTER].Value>=2 AND !FlagRain)
 #else
-#define	TEMPETE_ACTIVE	(ListVarGame[FLAG_CHAPTER]<2 OR FlagRain)
-#define	TEMPETE_FINIE	(ListVarGame[FLAG_CHAPTER]>=2 AND !FlagRain)
+#define	TEMPETE_ACTIVE	(!ida->isNoStorm() AND (ida->isStorm() OR ListVarGame[FLAG_CHAPTER]<2 OR FlagRain))
+#define	TEMPETE_FINIE	(!ida->isStorm() AND (ida->isNoStorm() OR ListVarGame[FLAG_CHAPTER]>=2 AND !FlagRain))
 #endif
 
 #define	INV_MAX_VALUE	100	// Capacité des objets inventaires VALUE (conque)
@@ -895,7 +895,9 @@ extern	T_MENU_COMP	ListMenuComp[MAX_MENUS_COMP] ;
 
 /*---------------- divers ------------------*/
 
+// Never used? 
 #define	MAX_ISLES		12
+
 #define START_FILE_ISLAND       3
 
 //#define Rnd(n)  (rand()%n)
@@ -903,7 +905,9 @@ extern	T_MENU_COMP	ListMenuComp[MAX_MENUS_COMP] ;
 #define NUM_PERSO       ((U8)0)
 #define COUL_PERSO      12	// Couleur de dialogue de Twinsen
 
+// Never used? 
 #define	NUM_ZOE		((U8)7)	// Numero de personnage scenarique
+
 #define	COUL_ZOE	4	// Couleur de dialogue de Zoe
 
 #define	COUL_CINEMA	0	// Couleur des bandes cinema

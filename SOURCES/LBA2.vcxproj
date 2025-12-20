@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props" Condition="Exists('..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props')" />
+  <Import Project="..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props" Condition="Exists('..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,9 +21,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>NotSet</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
-    <LocalDebuggerEnvironment>ADELINE=..\GameRun\LBA2.CFG</LocalDebuggerEnvironment>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -47,6 +48,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)Debug</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)Release</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -66,7 +75,8 @@
       <IncludePaths>$(ProjectDir)..\Lib386\H;%(IncludePaths)</IncludePaths>
     </MASM>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)Win32\Debug\*" "$(SolutionDir)Debug\" /I /Y</Command>
+      <Command>xcopy "$(SolutionDir)Win32\Debug\*" "$(SolutionDir)Debug\" /I /Y
+if not exist "$(SolutionDir)Debug\LBA2.cfg" xcopy "$(SolutionDir)SOURCES\LBA2.cfg" "$(SolutionDir)Debug\" /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -94,8 +104,8 @@
       <IncludePaths>$(ProjectDir)..\Lib386\H;%(IncludePaths)</IncludePaths>
     </MASM>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)Win32\Release\*.dll" "$(SolutionDir)build\" /I /Y 
-xcopy "$(SolutionDir)Release\*.exe" "$(SolutionDir)build\" /I /Y
+      <Command>xcopy "$(SolutionDir)Win32\Release\*" "$(SolutionDir)Release\" /I /Y
+if not exist "$(SolutionDir)Release\LBA2.cfg" xcopy "$(SolutionDir)SOURCES\LBA2.cfg" "$(SolutionDir)Release\" /I /Y
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -251,6 +261,7 @@ xcopy "$(SolutionDir)Release\*.exe" "$(SolutionDir)build\" /I /Y
     <ClCompile Include="HOLOBODY.CPP" />
     <ClCompile Include="HOLOGLOB.CPP" />
     <ClCompile Include="HOLOPLAN.CPP" />
+    <ClCompile Include="Ida\IdaLbaBridge.cpp" />
     <ClCompile Include="IMPACT.CPP" />
     <ClCompile Include="INCRUST.CPP" />
     <ClCompile Include="INPUT.CPP" />
@@ -294,8 +305,18 @@ xcopy "$(SolutionDir)Release\*.exe" "$(SolutionDir)build\" /I /Y
       <Project>{3697d988-1e10-4308-8b2c-a6c5ee57ac45}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props'))" />
+    <Error Condition="!Exists('..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props'))" />
+  </Target>
 </Project>

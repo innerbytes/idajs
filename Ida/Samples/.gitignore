@@ -1,0 +1,16 @@
+*/node_modules/
+*/dist/
+*/build/
+
+# When changing the sample to a standalone project, those should not be ignored
+*/run.ps1
+*/watch.js
+*/sync.js
+*/build.js
+*/jsconfig.json
+*/tsconfig.json
+*/.vscode/settings.json
+*/.vscode/extensions.json
+*/package-lock.json
+*/package.json
+*/.prettierrc.json

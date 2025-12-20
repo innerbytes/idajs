@@ -162,8 +162,8 @@ void	AutoSaveGame()
 	strcpy( memoplayername, PlayerName ) ;
 	strcpy( memogamepathname, GamePathname ) ;
 
-	strcpy( GamePathname, AUTOSAVE_FILENAME ) ;
-	strcpy( PlayerName, AUTOSAVE_NAME ) ;
+	strcpy(GamePathname, getAutoSavePath().c_str());
+	strcpy(PlayerName, AUTOSAVE_NAME);
 
 #ifdef	DEBUG_TOOLS
 	{
@@ -208,7 +208,7 @@ void	CurrentSaveGame()
 	strcpy( memoplayername, PlayerName ) ;
 	strcpy( memogamepathname, GamePathname ) ;
 
-	strcpy( GamePathname, CURRENTSAVE_FILENAME ) ;
+	strcpy( GamePathname, getCurrentSavePath().c_str()) ;
 	strcpy( PlayerName, CURRENTSAVE_NAME ) ;
 
 #ifdef	DEBUG_TOOLS
@@ -345,6 +345,7 @@ void	SaveGame( S32 flagmess )
 
 #ifndef	EDITLBA2
 	Save( GamePathname, BufSpeak+50000L, PtrSave-(BufSpeak+50000L) ) ;
+	ida->afterSaveGame(GamePathname);
 #else
 	Save( GamePathname, (U8*)Screen, PtrSave-(U8*)Screen ) ;
 #endif
@@ -1264,8 +1265,18 @@ S32	LoadContexte( S32 *savetimerrefhr )
 	}
 
 	// Objets
-	LbaReadLong( NbObjets ) ; // nb d'objets pour EditLba2
-	ptrobj = ListObjet ;
+	
+	// Ida - control the consistency of the number of objects
+	S32 oldObjCount = NbObjets;
+
+	LbaReadLong(NbObjets); // nb d'objets pour EditLba2
+	ptrobj = ListObjet;
+
+	// Ida - control the consistency of the number of objects
+	if (NbObjets != oldObjCount)
+	{
+		printf("[wrn] Incompatible savegame: The amount of objects in the saved game (%d) does not match the initial scene amount of objects (%d). Objects, exceeding the scene amount will not be loaded.\n", NbObjets, oldObjCount);
+	}
 
 	for( n=0; n<NbObjets; n++, ptrobj++ )
 	{
@@ -1358,6 +1369,9 @@ S32	LoadContexte( S32 *savetimerrefhr )
 		LbaRead( &(ptrobj->Obj), sizeof(ptrobj->Obj)-sizeof(ptrobj->Obj.CurrentFrame) ) ;
 	}
 
+	// Ida - sticking to the scene amount of objects
+	NbObjets = oldObjCount;
+
 	//------------- PATCHES -------------
 	LbaReadLong( NbPatches ) ;
 
@@ -1418,17 +1432,41 @@ S32	LoadContexte( S32 *savetimerrefhr )
 	}
 #endif
 
+	// Ida - control the consistency of the number of zones
+	S32 oldNbZones = NbZones;
+	S32 wlong;
+
 	// Zones
-	LbaReadLong( NbZones ) ;	// pour EditLba2
+	LbaReadLong(NbZones);	// pour EditLba2
 
-	ptrz = ListZone ;
-
-	for( n=0; n<NbZones; n++, ptrz++ )
+    // Ida - control the consistency of the number of zones
+	if (NbZones > oldNbZones) 
 	{
-		LbaReadLong( ptrz->Info1 ) ;
-		LbaReadLong( ptrz->Info2 ) ;
-		LbaReadLong( ptrz->Info3 ) ;
-		LbaReadLong( ptrz->Info7 ) ;
+		printf("[wrn] Incompatible savegame: The amount of zones in the saved game (%d) exceeds the initial scene amount of zones (%d). Zones, exceeding the scene amount will not be loaded.\n", NbZones, oldNbZones);
+	}
+	else if (NbZones < oldNbZones)
+	{
+		printf("[wrn] Incompatible savegame: The amount of zones in the saved game (%d) is lower than the initial scene amount of zones (%d).\n", NbZones, oldNbZones);
+	}
+
+	ptrz = ListZone;
+	for (n=0; n<NbZones; n++, ptrz++)
+	{
+		// Ida - skipping loading the extra zones if the save game contained more of them 
+		if (n >= oldNbZones) 
+		{
+			LbaReadLong(wlong);
+			LbaReadLong(wlong);
+			LbaReadLong(wlong);
+			LbaReadLong(wlong);
+
+			continue;
+		}
+
+		LbaReadLong(ptrz->Info1);
+		LbaReadLong(ptrz->Info2);
+		LbaReadLong(ptrz->Info3);
+		LbaReadLong(ptrz->Info7);
 
 #ifndef	EDITLBA2
 		switch( ptrz->Type )
@@ -1442,6 +1480,9 @@ S32	LoadContexte( S32 *savetimerrefhr )
 		}
 #endif
 	}
+
+	// Ida - restore the original number of zones
+	NbZones = oldNbZones;
 
 	// Incrust
 	LbaReadByte( wbyte ) ;

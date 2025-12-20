@@ -469,6 +469,7 @@ void    ChoicePalette( void )
                 if( IsSamplePlaying(SAMPLE_RAIN) )      HQ_StopOneSample( SAMPLE_RAIN ) ;
         }
 
+
         RestartRainSample = TRUE ;
         PtrPal = PtrPalCurrent ;
         PtrCLUTGouraud = PtrCLUTFog = PtrNuances ;

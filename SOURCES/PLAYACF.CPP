@@ -4,9 +4,9 @@
 
 #pragma pack(8)
 #include "soloud.h"
-#include "SmackerStream.h"
 #pragma pack(1)
 
+#include "media/SmackerStream.h"
 
 using namespace Ida;
 
@@ -308,6 +308,11 @@ static void ReadNextVideoFrame(const smk smkObject, U8 *buffer, U8 **pal)
 
 S32	PlayAcf( char *name )
 {
+	if (idaSpy->isVideoSkippedOnce()) 
+	{
+		return K_ESC;
+	}
+
 	// xesf
 	U32	c, h, w, f;
 	S32	n;

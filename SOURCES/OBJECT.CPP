@@ -465,6 +465,12 @@ void	StartInitObj( U8 numobj )
 
 	ptrobj = &ListObjet[numobj] ;
 
+	// Ida - allows to set some objects dead initially to completely eliminate them from the game
+	if (ptrobj->WorkFlags & OBJ_DEAD) 
+	{
+		return;
+	}
+
 	if( ptrobj->Flags & SPRITE_3D )
 	{
 		if( ptrobj->HitForce != 0 )
@@ -669,14 +675,14 @@ void	UseOneClover( void )
 	memoclover = ListVarGame[FLAG_CLOVER] ;
 
 	// Restore Valide Pos
-	if( !ValidePos )
+	if (!ValidePos)
 	{
-		ClearScene() ;
+		ClearScene();
 
-		if( ValideCube!=NumCube )
+		if (ValideCube != NumCube)
 		{
-			NewCube = ValideCube ;
-			ChangeCube() ;
+			NewCube = ValideCube;
+			ChangeCube(true); // Ida - sending true to signalize we are loading in a restore state mode
 		}
 
 		RestartValidePos() ;
@@ -1008,7 +1014,7 @@ void	RestartPerso()
 
 	if( FlagReinit==0 )	ptrobj->WorkFlags = 0 ;
 
-	ptrobj->Flags =	  OBJ_FALLABLE
+	ptrobj->Flags =	OBJ_FALLABLE
 			+ CHECK_ZONE
 			+ CHECK_OBJ_COL
 			+ CHECK_BRICK_COL
@@ -1276,8 +1282,9 @@ void	LoadFile3dObjects()
 
 // FlagChgCube == 1 : zone de chg cube recupere pos relative
 // FlagChgCube == 2 : instruction chg cube positionne sur saved StartPos
+// Ida - restoreValidPos - false by default; if true - signalizes that we are reloading because restoring the game state after death (when using a clover), and the position was invalid
 
-void	ChangeCube()
+void	ChangeCube(bool restoreValidPos)
 {
 	T_OBJET	*ptrobj = &ListObjet[NUM_PERSO] ;
 	S32	oldcube ;
@@ -1293,6 +1300,9 @@ void	ChangeCube()
 
 	// reinitialisation du générateur de nombres aléatoires
 	srand( TimerRefHR ) ;
+
+	// Ida - before load scene call is designed to take early decisions on e.g. palette changes, and can also be used to check compatibility of the save game in future
+	ida->beforeLoadScene(NumCube, GamePathname, FlagChgCube, FlagLoadGame, restoreValidPos);
 
 	if( FlagChgCube )	SaveTimer() ;
 //	if( !FlagLoadGame )	SaveTimer() ;
@@ -1338,7 +1348,10 @@ void	ChangeCube()
 	ManageSystem() ;// for streaming
 
 // lance usine
-	LoadScene( NewCube ) ;
+	LoadScene(NewCube);
+
+	// Ida - call afterLoadScene
+	ida->afterLoadScene(NumCube, FlagChgCube, FlagLoadGame, restoreValidPos);
 
 	ManageSystem() ;// for streaming
 
@@ -1360,22 +1373,22 @@ void	ChangeCube()
 
 	if( !FlagLoadGame )
 	{
-		if( FlagChgCube == 1 )
+		if( FlagChgCube == 1 )         // Normally moved to this scene
 		{
 			SceneStartX = NewPosX ;
 			SceneStartY = NewPosY ;
 			SceneStartZ = NewPosZ ;
 		}
 
-		if( FlagChgCube == 2
-		OR  FlagChgCube == 0 )
+		if( FlagChgCube == 2           // Teleported to this scene
+		OR  FlagChgCube == 0 )         // New game started on this scene
 		{
 			SceneStartX = CubeStartX ;
 			SceneStartY = CubeStartY ;
 			SceneStartZ = CubeStartZ ;
 		}
 
-		if( FlagChgCube!=3 )
+		if( FlagChgCube!=3 )           // What if this is 3? Game over? 
 		{
 			ptrobj->Obj.X = SceneStartX ;
 			ptrobj->Obj.Y = SceneStartY ;
@@ -1498,8 +1511,14 @@ void	ChangeCube()
 		flagload = LoadGame() ;
 #endif
 
-		if( !flagload )	InitLoadedGame( ) ;
-		else		LoadFile3dObjects() ;
+		// restoreValidPos should be false in this branch anyway, but just to be safe checking it too
+		if (!flagload && !restoreValidPos) 
+		{
+			ida->afterLoadGame(NumCube, GamePathname);
+		}
+
+		if (!flagload) InitLoadedGame();
+		else LoadFile3dObjects();
 
 		CheckProtoPack() ;
 
@@ -5050,8 +5069,18 @@ void	DoDir( U8 numobj  )
 */
 /*-------------------------------------------------------------------------*/
 	case MOVE_TRACK:
-		if( ptrobj->OffsetTrack == -1 )	ptrobj->OffsetTrack = 0 ;
-		break ;
+	{
+		// Ida - We should not change object track offset if it's controlled by Ida
+		uint8_t *objectFlags = ida->getObjectFlags();
+		if (objectFlags[numobj] & IDA_OBJ_MOVE)
+		{
+			break;
+		}
+
+		if (ptrobj->OffsetTrack == -1)	ptrobj->OffsetTrack = 0;
+	}
+	
+	break;
 
 
 /*-------------------------------------------------------------------------*/
@@ -6852,59 +6881,58 @@ void	SetZoneCamera( T_ZONE *ptrz )
 	}
 }
 
-//▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-void	GereZoneMessage( T_OBJET *ptrobj, T_ZONE *ptrz )
+bool TestObjectZoneDirection(S32 objX, S32 objZ, S32 objBeta, T_ZONE *zone, ZoneDirection direction) 
 {
-	if( ActionNormal==1 )
+	S32	angle;
+	S32	angle1;
+
+	switch (direction)
 	{
-		S32	angle  ;
-		S32	angle1 ;
-		S32	flagmess = 0 ;
-		S32	x, z ;
+		case ZoneDirection::North:
+			angle = GetAngle2D(objX, objZ, zone->X0, zone->Z0);
+			angle1 = GetAngle2D(objX, objZ, zone->X1, zone->Z0);
+			if (objBeta >= angle1 AND objBeta <= angle)
+				return true;
+			break;
 
-		x = ptrobj->Obj.X ;
-		z = ptrobj->Obj.Z ;
+		case ZoneDirection::South:
+			angle = GetAngle2D(objX, objZ, zone->X0, zone->Z1);
+			angle1 = GetAngle2D(objX, objZ, zone->X1, zone->Z1);
 
-		switch( ptrz->Info2 )
-		{
-			case 1:	// zone message NORD
-				angle = GetAngle2D( x, z, ptrz->X0, ptrz->Z0 ) ;
-				angle1 = GetAngle2D( x, z, ptrz->X1, ptrz->Z0 ) ;
+			if (objBeta>=angle OR objBeta<=angle1)
+				return true;
 
-				if( ptrobj->Obj.Beta>=angle1 AND ptrobj->Obj.Beta<=angle )
-					flagmess = 1 ;
+			break;
 
-				break ;
+		case ZoneDirection::East:
+			angle = GetAngle2D(objX, objZ, zone->X1, zone->Z0);
+			angle1 = GetAngle2D(objX, objZ, zone->X1, zone->Z1);
 
-			case 2: // zone message SUD
-				angle = GetAngle2D( x, z, ptrz->X0, ptrz->Z1 ) ;
-				angle1 = GetAngle2D( x, z, ptrz->X1, ptrz->Z1 ) ;
+			if (objBeta>=angle1 AND objBeta<=angle)
+				return true;
 
-				if( ptrobj->Obj.Beta>=angle OR ptrobj->Obj.Beta<=angle1 )
-					flagmess = 1 ;
+			break;
 
-				break ;
+		case ZoneDirection::West:
+			angle1 = GetAngle2D(objX, objZ, zone->X0, zone->Z0);
+			angle = GetAngle2D(objX, objZ, zone->X0, zone->Z1);
 
-			case 4: // zone message EST
-				angle = GetAngle2D( x, z, ptrz->X1, ptrz->Z0 ) ;
-				angle1 = GetAngle2D( x, z, ptrz->X1, ptrz->Z1 ) ;
+			if (objBeta>=angle1 AND objBeta<=angle)
+				return true;
 
-				if( ptrobj->Obj.Beta>=angle1 AND ptrobj->Obj.Beta<=angle )
-					flagmess = 1 ;
+			break;
+	}
 
-				break ;
+	return false;
+}
 
-			case 8: // zone message OUEST
-				angle1 = GetAngle2D( x, z, ptrz->X0, ptrz->Z0 ) ;
-				angle = GetAngle2D( x, z, ptrz->X0, ptrz->Z1 ) ;
-
-				if( ptrobj->Obj.Beta>=angle1 AND ptrobj->Obj.Beta<=angle )
-					flagmess = 1 ;
-
-				break ;
-		}
-
-		if( flagmess )
+//▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+void GereZoneMessage(T_OBJET *ptrobj, T_ZONE *ptrz)
+{
+	if (ActionNormal == 1)
+	{
+		bool isObjectFacingZone = TestObjectZoneDirection(ptrobj->Obj.X, ptrobj->Obj.Z, ptrobj->Obj.Beta, ptrz, (ZoneDirection)ptrz->Info2);
+		if (isObjectFacingZone)
 		{
 			if( ptrz->Info1 )	// camera associee
 			{
@@ -6925,14 +6953,17 @@ void	GereZoneMessage( T_OBJET *ptrobj, T_ZONE *ptrz )
 			}
 
 #ifdef	CDROM
-			NumObjSpeak = NUM_PERSO ;
+			// The speaker object for audio (player in this case)
+			NumObjSpeak = NUM_PERSO;
 #endif
-			NumObjDial = NUM_PERSO ;
+
+			// The object this dialog is associated with (player in this case). Used to set the color of the dialog.
+			NumObjDial = NUM_PERSO;
 
 			// au cas ou l'on soit appelé pendant un eclair
-			Palette( PtrPal ) ;
+			Palette(PtrPal);
 
-			Dial( ptrz->Num, TRUE ) ;
+			Dial(ptrz->Num, TRUE);
 		}
 	}
 }
@@ -7064,6 +7095,12 @@ void	CheckZoneSce( T_OBJET *ptrobj, U8 numobj )
 
 	for( n=0; n<NbZones; n++, ptrz++ )
 	{
+		// Ida - do not test disabled zones
+		if (ptrz->Type == (S16)ZoneTypes::Disabled) 
+		{
+			continue;
+		}
+
 		// bug resolu en testant les x1 et z1 avec '<' et non
 		// '<=' car on se retrouvait dans 2 zones en même temps !!!
 		if( x >= ptrz->X0

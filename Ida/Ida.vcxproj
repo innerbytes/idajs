@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props" Condition="Exists('..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props')" />
+  <Import Project="..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props" Condition="Exists('..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,13 +21,105 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\SmackerStream.cpp" />
-    <ClCompile Include="src\SmackerStreamInstance.cpp" />
+    <ClCompile Include="src\common\Instrumentation.cpp" />
+    <ClCompile Include="src\common\Logger.cpp" />
+    <ClCompile Include="src\engine\core\argumentsHandler.cpp" />
+    <ClCompile Include="src\engine\core\library\Console.cpp" />
+    <ClCompile Include="src\engine\core\library\Performance.cpp" />
+    <ClCompile Include="src\engine\core\library\Require.cpp" />
+    <ClCompile Include="src\engine\core\library\Timer.cpp" />
+    <ClCompile Include="src\engine\core\engine.cpp" />
+    <ClCompile Include="src\engine\core\files.cpp" />
+    <ClCompile Include="src\engine\core\runtime\PromiseRejectionHandler.cpp" />
+    <ClCompile Include="src\engine\game\GameObjectTemplate.cpp" />
+    <ClCompile Include="src\engine\game\IdaTemplate.cpp" />
+    <ClCompile Include="src\engine\game\MarkTemplate.cpp" />
+    <ClCompile Include="src\engine\game\SceneTemplate.cpp" />
+    <ClCompile Include="src\engine\game\script.cpp" />
+    <ClCompile Include="src\engine\game\templates.cpp" />
+    <ClCompile Include="src\engine\game\ZoneTemplate.cpp" />
+    <ClCompile Include="src\engine\Ida.cpp" />
+    <ClCompile Include="src\engine\IdaBridge.cpp" />
+    <ClCompile Include="src\engine\idajs.cpp" />
+    <ClCompile Include="src\engine\introspection\IdaSpy.cpp" />
+    <ClCompile Include="src\media\mediaService.cpp" />
+    <ClCompile Include="src\media\PaletteConverter.cpp" />
+    <ClCompile Include="src\media\PngToLbaSpriteConverter.cpp" />
+    <ClCompile Include="src\media\PngToPcxConverter.cpp" />
+    <ClCompile Include="src\media\SmackerStream.cpp" />
+    <ClCompile Include="src\media\SmackerStreamInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ElasticBuffer.h" />
-    <ClInclude Include="src\SmackerStream.h" />
-    <ClInclude Include="src\SmackerStreamInstance.h" />
+    <ClInclude Include="src\common\Instrumentation.h" />
+    <ClInclude Include="src\common\Logger.h" />
+    <ClInclude Include="src\engine\core\ClientObjects.h" />
+    <ClInclude Include="src\engine\core\argumentsHandler.h" />
+    <ClInclude Include="src\engine\core\library\Console.h" />
+    <ClInclude Include="src\engine\core\library\Performance.h" />
+    <ClInclude Include="src\engine\core\library\Require.h" />
+    <ClInclude Include="src\engine\core\library\Timer.h" />
+    <ClInclude Include="src\engine\core\engine.h" />
+    <ClInclude Include="src\engine\core\files.h" />
+    <ClInclude Include="src\engine\core\runtime\PromiseRejectionHandler.h" />
+    <ClInclude Include="src\engine\Epp.h" />
+    <ClInclude Include="src\engine\game\GameObjectTemplate.h" />
+    <ClInclude Include="src\engine\game\IdaTemplate.h" />
+    <ClInclude Include="src\engine\game\LbaClientObjects.h" />
+    <ClInclude Include="src\engine\game\MarkTemplate.h" />
+    <ClInclude Include="src\engine\game\SceneTemplate.h" />
+    <ClInclude Include="src\engine\game\script.h" />
+    <ClInclude Include="src\engine\game\templates.h" />
+    <ClInclude Include="src\engine\game\templateUtils.h" />
+    <ClInclude Include="src\engine\game\ZoneTemplate.h" />
+    <ClInclude Include="src\engine\IdaBridge.h" />
+    <ClInclude Include="src\engine\idaInterop.h" />
+    <ClInclude Include="src\engine\idajs.h" />
+    <ClInclude Include="src\engine\idaTypes.h" />
+    <ClInclude Include="src\common\ElasticBuffer.h" />
+    <ClInclude Include="src\engine\Ida.h" />
+    <ClInclude Include="src\engine\IdaLbaBridge.h" />
+    <ClInclude Include="src\engine\introspection\IdaSpy.h" />
+    <ClInclude Include="src\media\assets\AssetCache.h" />
+    <ClInclude Include="src\media\assets\AssetSerializer.h" />
+    <ClInclude Include="src\media\assets\HashDataSerializer.h" />
+    <ClInclude Include="src\media\assets\ImageSerializer.h" />
+    <ClInclude Include="src\media\assets\PaletteHashDataSerializer.h" />
+    <ClInclude Include="src\media\assets\SpriteSerializer.h" />
+    <ClInclude Include="src\media\mediaService.h" />
+    <ClInclude Include="src\media\PaletteConverter.h" />
+    <ClInclude Include="src\media\PngToLbaSpriteConverter.h" />
+    <ClInclude Include="src\media\PngToPcxConverter.h" />
+    <ClInclude Include="src\media\SmackerStream.h" />
+    <ClInclude Include="src\media\SmackerStreamInstance.h" />
+    <ClInclude Include="src\version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="lib\sdl_image\SDL2_image.dll">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\sdl_image\SDL2_image.lib">
+      <FileType>Document</FileType>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <CopyFileToFolders Include="srcjs\system.js" />
+    <CopyFileToFolders Include="srcjs\global.js" />
+    <CopyFileToFolders Include="srcjs\events.js" />
+    <CopyFileToFolders Include="srcjs\text.js" />
+    <CopyFileToFolders Include="srcjs\enums.js" />
+    <CopyFileToFolders Include="srcjs\scene.js" />
+    <CopyFileToFolders Include="srcjs\utils.js" />
+    <CopyFileToFolders Include="srcjs\coroutines.js" />
+    <CopyFileToFolders Include="srcjs\store.js" />
+    <CopyFileToFolders Include="srcjs\ida.js" />
+    <CopyFileToFolders Include="srcjs\mark.js" />
+    <CopyFileToFolders Include="srcjs\objectHelper.js" />
+    <CopyFileToFolders Include="srcjs\image.js" />
+    <CopyFileToFolders Include="srcjs\epp.js" />
+    <CopyFileToFolders Include="srcjs\encoding.js" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -85,13 +179,24 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\soloud\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\soloud\include;..\SDL\include;lib\sdl_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>lib\sdl_image;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <PreBuildEvent>
+      <Command>pwsh -ExecutionPolicy Bypass -File .\version.ps1</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Update the version from package.json</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -101,8 +206,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\soloud\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\soloud\include;..\SDL\include;lib\sdl_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +217,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>lib\sdl_image;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+    <PreBuildEvent>
+      <Command>pwsh -ExecutionPolicy Bypass -File .\version.ps1</Command>
+      <Message>Update the version from package.json</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -140,6 +254,12 @@
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8.redist-v143-x86.13.0.245.25\build\native\v8.redist-v143-x86.props'))" />
+    <Error Condition="!Exists('..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8-v143-x86.13.0.245.25\build\native\v8-v143-x86.props'))" />
+  </Target>
 </Project>

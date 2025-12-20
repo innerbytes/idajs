@@ -389,6 +389,9 @@
     <ClCompile Include="3DEXT\VAR_EXT.CPP">
       <Filter>Source Files\3DExt</Filter>
     </ClCompile>
+    <ClCompile Include="Ida\IdaLbaBridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="PLASMA.ASM">
@@ -430,5 +433,8 @@
     <MASM Include="3DEXT\LINERAIN.ASM">
       <Filter>Source Files\3DExt\Asm</Filter>
     </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

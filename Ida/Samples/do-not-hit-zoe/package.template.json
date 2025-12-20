@@ -1,0 +1,4 @@
+{
+  "name": "sample-do-not",
+  "description": "A sample implementation of house scene extension, where hitting Zoe would lead to consequences"
+}

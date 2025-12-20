@@ -26,10 +26,11 @@ void	SaveValidePos( void )
 	PtrSave = BufferValidePos ;
 
 	SaveContexte( timerrefhr ) ;
-
 	SizeOfBufferValidePos = (U32)(PtrSave-BufferValidePos) ;
-
 	memcpy( ptrobj, &memoobj, sizeof(T_OBJET) ) ;
+
+	// This will command Ida to take the current state and mirror it a backup copy within itself
+	ida->saveValidPos();
 
 #ifdef	DEBUG_TOOLS
 	if( SizeOfBufferValidePos>=SIZE_BUFFER_VALIDE_POS )
@@ -49,6 +50,9 @@ void	RestartValidePos( void )
 
 	flagload = LoadContexte( &savetimerrefhr ) ;
 
+	// This will command Ida to restore the state from the backup state
+	ida->restoreValidPos();
+
 	if( !flagload )	InitLoadedGame( ) ;
 	else		LoadFile3dObjects() ;
 
@@ -60,3 +64,4 @@ void	RestartValidePos( void )
 	SetTimerHR( savetimerrefhr ) ;
 	SaveTimer() ;
 }
+

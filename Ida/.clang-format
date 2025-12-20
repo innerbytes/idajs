@@ -6,16 +6,19 @@ NamespaceIndentation: All
 AllowShortFunctionsOnASingleLine: Empty
 BreakBeforeBraces: Custom
 AccessModifierOffset: -4
+DerivePointerAlignment: false
+PointerAlignment: Right
+ReferenceAlignment: Right
+QualifierAlignment: Left
 BraceWrapping:
-  AfterClass:      true
+  AfterClass: true
   AfterControlStatement: true
-  AfterEnum:       true
-  AfterFunction:   true
-  AfterConstructorInitializer: true
-  AfterNamespace:  true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
   AfterObjCDeclaration: true
-  AfterStruct:     true
-  AfterUnion:      true
-  BeforeCatch:     true
-  BeforeElse:      true
-  IndentBraces:    false
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+  IndentBraces: false

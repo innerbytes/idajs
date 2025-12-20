@@ -36,7 +36,8 @@ extern	void	*MemoScreen		;
 extern	S32	ParamsSvga()		;
 
 //--------------------------------------------------------------------------
-extern	S32	InitGraphSvga(U32 resx, U32 resy, U32 depth)	;
+// Ida - added fullScreen parameter
+extern	S32	InitGraphSvga(U32 resx, U32 resy, U32 depth, U32 fullScreen);
 
 //--------------------------------------------------------------------------
 extern	void	ClearGraphSvga()				;

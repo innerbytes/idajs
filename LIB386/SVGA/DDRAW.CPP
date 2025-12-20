@@ -216,7 +216,7 @@ static void ResetPalette()
 }
 
 //──────────────────────────────────────────────────────────────────────────
-S32	DetectInitVESAMode(U32 resX, U32 resY, U32 depth, U32 memory)
+S32	DetectInitVESAMode(U32 resX, U32 resY, U32 depth, U32 memory, U32 fullScreen)
 {
    	DDSURFACEDESC   ddsd			;
    	DDCAPS   	ddcapshal, ddcapshel	;

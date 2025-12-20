@@ -1,14 +1,20 @@
+# General modules and build outputs
 .vs/
 Debug/
 Release/
 SoloudRelease/
-build/
+dist/
 *.vcxproj.user
 Win32
 
+# Custom ignores
 SOURCES/ADELINE.LOG
+SOURCES/packages.config
 GameRun/
 packages
-
 **/cfg-defines.h
+configure.build.json
+.claude/settings.local.json
 
+# Thumbnails
+.DS_Store

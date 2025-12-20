@@ -13,6 +13,7 @@ extern	S32	InvSelect ;	// INVENT.CPP
 
 #define	CONE_VIEW	1024
 
+
 /*══════════════════════════════════════════════════════════════════════════*
 		   █▀▀▀▄ █▀▀▀█       █      █    █▀▀▀▀ █▀▀▀▀
 		   ██  █ ██  █       ██     ██   ██▀▀  ██▀▀
@@ -1090,17 +1091,34 @@ void	DoLife( U8 numobj )
 
 //---------------------------------------------------------------------------
 			case LM_SET_TRACK:
-				CleanTrack( ptrobj ) ;
-				ptrobj->OffsetTrack = *(S16*)PtrPrg ;
-				PtrPrg += 2 ;
-				Track_SetLabel( ptrobj ) ;
-				break ;
+			{
+				// Ida. We should not change object track offset if it's controlled by Ida
+				uint8_t *objFlags = ida->getObjectFlags();
+				if (objFlags[numobj] & IDA_OBJ_MOVE)
+				{
+					PtrPrg += 2;
+					break;
+				}
+				CleanTrack(ptrobj);
+				ptrobj->OffsetTrack = *(S16*)PtrPrg;
+				PtrPrg += 2;
+				Track_SetLabel(ptrobj);
+			}
+			break ;
 
 //---------------------------------------------------------------------------
 			case LM_SET_TRACK_OBJ:
-				num = *PtrPrg++ ;
-				if( ListObjet[num].LifePoint>0 )
+				num = *PtrPrg++;
+				if (ListObjet[num].LifePoint>0)
 				{
+					// Ida. We should not change object track offset if it's controlled by Ida
+					uint8_t *objFlags = ida->getObjectFlags();
+					if (objFlags[num] & IDA_OBJ_MOVE) 
+					{
+						PtrPrg += 2;
+						break;
+					}
+
 					CleanTrack( &ListObjet[num] ) ;
 					ListObjet[num].OffsetTrack = *(S16*)PtrPrg ;
 					Track_SetLabel( &ListObjet[num] ) ;
@@ -1110,16 +1128,32 @@ void	DoLife( U8 numobj )
 
 //---------------------------------------------------------------------------
 			case LM_STOP_L_TRACK:
-				CleanTrack( ptrobj ) ;
-				ptrobj->MemoLabelTrack = ptrobj->OffsetLabelTrack ;
-				ptrobj->OffsetTrack = -1 ;
-				break ;
+			{
+				// Ida. We should not change object track offset if it's controlled by Ida
+				uint8_t *objFlags = ida->getObjectFlags();
+				if (objFlags[numobj] & IDA_OBJ_MOVE)
+				{
+					break;
+				}
+
+				CleanTrack(ptrobj);
+				ptrobj->MemoLabelTrack = ptrobj->OffsetLabelTrack;
+				ptrobj->OffsetTrack = -1;
+			}
+			break ;
 
 //---------------------------------------------------------------------------
 			case LM_STOP_L_TRACK_OBJ:
 				num = *PtrPrg++ ;
-				if( ListObjet[num].LifePoint>0 )
+				if (ListObjet[num].LifePoint > 0)
 				{
+					// Ida. We should not change object track offset if it's controlled by Ida
+					uint8_t *objFlags = ida->getObjectFlags();
+					if (objFlags[num] & IDA_OBJ_MOVE) 
+					{
+						break;
+					}
+
 					CleanTrack( &ListObjet[num] ) ;
 					ListObjet[num].MemoLabelTrack = ListObjet[num].OffsetLabelTrack ;
 					ListObjet[num].OffsetTrack = -1 ;
@@ -1128,16 +1162,32 @@ void	DoLife( U8 numobj )
 
 //---------------------------------------------------------------------------
 			case LM_RESTORE_L_TRACK:
-				CleanTrack( ptrobj ) ;
-				ptrobj->OffsetTrack = ptrobj->MemoLabelTrack ;
-				Track_SetLabel( ptrobj ) ;
-				break ;
+			{
+				// Ida. We should not change object track offset if it's controlled by Ida
+				uint8_t *objFlags = ida->getObjectFlags();
+				if (objFlags[numobj] & IDA_OBJ_MOVE)
+				{
+					break;
+				}
+
+				CleanTrack(ptrobj);
+				ptrobj->OffsetTrack = ptrobj->MemoLabelTrack;
+				Track_SetLabel(ptrobj);
+			}
+			break ;
 
 //---------------------------------------------------------------------------
 			case LM_RESTORE_L_TRACK_OBJ:
 				num = *PtrPrg++ ;
-				if( ListObjet[num].LifePoint>0 )
+				if (ListObjet[num].LifePoint > 0)
 				{
+					// Ida. We should not change object track offset if it's controlled by Ida
+					uint8_t *objFlags = ida->getObjectFlags();
+					if (objFlags[num] & IDA_OBJ_MOVE) 
+					{
+						break;
+					}
+
 					CleanTrack( &ListObjet[num] ) ;
 					ListObjet[num].OffsetTrack = ListObjet[num].MemoLabelTrack ;
 					Track_SetLabel( &ListObjet[num] ) ;
@@ -2410,18 +2460,28 @@ HERCULE( HPrintf( "errno= %d: %s\n", errno, strerror(errno) ) ) ;
 
 //---------------------------------------------------------------------------
 			case LM_VAR_GAME_TO_TRACK:
-				CleanTrack( ptrobj ) ;
+			{
+				// Ida. We should not change object track offset if it's controlled by Ida
+				uint8_t *objFlags = ida->getObjectFlags();
+				if (objFlags[numobj] & IDA_OBJ_MOVE)
+				{
+					PtrPrg++;
+					break;
+				}
 
-				num = *PtrPrg++ ;
-				ptrobj->OffsetTrack = SearchOffsetTrack( ptrobj,
-									 (U8)ListVarGame[num] ) ;
+				CleanTrack(ptrobj);
+
+				num = *PtrPrg++;
+				ptrobj->OffsetTrack = SearchOffsetTrack(ptrobj,
+					(U8)ListVarGame[num]);
 
 				// Blindage Bug du Marchand Ambulant
-				if( ptrobj->OffsetTrack<0 )
+				if (ptrobj->OffsetTrack < 0)
 				{
-					ptrobj->OffsetTrack = SearchOffsetTrack( ptrobj, 0 ) ;
+					ptrobj->OffsetTrack = SearchOffsetTrack(ptrobj, 0);
 				}
-				break ;
+			}
+			break;
 
 //---------------------------------------------------------------------------
 			case LM_ACTION:
@@ -2602,6 +2662,12 @@ HERCULE( HPrintf( "errno= %d: %s\n", errno, strerror(errno) ) ) ;
 //---------------------------------------------------------------------------
 			case LM_ECLAIR: // Eclair n/10s
 				num = *PtrPrg++;
+
+				// Ida - allowing modder to disable lightning in live script (useful when forcing a good weather)
+				if (ida->isLightningDisabled()) 
+				{
+					break;
+				}
 
 				n = InitIncrustDisp( INCRUST_ECLAIR, 0, 0, 0, 0, 0, 1 ) ;
 

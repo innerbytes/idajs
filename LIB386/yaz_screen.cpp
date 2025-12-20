@@ -1,15 +1,15 @@
 #include <svga.h>
 #include <system.h>
 #include <SDL.h>
-#include "cfg-defines.h"
-
-// Set to 1 to force full screen in debug configuration
-constexpr auto FullScreen = CFG_FULLSCREEN;
+#include <string>
+#include "../Ida/src/version.h"
 
 // Update this if there is any monitor refresh mismatch visual issues
 constexpr Uint32 FullScreenFixedFrameRate = 120;
 
 constexpr Uint32 FullScreenFixedFramePeriod = 1000 / FullScreenFixedFrameRate;
+
+static Uint32 mFullScreen = 0;
 
 SDL_Surface *sdlScreen;
 SDL_Window *sdlWindow;
@@ -25,23 +25,26 @@ S32 InitVESA()
 	return 1;
 }
 
-S32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory)
+S32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory, U32 fullScreen)
 {
 	if (ResX != 640 || ResY != 480) {
 		fprintf(stderr, "Only 640x480 resolution is supported at the moment. Tried to initialize: %dx%d", ResX, ResY);
 		exit(1);
 	}
 
+	mFullScreen = fullScreen;
+
 	SDL_ShowCursor(false);
 
-	if (FullScreen) 
+	std::string header = "LBA2 - IdaJS - v" + std::string(IDA_VERSION);
+	if (mFullScreen) 
 	{
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-		sdlWindow = SDL_CreateWindow("LBA2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+		sdlWindow = SDL_CreateWindow(header.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
 	else 
 	{
-		sdlWindow = SDL_CreateWindow("LBA2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ResX, ResY, SDL_WINDOW_SHOWN);
+		sdlWindow = SDL_CreateWindow(header.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ResX, ResY, SDL_WINDOW_SHOWN);
 	}
 
 	if (sdlWindow == NULL) {
@@ -49,7 +52,7 @@ S32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory)
 		exit(1);
 	}
 
-	if (FullScreen) {
+	if (mFullScreen) {
 		sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_ACCELERATED);
 		if (!sdlRenderer) {
 			fprintf(stderr, "Unable to create renderer: %s\n", SDL_GetError());
@@ -97,7 +100,7 @@ void CopyBoxF(void *dst, void *src, U32 *TabOffDst, T_BOX *box)
 	// If destination is a physical buffer. We don't write anything into Phys anymore here, just using it to check the desired destination
 	if (dst == Phys)
 	{
-		if (FullScreen) 
+		if (mFullScreen) 
 		{
 			void* pixels;
 			int pitch;
@@ -205,7 +208,7 @@ extern "C" {
 			PalOne(i, palette[i*3+0], palette[i*3+1], palette[i*3+2]);
 		}
 
-		if (FullScreen)
+		if (mFullScreen)
 		{
 
 			void* pixels;

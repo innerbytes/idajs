@@ -1,122 +1,62 @@
-# Little Big Adventure 2 - Ida edition
+# IdaJS for Little Big Adventure 2
 
-This is a work on top of the **Little Big Adventure 2 - Engine source code - Community** and **yaz0r** fork, that makes the LBA2 community project buildable and fully playable on Windows.
+IdaJS is a modern JavaScript scripting layer built on top of the community-maintained Little Big Adventure 2 (LBA2) engine sources. It enables creators to script gameplay, extend mechanics, and craft new stories and mods within the LBA2 world using a modern, high-level programming language.
 
-## List of fixes on top of the **yaz0r** fork 
-(https://github.com/yaz0r/lba2-classic-community/)
+- [Ida JS Releases](https://github.com/innerbytes/idajs/releases)
+- [Documentation and API](https://ida.innerbytes.com/)
+- [Supported Features](https://ida.innerbytes.com/#7-supported-features)
+- [Roadmap](https://ida.innerbytes.com/#8-planned-features)
 
-- **Added Video Playback Support**  
-  Incorporated xesf's fix of video playback functionality; Implemented custom SmackerStream to address video sound issues.
+## Getting Started
 
-- **Enabled Full Screen mode**  
-  Added support for rendering to high-resolution textures
+Jump straight to the [Quick Start Guide](https://ida.innerbytes.com/#2-getting-started) if you wish to build and run the project
 
-- **Restored and fixed Audio Playback in Dialogs**  
-  Restored French voices in the dialogs, that didn't work due to wrong language names encoding. Also addressed audio crackles and delays affecting dialog playback, that was caused by wrong sample count calculation.
+## Related repositories
 
-- **Fixed Memory Leaks in Audio and Video Systems**  
-  Resolved memory leak issues in the video buffer and audio playback systems, enhancing stability and performance.
+This project is a combined work, based on the following repositories:
 
-- **Made Music Playback work**  
-  Incorporated xesf's fix to make music work, fixed further issues
+1. [Little Big Adventure 2 - Ida Edition](https://github.com/innerbytes/lba2-classic-ida) - LBA2 engine source code, fork of the main [LBA2 Classic Community](https://github.com/LBALab/lba2-classic-community), which has necessary bug fixes to be buildable and playable on Windows 10+ systems.
+ - If you do any general bug fixes to LBA2 engine or builds infrastructure in this repository, please consider contributing them back to the [this repo](https://github.com/innerbytes/lba2-classic-ida).
 
-- **Improved Build Process for Debug and Release Modes**  
-  Automated configuring, fixed paths and folders
+2. [Ida Core](https://github.com/innerbytes/ida-v8) - Core Ida engine source code, which provides V8 integration and base scripting API, which can be used as blueprint for other games as well.
+  - If you do any general improvements to the Ida core engine in this repository, porting back to the Ida Core is not mandatory, but can be desirable.
 
-- **Updated Platform Toolset to v143 (Visual Studio 2022)**  
-  Migrated to the latest toolset
+## How can I contribute ? 
 
-- **Reorganized Project Structure**  
-  Separated new code into distinct Ida project
+- Read [Contribution Guidelines](CONTRIBUTING.md).
 
-# Build and Run
+- The build system and the LBA2 game source code in this repository are based on LBA2 fork: https://github.com/innerbytes/lba2-classic-ida
 
-## Prerequisites
-
-- Windows 10 or later
-- Visual Studio 2022, with the following components enabled:
-  - Desktop development with C++ (including MSVC v143)
-  - Windows application development
-- Powershell
-- Git
-
-## Fetching the project
-
-1. Git clone the lba2-classic-ida repository
-
-1. Open the git command line in the root of your repository and run
-
-```git submodule update --init --recursive```
-
-This will clone the SoLoud and SDL2. Note that the modules are configured via https, so you might need to setup github access token.
-
-## Build and run for Debug
-
-1. Open the PowerShell command line in the root of your repository and run:
-
-```.\configure.ps1```
-
-2. In the dialog prompt select *Common* folder from the installation of your LBA2 game. You should use either **GoG** or **Steam** purchased version of the LBA2 classic game.
-
-The configure command will save paths to your game assets to read in this project. It will not modify or write anything into your installed LBA2 game folders.
-
-3. Open the **LBA2.sln** in Visual Studio 2022 and build the solution in **Debug/Win32** configuration.
-
-4. If the build completed successfully, you can now run the game in Visual Studio. The debug session game logs, config, and save game are put in **GameRun** folder in the root of your solution.
-
-5. By default game runs in window mode in Debug configuration. If you want to run fullscreen in Debug mode, change the *LIB386\cfg-defines.h* file and set *CFG_FULLSCREEN* to 1
-
-## Build and run for Release
-
-If you made some fun / mods and are ready to ship the release build, follow those steps: 
-
-1. Open the PowerShell command line in the root of your repository and run:
-
-```.\configure.ps1 -BuildType Release```
-
-2. Open the **LBA2.sln** in Visual Studio 2022 and build the solution in **Release/Win32** configuration.
-
-3. If the build completed successfully, the portable deployable files will be in the **build** folder in this solution. Those files include
-- LBA2.exe
-- LBA2.cfg
-- SDL2.dll
-- save folder
-- bugs folder
-
-All those files and folders need to be put to the root of the existing LBA2 GoG or Steam installations (to the folder where the **Common** folder is, but **NOT inside the Common folder**)
-
-Make backup of existing files before deploying if necessary.
-
-- Edit LBA2.cfg file as necessary to change the default settings (for example, language, etc)
-
-# How can I contribute ?
-
-Read [Contribution Guidelines](https://github.com/pleasenophp/lba2-classic-ida/blob/main/CONTRIBUTING.md).
-
-# Little Big Adventure 2 - Engine source code - Community
+## Little Big Adventure 2 - Engine source code - Community
 
 Little Big Adventure 2 (aka Twinsen's Odyssey) is the sequel of Little Big Adventure (aka Relentless : Twinsen's Adventure) in 1997.
 
-We are releasing this code with preservation in mind, as this piece of work was exceptional for the time and we believe it can be a valuable source of education.
+The LBA2 engine uses Assembly code and was originally compiled with non-open source libraries which have been excluded from the project.
 
-The engine uses Assembly code and was originally compiled with non-open source libraries which have been excluded from the project. 
+The IdaJS engine was originally compiled with Google V8 libraries, that are open-source, but not GPLv2 compatible. Therefore V8 libraries have been excluded from the project.
 
-### Licence
-This source code is licensed under the [GNU General Public License](https://github.com/2point21/lba2-classic-community/blob/main/LICENSE).
+### License
 
-Please note this license only applies to **Little Big Adventure 2** engine source code. **Little Big Adventure 2** game assets (art, models, textures, audio, etc.) are not open-source and therefore aren't redistributable.
+This source code is licensed under the [GNU General Public License](LICENSE).
+
+Please note this license only applies to **IdaJS** and **Little Big Adventure 2** engine source code. **Little Big Adventure 2** game assets (art, models, textures, audio, etc.) are not open-source and therefore aren't redistributable.
 
 ## Links:
-**Official Website:** https://twinsenslittlebigadventure.com/
+
+**IdaJS Website and Docs:** https://ida.innerbytes.com/
+
+**Official LBA Website:** https://twinsenslittlebigadventure.com/
 
 **Discord:** https://discord.gg/gfzna5SfZ5
 
-**Docs:** https://lba-classic-doc.readthedocs.io/
+**LBA Docs:** https://lba-classic-doc.readthedocs.io/
 
 ## Buy the game:
- [[GoG]](https://www.gog.com/game/little_big_adventure_2)  [[Steam]](https://store.steampowered.com/app/398000/Little_Big_Adventure_2/)
+
+[[GoG]](https://www.gog.com/game/little_big_adventure_2) [[Steam]](https://store.steampowered.com/app/398000/Little_Big_Adventure_2/) [[itch.io]](https://2-point-21.itch.io/little-big-adventure-twinsen-odyssey)
 
 ## Original Dev Team
+
 Direction: Frédérick Raynal
 
 Programmers: Sébastien Viannay / Laurent Salmeron / Cédric Bermond / Frantz Cournil / Marc Bureau du Colombier
@@ -140,6 +80,9 @@ Testing: Bruno Marion / Thomas Ferraz / Alexis Madinier / Christopher Horwood / 
 Quality Control: Emmanuel Oualid
 
 ## Copyright
-The intellectual property is currently owned by [2.21]. Copyright [2.21]
 
-Originaly developed by Adeline Software International in 1994
+IdaJS source code: Copyright (c) 2024–2025 Andriy Tevelyev ([Innerbytes Software](https://innerbytes.com)) and the IdaJS contributors. This notice applies only to the IdaJS source code added on top of the LBA2 community sources. The combined work (IdaJS + LBA2 sources) is distributed under the GNU General Public License v2 (GPLv2).
+
+The intellectual property of LBA 2 is currently owned by [[2.21]](https://www.2point21.com/). Copyright [2.21]
+
+LBA 2 is originally developed by Adeline Software International in 1997

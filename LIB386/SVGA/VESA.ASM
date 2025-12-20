@@ -1765,7 +1765,7 @@ Init_Error:
 InitVESAMode		ENDP
 
 ;----------------------------------------------------------------------------
-;U32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory)
+;U32	DetectInitVESAMode(U32 ResX, U32 ResY, U32 Depth, U32 Memory, U32 fullScreen)
 
 ;#pragma aux 	DetectInitVESAMode	\
 ;	parm	[eax] [ebx] [ecx] [edx]	\

@@ -1,19 +1,148 @@
 #include        "c_extern.h"
+#include        "engine/IdaLbaBridge.h"
 #include        <SDL.h>
 #include        <iostream>
+
 #undef YAZ_WIN32
 
 extern  char    *Version ;
-
 extern  T_OBJ_3D        InvObjTwinsen[] ;
-
 extern S32      PersoFlashTimer ;       // pour quand le perso eh ben y meurt !!!
-
 S32     EscTimer ;
 
 /*══════════════════════════════════════════════════════════════════════════*/
 char    NamePcxSave[256] ;
 S32     NumPcxSave = 0 ;
+
+// === Ida modding engine section ===
+
+// Uncomment to profile timings of Ida move and life calls 
+//#define IDA_PROFILE  
+
+// Set to minimum number of milliseconds between two frames. Set to 0 to disable.
+#define IDA_LIMIT_LFRAME_RATE 0
+
+#ifdef IDA_PROFILE
+#include "common/Instrumentation.h"
+#endif // IDA_PROFILE
+
+Ida::Ida *ida;
+Ida::IdaSpy* idaSpy;
+bool idaOmitLogo = false;
+static std::string mod = "";
+static bool idaTestMode = false;
+static int idaLogLevel = -1; // If not specified by env, will use default CFG_LOGLEVEL
+
+static void InitIda(char *appPath) 
+{
+    int dialogStartId = IdaInitAllDialogs();
+    ida = new Ida::Ida(appPath, std::make_unique<IdaLbaBridge>(), idaLogLevel);
+    idaSpy = (Ida::IdaSpy *)ida->getSpy();
+
+    if (mod.empty()) 
+    {
+        std::cout << "No mod provided. The game will run as vanilla LBA2\n";
+        return;
+    }
+
+    try 
+    {
+        int pcxStartId = HQF_NbRes(SCREEN_HQR_NAME) / 2;
+        if (pcxStartId > 255) 
+        {
+            throw std::runtime_error("Unsupported amount of PCX resources in " + std::string(SCREEN_HQR_NAME) + ", starting from " + std::to_string(pcxStartId) + " (expected: 256 max)");
+        }
+
+        ida->init(mod, PtrPalNormal, dialogStartId, Language, LanguageCD, static_cast<uint8_t>(pcxStartId), idaTestMode);
+    }
+    catch (const std::exception &e)
+    {
+        LogPrintf("Ida mod engine initialization error: %s\n", e.what());
+        std::cerr << "Ida mod engine initialization error: " << e.what() << std::endl;
+        delete ida;
+        exit(1);
+    }
+}
+
+static int ParseIdaLogLevel(char *logLevel) 
+{
+    std::string levelStr = logLevel;
+    for (char &c : levelStr) {
+        c = std::tolower(static_cast<unsigned char>(c));
+    }
+
+    if (levelStr == "debug") {
+        return 0;
+    }
+    else if (levelStr == "info") {
+        return 1;
+    }
+    else if (levelStr == "warning") {
+        return 2;
+    }
+    else if (levelStr == "error") {
+        return 3;
+    }
+    else if (levelStr == "none") {
+        return 4;
+    }
+    else
+    {
+        std::cerr << "Warning: Unknown LBA_IDA_LOGLEVEL value '" << logLevel << "'. Supported values are: debug, info, warning, error, none. The game will continue with default log level." << std::endl;
+        return -1;
+    }
+}
+
+static void ReadIdaEnv() 
+{
+    char *configPath = getenv("LBA_IDA_CFG");
+
+    char *envMod = getenv("LBA_IDA_MOD");
+    if (envMod) 
+    {
+        mod = std::string(envMod);
+    }
+
+    char *noLogo = getenv("LBA_IDA_NOLOGO");
+    idaOmitLogo = (noLogo && (std::string(noLogo) == "1" || std::string(noLogo) == "true"));
+
+    char *testMode = getenv("LBA_IDA_TESTMODE");
+    idaTestMode = (testMode && (std::string(testMode) == "1" || std::string(testMode) == "true"));
+
+    char *logLevel = getenv("LBA_IDA_LOGLEVEL");
+    idaLogLevel = (logLevel) ? ParseIdaLogLevel(logLevel) : -1;
+
+    printf("env:LBA_IDA_MOD: %s\nenv:LBA_IDA_NOLOGO: %s\nenv:LBA_IDA_CFG: %s\nenv:LBA_IDA_TESTMODE: %s\nenv:LBA_IDA_LOGLEVEL: %s\n", 
+        envMod ? envMod : "", noLogo ? noLogo : "", configPath ? configPath : "", testMode ? testMode : "", logLevel ? logLevel : "");
+}
+
+static void CreateIdaSavePath()
+{
+    if (mod.empty()) 
+    {
+        return;
+    }
+
+    // Validate mod tolower should not be equal "shoot"
+    std::string modLower = mod;
+    for (char &c : modLower) {
+        c = std::tolower(static_cast<unsigned char>(c));
+    }
+    if (modLower == "shoot")
+    {
+        std::cerr << "Error: The mod name 'shoot' is reserved for screenshots saving. Please use another mod name. The game will continue with no mod." << std::endl;
+        mod = "";
+        return;
+    }
+
+    strcat(PathSave, mod.c_str());
+    strcat(PathSave, "\\");
+
+    // If not directory exists, create it
+    CreateDirectory(PathSave, NULL);
+}
+
+// === End Ida modding engine section ===
 
 #if defined(DEBUG_TOOLS)||defined(TEST_TOOLS)
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -90,21 +219,21 @@ void    CheckSavePcx()
         {
                 S32     saveflagfade    ;
 
-		SaveTimer() ;
-		MemoClipWindow()	;
-		UnsetClipWindow()	;
+        SaveTimer() ;
+        MemoClipWindow()	;
+        UnsetClipWindow()	;
 
-		BackupScreen( FALSE ) 	;
-		CopyScreen( Log, Screen ) ;
+        BackupScreen( FALSE ) 	;
+        CopyScreen( Log, Screen ) ;
 
                 GetNumPcxSave() ;
 
 /*		strcpy( NamePcxSave, PATH_PCX_SAVE ) ;
-		strcat( NamePcxSave, "LBA" ) ;
-		strcat( NamePcxSave, itoa( NumPcxSave,"          ",10 ) ) ;
-		AddExt( NamePcxSave, ".PCX" ) ;
+        strcat( NamePcxSave, "LBA" ) ;
+        strcat( NamePcxSave, itoa( NumPcxSave,"          ",10 ) ) ;
+        AddExt( NamePcxSave, ".PCX" ) ;
 */
-		sprintf( NamePcxSave, "%sLBA%05d.PCX", PATH_PCX_SAVE, NumPcxSave ) ;
+        sprintf( NamePcxSave, "%sLBA%05d.PCX", PATH_PCX_SAVE, NumPcxSave ) ;
 
                 CoulText( LBAWHITE, 0 ) ;
                 GraphPrintf( TRUE, 50, 0, "Saving Screen into %s", NamePcxSave ) ;
@@ -123,13 +252,13 @@ void    CheckSavePcx()
                 saveflagfade = FlagFade         ;
                 FlagFade = FALSE                ;
 
-		RestoreClipWindow() 		;
+        RestoreClipWindow() 		;
 
-		BoxReset() ;
-		BoxStaticAdd( 0, 0, ModeDesiredX-1, ModeDesiredY-1 ) ;
+        BoxReset() ;
+        BoxStaticAdd( 0, 0, ModeDesiredX-1, ModeDesiredY-1 ) ;
 
-		AffScene( AFF_OBJETS_NO_FLIP )  ;
-		FixeCinemaMode( FALSE )		;
+        AffScene( AFF_OBJETS_NO_FLIP )  ;
+        FixeCinemaMode( FALSE )		;
 
                 FlagFade = saveflagfade         ;
                 GraphPrintf( FALSE, 50, 0, "Saving Screen into %s", NamePcxSave ) ;
@@ -147,11 +276,11 @@ void    CheckSaveLogPcx( U8 *pal )
                 GetNumPcxSave() ;
 
 /*                strcpy( NamePcxSave, PATH_PCX_SAVE ) ;
-		strcat( NamePcxSave, "LBA" ) ;
-		strcat( NamePcxSave, itoa( NumPcxSave,"          ",10 ) ) ;
-		AddExt( NamePcxSave, ".PCX" ) ;
+        strcat( NamePcxSave, "LBA" ) ;
+        strcat( NamePcxSave, itoa( NumPcxSave,"          ",10 ) ) ;
+        AddExt( NamePcxSave, ".PCX" ) ;
 */
-		sprintf( NamePcxSave, "%sLBA%05d.PCX", PATH_PCX_SAVE, NumPcxSave ) ;
+        sprintf( NamePcxSave, "%sLBA%05d.PCX", PATH_PCX_SAVE, NumPcxSave ) ;
 
                 SavePCX( NamePcxSave, Log, ModeDesiredX, ModeDesiredY, pal ) ;
 
@@ -208,8 +337,8 @@ void    InitGameLists()
         memset( ListVarCube, 0, MAX_VARS_CUBE*sizeof(ListVarCube[0]) ) ;
         memset( ListVarGame, 0, MAX_VARS_GAME*sizeof(ListVarGame[0]) ) ;
 
-	ResetBuggy() ;
-	ResetArdoise() ;
+        ResetBuggy() ;
+        ResetArdoise() ;
 
         // Init VarGames
         InitInventory() ;
@@ -250,7 +379,8 @@ void    InitGame( int argc )
 /*-------------------------------------------------------------------------*/
 /* init FIRST scene files */
 
-        NewCube = 0 ;
+        // Ida - allowing to overwrite the new game scene Id (0 by default)
+        NewCube = ida->getStartSceneId();
         NumCube = -1 ;
 
         FlagTheEnd = -1 ;
@@ -355,9 +485,9 @@ void    GamePaused( U32 flags )
                 ptrdisp->TimerEnd = TimerRefHR + 1000 ;
         }
 
-	PersoFlashTimer = 0 ;
+    PersoFlashTimer = 0 ;
 
-	ClearWaitNoInput() ;
+    ClearWaitNoInput() ;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -389,8 +519,8 @@ restartloop:
         FirstTime    = AFF_ALL_FLIP ;
         FlagLoadGame = FALSE ;
 
-	InitWaitNoKey() ;
-	ClearWaitNoInput() ;
+        InitWaitNoKey() ;
+        ClearWaitNoInput() ;
         InitWaitNoInput( I_FIRE|I_MENUS|I_OPTIONS|I_SAVE|I_LOAD ) ;
 
 /*-------------------------------------------------------------------------*/
@@ -417,35 +547,25 @@ restartloop:
 
         FirstSave = TRUE ;
 
+        uint8_t idaObjFlags;
+        bool skipLbaLife;
+        uint8_t *idaFlags = ida->getObjectFlags();
+		Uint64 frameStartTime = 0;
+
+#ifdef IDA_PROFILE
+        Ida::Instrumentation instrumentation;
+#endif // IDA_PROFILE
+
         while( TRUE )
         {
 startloop:
 
-/*#ifdef  0
-		if( DefKeys[0].Key1==0 )
-		{
-			PalOne( LBAWHITE, 255, 255, 255 ) ;
-			CoulText( LBAWHITE, 0 ) ;
-			GraphPrintf( TRUE, 0, 0, "STOP: Patch Inputs trouvé !!!", TRUE ) ;
-			while( Key ) ;
-			while( !Key ) ;
-		}
-#endif
-*/
+#if IDA_LIMIT_LFRAME_RATE > 0
+            // Capture frame start time
+            frameStartTime = SDL_GetTicks64();
+#endif // IDA_LIMIT_LFRAME_RATE
+
                 ptrobj = &ListObjet[NUM_PERSO] ;
-
-        // DEBUG pour trouver bug Alpha
-
-#ifndef YAZ_WIN32
-/*              if( ModeHercule )
-                {
-                        HStringf( 0, 0, "Alpha: %4d", ptrobj->Obj.Alpha ) ;
-                        HStringf( 0, 1, "Beta : %4d", ptrobj->Obj.Beta ) ;
-                        HStringf( 0, 2, "Gamma: %4d", ptrobj->Obj.Gamma ) ;
-                }
-*/
-#endif
-
 
                 // debug patch Gamma
                 if( ptrobj->Obj.Alpha!=0
@@ -550,9 +670,19 @@ startloop:
                 MyGetInput()            ;
                 ManageTime() ;
 
+                // Processing JS queues while in game    
+                ida->processTasks(LoopType::Game);
+
+                // Moddinng the keyboard input
+                unsigned int idaInput = idaSpy->readGameInputOnce();
+                if (idaInput) 
+                {
+                    Input |= idaInput;
+                }
+
                 if( DemoSlide )
-		{
-			if( MyKey
+                {
+                    if( MyKey
 #if defined(DEBUG_TOOLS)||defined(TEST_TOOLS)
                         AND MyKey!=K_T
 #endif
@@ -845,7 +975,7 @@ startloop:
                 AND (ptrobj->Obj.Body.Num != -1)
                 AND (!(ptrobj->Flags&INVISIBLE))
                 AND (NumCube!=NUM_CUBE_PHANTOM)
-		AND !PLAY_THE_END
+        AND !PLAY_THE_END
                 )
                 {
                         S32     savenewcube = NewCube ;
@@ -865,7 +995,7 @@ startloop:
                         SaveGame( TRUE ) ;
 #else
                         InitPlasmaMenu() ;
-                        if( ChoosePlayerName( 42, FALSE, TRUE ) )
+                        if( ChooseSaveGameName( 42, FALSE, TRUE ) )
                         {
                                 NumVersion = NUM_VERSION|SAVE_COMPRESS ;
                                 CopyScreen( Screen, Log ) ;
@@ -906,8 +1036,12 @@ startloop:
                         BackupScreen( TRUE ) ;
                         HQ_PauseSamples() ;
                         InitPlasmaMenu() ;
-                        if( ChoosePlayerName( 41, FALSE, FALSE ) )
+                        if( ChooseSaveGameName( 41, FALSE, FALSE ) )
                         {
+                            // NOTE - Ida - here we could also make js reload, same as we load the game from the main menu. 
+                            // For this we should not load through here, but exit the main loop and load through the menu.
+                            // But might as well keep as testing feature, to be able to load the game without reloading the JS.
+
                                 RestoreTimer();
 
                                 StopMusic() ;
@@ -1015,7 +1149,7 @@ startloop:
                         HQ_PauseSamples() ;
                         PauseMusic( FALSE ) ;
 
-			GamePaused( PAUSE_MESSAGE ) ;
+                        GamePaused( PAUSE_MESSAGE ) ;
 
                         ResumeMusic( FALSE ) ;
                         HQ_ResumeSamples() ;
@@ -1421,19 +1555,19 @@ startloop:
                 AND (ptrobj->Move==MOVE_MANUAL OR ptrobj->Move==MOVE_BUGGY_MANUAL)
                 AND !CinemaMode )
                 {
-			SaveTimer() ;
-			StopSpeak() ;
+                    SaveTimer() ;
+                    StopSpeak() ;
 //                      PauseMusic( TRUE ) ;
-//			BackupScreen( FALSE ) ;
-			InitWaitNoInput( I_HOLOMAP|I_MENUS|I_RETURN|I_ACTION ) ;
-			InitWaitNoKey() ;
-			HoloMap() ;
+//			            BackupScreen( FALSE ) ;
+                    InitWaitNoInput( I_HOLOMAP|I_MENUS|I_RETURN|I_ACTION ) ;
+                    InitWaitNoKey() ;
+                    HoloMap() ;
 //                      ResumeMusic( TRUE ) ;
-//                        RestoreScreen() ;
-			RestoreTimer() ;
-		}
+//                      RestoreScreen() ;
+                    RestoreTimer() ;
+                }
 
-		if( Input & I_RETURN )  /* recentre sur perso */
+                if( Input & I_RETURN )  /* recentre sur perso */
                 {
                         if( !CameraZone /* si pas camera forcée */
                         AND !CinemaMode )
@@ -1516,9 +1650,12 @@ startloop:
                         DoAnimatedPolys() ;
                 }
 
+                // Main objects control loop
                 ptrobj = ListObjet ;
                 for( i=0; i<NbObjets; i++, ptrobj++ )
                 {
+                        idaObjFlags = idaFlags[i];
+
                         if( ptrobj->WorkFlags & OBJ_DEAD )      continue ;
 
                         // test mort d'un objet
@@ -1557,28 +1694,48 @@ startloop:
                                 }
                         }
 
+                        // Beta is the direction
                         // Save Beta pour les objets carrier
                         // peut-etre pourrait-on éviter le test
                         if( ptrobj->CarryBy==-1 )       ptrobj->OldBeta = ptrobj->Obj.Beta ;
 
+                        // Controlling the object
                         DoDir( i ) ;
 
+                        // Copying the new poisition of the object to the old one
                         ptrobj->OldPosX = ptrobj->Obj.X ;
                         ptrobj->OldPosY = ptrobj->Obj.Y ;
                         ptrobj->OldPosZ = ptrobj->Obj.Z ;
 
-                        if( ptrobj->OffsetTrack != -1 )
+                        // Move script control
+                        if (idaObjFlags & IDA_OBJ_MOVE) 
                         {
-                                DoTrack( i ) ;
+#ifdef IDA_PROFILE
+                            instrumentation.beginTrack("IdaMove", i);
+#endif
+                            if (idaObjFlags & IDA_OBJ_MOVE_ENABLED) 
+                            {
+                                ida->doTrack(i);
+                            }
+#ifdef IDA_PROFILE
+                            instrumentation.endTrack("IdaMove", i, 5000);
+#endif
+                        }
+                        else if (ptrobj->OffsetTrack != -1)
+                        {
+                            DoTrack(i);
                         }
 
+                        // Animation of the object
                         if( !FirstLoop )        PtrDoAnim( i ) ;
 
+                        // Test the scene zones for objects that should interract with zones (mostly it's the main player, but can also be other objects)
                         if( ptrobj->Flags & CHECK_ZONE )
                         {
                                 CheckZoneSce( ptrobj, i ) ;
                         }
 
+                        // Object sound effects
                         // Samples Always
                         if( pansample AND ptrobj->SampleAlways )
                         {
@@ -1599,6 +1756,8 @@ startloop:
                                 }
                         }
 
+                        // Special handle for the main character object:
+                        // Reset main character jetpack and falling flags, controlling darts and buggy zones
                         if( i==NUM_PERSO )
                         {
                                 // Pour la prochaine boucle
@@ -1617,9 +1776,26 @@ startloop:
                                 if( DemoSlide ) ActionNormal = FALSE ;
                         }
 
-                        if( ptrobj->OffsetLife != -1 )
+                        // Ida life script control for objects
+#ifdef IDA_PROFILE
+                        instrumentation.beginTrack("IdaLife", i);
+#endif
+                        // Initially, if ida life handling is enabled or if this is an Ida-created object, we skip the LBA life script
+                        skipLbaLife = idaObjFlags & (IDA_OBJ_LIFE | IDA_OBJ_NEW);
+
+                        // However, if Ida has its life handler, we let the script decide
+                        constexpr uint8_t handleIdaLife = IDA_OBJ_LIFE | IDA_OBJ_LIFE_ENABLED;
+                        if ((idaObjFlags & handleIdaLife) == handleIdaLife) 
                         {
-                                DoLife( i ) ;
+                            skipLbaLife = !ida->doBeforeLife(i) || idaObjFlags & IDA_OBJ_NEW;
+                        }
+#ifdef IDA_PROFILE
+                        instrumentation.endTrack("IdaLife", i, 5000);
+#endif
+                        // LBA life script control for objects that have life script
+                        if (!skipLbaLife && ptrobj->OffsetLife != -1)
+                        {
+                            DoLife(i);
                         }
 
                         if( FlagTheEnd != -1 )  return FlagTheEnd ; // mmm violent
@@ -1662,7 +1838,7 @@ startloop:
                         {
                                 goto startloop ;
                         }
-                }
+                } // End main objects control loop
 
 /*-------------------------------------------------------------------------*/
 /* recentre sur hero (numobjfollow) */
@@ -1742,25 +1918,34 @@ startloop:
 /*-------------------------------------------------------------------------*/
 /* affiche tout */
 
-		AffScene( FirstTime ) ;
+        AffScene( FirstTime ) ;
 
-		if( (FirstLoop OR RestartMusic)
-		AND !PLAY_THE_END )
-		{
-                        // on attend une boucle scenarique au cas ou le
-                        // scenar aurait lancé une musique
-                        if( CubeJingle != 255 )
-                        {
-                                PlayMusic( CubeJingle, FALSE ) ;
-			}
+        if( (FirstLoop OR RestartMusic) AND !PLAY_THE_END )
+        {
+            // on attend une boucle scenarique au cas ou le
+            // scenar aurait lancé une musique
+            if( CubeJingle != 255 )
+            {
+                PlayMusic( CubeJingle, FALSE ) ;
+            }
 
-			RestartMusic = FALSE ;
-                }
+            RestartMusic = FALSE ;
+        }
 
-                FirstTime = AFF_OBJETS_FLIP ;
-                FirstLoop = FALSE ;
+        FirstTime = AFF_OBJETS_FLIP ;
+        FirstLoop = FALSE ;
 
-                CmptFrame++ ;
+        CmptFrame++ ;
+
+        // Logical frame rate limiting: calculate elapsed time and add delay if needed
+#if IDA_LIMIT_LFRAME_RATE > 0
+        Uint64 frameEndTime = SDL_GetTicks64();
+        Uint64 elapsedTime = frameEndTime - frameStartTime;
+        if (elapsedTime < IDA_LIMIT_LFRAME_RATE)
+        {
+            SDL_Delay(IDA_LIMIT_LFRAME_RATE - elapsedTime);
+        }
+#endif // IDA_LIMIT_LFRAME_RATE
 
 #ifdef  DEBUG_TOOLS
                 if( NbFramePerSecond < MinNbf ) MinNbf = NbFramePerSecond ;
@@ -1787,6 +1972,13 @@ void    ReadConfigFile( void )
 
         ReadInputConfig() ;     // Lit Config Clavier dans LBA2.CFG
         ReadVolumeSettings() ;  // Lit Volumes dans LBA2.CFG
+
+        // Ida - reading mod string
+        char* modString = DefFileBufferReadString("Mod");
+        if (modString) 
+        {
+            mod = std::string(modString);
+        }
 
         Version_US = DefFileBufferReadValue( "Version_US" ) ;
         NumVersion = (U8)DefFileBufferReadValue( "CompressSave" ) ;
@@ -1889,8 +2081,16 @@ void    InitProgram()
 
         ReadConfigFile() ;
 
+        // Ida - read env variables
+        ReadIdaEnv();
+
         // init path de sauvegardes
         strcpy( PathSave, PATH_SAVE ) ;
+
+        // Ida - create a subfolder for the save games if we are running mod
+        CreateIdaSavePath();
+
+        printf("PathSave: %s\n", PathSave);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -1912,12 +2112,20 @@ void    InitTheEnd( S32 num, char *error )
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-void    TheEnd( S32 num, char *error )
+void    TheEnd( S32 num, char *error)
 {
         End_Num = num           ;
         End_Error = error       ;
 
-        exit(0) ;
+        exit(0);
+}
+
+// Ida - end with a special exit code
+void TheEndIda(S32 num, char* error, S32 exitCode) 
+{
+    End_Num = num;
+    End_Error = error;
+    exit(exitCode);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -2098,19 +2306,19 @@ void    ChangeProgDir()
 
         name[nb+1]=0  ;
 
-	if(!SetCurrentDirectory(name))
-	{
-		switch( DistribVersion )
-		{
-			case UNKNOWN_VERSION:
-			case EA_VERSION:
-				TheEnd( ERROR_NOT_FOUND_FILE, "lba2" ) ;
-				break ;
+    if(!SetCurrentDirectory(name))
+    {
+        switch( DistribVersion )
+        {
+            case UNKNOWN_VERSION:
+            case EA_VERSION:
+                TheEnd( ERROR_NOT_FOUND_FILE, "lba2" ) ;
+                break ;
 
-			default:
-				TheEnd( ERROR_NOT_FOUND_FILE, "Twinsen" ) ;
-		}
-	}
+            default:
+                TheEnd( ERROR_NOT_FOUND_FILE, "Twinsen" ) ;
+        }
+    }
 }
 #else
 void    ChangeProgDir( char *path )
@@ -2165,51 +2373,43 @@ int main(int argc, char *argv[])
 #endif
 
 #ifndef YAZ_WIN32
-	atexit(TheEndInfo)      ;
-	//ChangeProgDir( argv[0] ) ;
+    atexit(TheEndInfo)      ;
+    //ChangeProgDir( argv[0] ) ;
 #else
-	ChangeProgDir() ;
+    ChangeProgDir() ;
 #endif
 
-	HQRGetErrorFunc = ErrorHQRGet ;
+    HQRGetErrorFunc = ErrorHQRGet ;
 
-	InitMainBuffer()    ;       // Alloue gros buffer pour tous les pointeurs
+    InitMainBuffer()    ;       // Alloue gros buffer pour tous les pointeurs
 
-	End_Error = PathConfigFile ;
+    End_Error = PathConfigFile ;
 
 #ifdef  DEMO
-	#define APPNAME "LBA2 Twinsen's Odyssey Demo"
+    #define APPNAME "LBA2 Twinsen's Odyssey Demo"
 #else //DEMO
-	#define APPNAME "LBA2"
+    #define APPNAME "LBA2"
 #endif//DEMO
-	#define ibuffer ScreenAux
-	#define ibuffersize     (640*480+RECOVER_AREA)
-	#define lname   "lba2.cfg"
-	#define inits   INIT_DEFFILE|INIT_LOG|INIT_TIMER|INIT_SVGA|INIT_KEYB|INIT_SAMPLE|INIT_SMACKER
-	#include <initadel.c>
+    #define ibuffer ScreenAux
+    #define ibuffersize     (640*480+RECOVER_AREA)
+    #define lname   "lba2.cfg"
+    #define inits   INIT_DEFFILE|INIT_LOG|INIT_TIMER|INIT_SVGA|INIT_KEYB|INIT_SAMPLE|INIT_SMACKER
+    #include <initadel.c>
 
 #ifdef	YAZ_WIN32
-	atexit(TheEndInfo)      ;
+    atexit(TheEndInfo)      ;
 #endif
 
-	End_Error = ""  ;
+    End_Error = ""  ;
 
-        std::cout << std::endl << "LBA2 Community Ida Edition" << std::endl;
-        std::cout << "PATH_RESSOURCE: " << PATH_RESSOURCE << std::endl;
-        std::cout << "PATH_SAVE: " << PATH_SAVE << std::endl;
-        std::cout << "PATH_PCX_SAVE: " << PATH_PCX_SAVE << std::endl;
-        std::cout << "PATH_SAVE_BUGS: " << PATH_SAVE_BUGS << std::endl;
-        std::cout << "PATH_ACF: " << PATH_ACF << std::endl;
-        std::cout << "PATH_JINGLE: " << PATH_JINGLE << std::endl;
+    // Passe en clavier "Splitté" (différenciation de chaque touche)
+    AllowExtendedKeyb() ;
 
-	// Passe en clavier "Splitté" (différenciation de chaque touche)
-	AllowExtendedKeyb() ;
-
-	InitProgram()   ;
-	InitMemory()    ;       // Alloue petits buffers
+    InitProgram()   ;
+    InitMemory()    ;       // Alloue petits buffers
 
 #ifdef  ONE_GAME_DIRECTORY
-	CreateLbaDirectories() ;
+    CreateLbaDirectories() ;
 #endif
 
 #ifndef YAZ_WIN32
@@ -2218,19 +2418,19 @@ int main(int argc, char *argv[])
 
 //-------------------   buffer samples
 
-	if( Sample_Driver_Enabled )
-	{
-		// déclare ressource samples buffer
-		HQR_Samples = HQR_Init_Ressource(
-				PATH_RESSOURCE"samples.hqr",
-				SampleMem,
-				SampleMem/5000 ) ;
+    if( Sample_Driver_Enabled )
+    {
+        // déclare ressource samples buffer
+        HQR_Samples = HQR_Init_Ressource(
+                PATH_RESSOURCE"samples.hqr",
+                SampleMem,
+                SampleMem/5000 ) ;
 
-		SamplesEnable = TRUE ;
+        SamplesEnable = TRUE ;
 
-		if( !HQR_Samples )      TheEndCheckFile( PATH_RESSOURCE"samples.hqr" ) ;
+        if( !HQR_Samples )      TheEndCheckFile( PATH_RESSOURCE"samples.hqr" ) ;
 
-		// pour Windows
+        // pour Windows
                 HQR_Lock_Ressource( HQR_Samples ) ;
         }
 
@@ -2245,10 +2445,11 @@ int main(int argc, char *argv[])
         if( !BufOrder ) TheEnd( NOT_ENOUGH_MEM, "BufOrder" ) ;
 
         InitDial( 0 ) ;
-	GetMultiText( 49, PleaseWait ) ;
-	GetMultiText( 71, NewGameTxt ) ;
 
-	// chargement palettes ici car le InitDial(2) ou le AskForCD()
+        GetMultiText( 49, PleaseWait ) ;
+        GetMultiText( 71, NewGameTxt ) ;
+
+    // chargement palettes ici car le InitDial(2) ou le AskForCD()
         // peuvent en avoir besoin...
         InitPalette() ;
         ChoicePalette() ;
@@ -2259,44 +2460,44 @@ int main(int argc, char *argv[])
 #else
         SetBlackPal() ;// pour etre sur ...
 
-	{
-	char	volname[10] ;
+    {
+    char	volname[10] ;
         S32     cd = TRUE ;
 
 
-	switch( DistribVersion )
-	{
-		case UNKNOWN_VERSION:
-		case EA_VERSION:
-			strcpy( volname, "LBA2" ) ;
-			strcpy( MessageNoCD, MESSAGE_NO_CD ) ;
-			break ;
+    switch( DistribVersion )
+    {
+        case UNKNOWN_VERSION:
+        case EA_VERSION:
+            strcpy( volname, "LBA2" ) ;
+            strcpy( MessageNoCD, MESSAGE_NO_CD ) ;
+            break ;
 
-		default:
-			strcpy( volname, "TWINSEN" ) ;
-			strcpy( MessageNoCD, MESSAGE_NO_CD_US ) ;
-			break ;
-	}
+        default:
+            strcpy( volname, "TWINSEN" ) ;
+            strcpy( MessageNoCD, MESSAGE_NO_CD_US ) ;
+            break ;
+    }
 
-	do
-	{
+    do
+    {
 #ifdef  YAZ_WIN32
-		// pour Windows car ca prend du temps a scaner le CD
-		Load_HQR( SCREEN_HQR_NAME, Log, PCR_CDROM ) ;
-		BoxStaticFullflip() ;
+        // pour Windows car ca prend du temps a scaner le CD
+        Load_HQR( SCREEN_HQR_NAME, Log, PCR_CDROM ) ;
+        BoxStaticFullflip() ;
 
-		// premiere fois
-		if( cd )        FadeToPal( PtrPalNormal ) ;
+        // premiere fois
+        if( cd )        FadeToPal( PtrPalNormal ) ;
 #endif
 
-		if( !InitCD( volname ) )
+        if( !InitCD( volname ) )
                 {
                         // premiere fois
                         if( cd )        PlayErrorSample() ;
 
                         if( !AskForCD() )
                         {
-			     TheEnd( PROGRAM_OK, MessageNoCD ) ;
+                 TheEnd( PROGRAM_OK, MessageNoCD ) ;
                         }
 
                         cd = FALSE ;
@@ -2345,19 +2546,23 @@ int main(int argc, char *argv[])
         InitAcf()       ;
 
 #ifndef DEBUG_TOOLS
+        
+
 //-------------------   logo adeline (affiche)
 
-        DistribLogo() ;
-
-        Cls() ;
-        BoxUpdate() ;
-
-        if( !IsFirstGameLaunched() )
+        // Ida  - disable splash (for testing)
+        if (!idaOmitLogo)
         {
-                AdelineLogo() ;
+            DistribLogo();
+            Cls();
+            BoxUpdate();
 
-                Cls() ;
-                BoxUpdate() ;
+            if (!IsFirstGameLaunched())
+            {
+                AdelineLogo();
+                Cls();
+                BoxUpdate();
+            }
         }
 
 #ifdef  DEMO
@@ -2465,6 +2670,7 @@ int main(int argc, char *argv[])
         InitDarts()     ;
         InitRain()      ;
         InitSysText()   ;
+        InitIda(argv[0]);
 
         // doit etre la derniere allocation faite
         PtrPolySea = (S_ANI_POLY*)Malloc( SIZE_BUFFER_POLY_SEA ) ;
@@ -2512,46 +2718,45 @@ int main(int argc, char *argv[])
                 load = atoi( ArgV[1] ) ;
 #endif
 #else
-		LogPrintf( "\nTry to load %s\n", ArgV[1] ) ;
+        LogPrintf( "\nTry to load %s\n", ArgV[1] ) ;
 
-		if( FileSize(ArgV[1]) )
-		{
-			strcpy( GamePathname, ArgV[1] ) ;
-			load = TRUE ;
-		}
-		else
-		{
-			strcpy( GamePathname, PathSave ) ;
-			strcat( GamePathname, ArgV[1] ) ;
+        if( FileSize(ArgV[1]) )
+        {
+            strcpy( GamePathname, ArgV[1] ) ;
+            load = TRUE ;
+        }
+        else
+        {
+            strcpy( GamePathname, PathSave ) ;
+            strcat( GamePathname, ArgV[1] ) ;
 
-			if( FileSize(GamePathname) )
-			{
-				load = TRUE ;
-			}
-			else
-			{
-				strcat( GamePathname, ".LBA" ) ;
+            if( FileSize(GamePathname) )
+            {
+                load = TRUE ;
+            }
+            else
+            {
+                strcat( GamePathname, ".LBA" ) ;
 
-				if( FileSize(GamePathname) )
-				{
-					load = TRUE ;
-				}
-				else	strcpy( GamePathname, "" ) ;
-			}
-		}
+                if( FileSize(GamePathname) )
+                {
+                    load = TRUE ;
+                }
+                else	strcpy( GamePathname, "" ) ;
+            }
+        }
 
-		if( load )
-		{
-			Palette( PtrPal ) ;
-		}
+        if (load)
+        {
+            Palette(PtrPal);
+        }
 #endif
-	}
+    }
 
 #ifdef  DEBUG_TOOLS
-	HERCULE( HCls() ) ;
+    HERCULE( HCls() ) ;
 #endif
-
-        MainGameMenu( load ) ;
+        MainGameMenu(load) ;
 
 #ifdef  DEMO
         if( !FlagShowEndDemo )
@@ -2562,9 +2767,13 @@ int main(int argc, char *argv[])
         DemoBumper() ;
 #endif
 
-        TheEnd( PROGRAM_OK, "" ) ;
+        S32 idaExitCode = idaSpy->getExitCodeOnce();
 
-        return 0 ;
+        delete ida;
+
+        TheEndIda(PROGRAM_OK, "", idaExitCode);
+
+        return 0;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
