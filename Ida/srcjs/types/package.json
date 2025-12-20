@@ -4,6 +4,16 @@
   "description": "TypeScript type definitions for LBA2 IdaJS modding engine",
   "author": "Andriy Tevelyev",
   "license": "GPL-2.0",
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/15102220/join"
+    },
+    {
+      "type": "buymeacoffee",
+      "url": "https://buymeacoffee.com/innerbytes"
+    }
+  ],
   "keywords": [
     "idajs",
     "typescript",

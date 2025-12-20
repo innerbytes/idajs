@@ -4,6 +4,16 @@
   "description": "Scaffolding tool for creating IdaJS game mods for Little Big Adventure 2. Use with: npx @idajs/create-mod",
   "author": "Andriy Tevelyev",
   "license": "GPL-2.0",
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/15102220/join"
+    },
+    {
+      "type": "buymeacoffee",
+      "url": "https://buymeacoffee.com/innerbytes"
+    }
+  ],
   "preferGlobal": true,
   "keywords": [
     "idajs",
