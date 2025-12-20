@@ -10,28 +10,49 @@
  */
 
 :root {
+  --idajs-title-color-light: #3178c6;
+  --idajs-title-color-dark: #d7d3b0;
   --idajs-color-light: #147f95;
   --idajs-color-dark: #e1dec2;
   --dim-toolbar-contents-height: 3.5rem;
 }
 
 .idajs {
-  /*font-weight: bold;*/
+  font-weight: bold;
   color: var(--idajs-color-light);
+}
+
+.title {
+  color: var(--idajs-title-color-light);
 }
 
 @media (prefers-color-scheme: dark) {
   .idajs {
     color: var(--idajs-color-dark);
+    font-weight: normal;
   }
-}
 
-:root[data-theme="dark"] .idajs {
-  color: var(--idajs-color-dark);
+  .title {
+    color: var(--idajs-title-color-dark);
+  }
 }
 
 :root[data-theme="light"] .idajs {
   color: var(--idajs-color-light);
+  font-weight: bold;
+}
+
+:root[data-theme="dark"] .idajs {
+  color: var(--idajs-color-dark);
+  font-weight: normal;
+}
+
+:root[data-theme="light"] .title {
+  color: var(--idajs-title-color-light);
+}
+
+:root[data-theme="dark"] .title {
+  color: var(--idajs-title-color-dark);
 }
 
 /* 
