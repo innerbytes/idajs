@@ -26,6 +26,22 @@
   color: var(--idajs-title-color-light);
 }
 
+/* 
+ * Logo in header
+ */
+a.title::before {
+  content: "";
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  background-image: url('/media/ida-blue.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
 @media (prefers-color-scheme: dark) {
   .idajs {
     color: var(--idajs-color-dark);
@@ -34,6 +50,10 @@
 
   .title {
     color: var(--idajs-title-color-dark);
+  }
+
+  a.title::before {
+    background-image: url('/media/ida.png');
   }
 }
 
@@ -55,18 +75,10 @@
   color: var(--idajs-title-color-dark);
 }
 
-/* 
- * Logo in header
- */
-a.title::before {
-  content: "";
-  display: inline-block;
-  width: 50px;
-  height: 50px;
+:root[data-theme="light"] a.title::before {
+  background-image: url('/media/ida-blue.png');
+}
+
+:root[data-theme="dark"] a.title::before {
   background-image: url('/media/ida.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-right: 10px;
-  vertical-align: middle;
 }
