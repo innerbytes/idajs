@@ -15,7 +15,8 @@
 
 Or maybe have a feature request or idea for improvement?
 
-- Write here: {{{GIT_URL}}}/issues
+- Start discussion here: {{{GIT_URL}}}/discussions
+- Or create an issue here: {{{GIT_URL}}}/issues
 
 ### 1.2 Support the project
 
@@ -965,6 +966,14 @@ However, if you change which mod is active, restart the game application (see [S
 - Use version control, and commit often to save your progress and be able to revert changes if needed.
   - Git is installed with {{{ida}}}, so you can use it from the command line, or install a Git GUI client of your choice.
 
+### 4.8 Share your mods with the community
+
+I will be very happy to see mods created with {{{ida}}}! 
+
+The mods that work and play well will be published on top of this website.
+
+Please contact me here: https://innerbytes.com/#about or use [Discussions]({{{GIT_URL}}}/discussions) on {{{ida}}} GitHub page, to let me know about your mod.
+
 ## 5. IdaJS Samples
 
 Samples are the fastest way to start writing LBA 2 mods with {{{ida}}}.
@@ -1112,16 +1121,20 @@ Please read the next section to understand how to contribute effectively.
 
 ### 9.1 How to contribute
 
+**If you want to discuss a feature**
+
+Use [Discussions]({{{GIT_URL}}}/discussions) section of the repository to discuss new features, ideas, and general questions about the project.
+
 **Use Issues to track work**
 
-It's recomended to create and Issue before starting to work on a new feature or bug fix. Like this you can discuss the implementation details with the project maintainers and other contributors, and also prevent other people from working on the same feature at the same time.
+It's recommended to create and Issue before starting to work on a new feature or bug fix. Like this you can discuss the implementation details with the project maintainers and other contributors, and also prevent other people from working on the same feature at the same time.
 Read current Issues here: [Issues]({{{GIT_URL}}}/issues)
 
 **Get familiar with the planned features**
 
 - Before starting to work on any new feature, please make sure that you have read the planned features in the [Planned features](#8-planned-features) section.
 - Only the contributions within the planned features are accepted at the moment. Bug fixes and improvements to the existing features are also welcome.
-- If you want to start the work on a feature that is not listed in the planned features, please create an Issue first to discuss it with the project maintainers.
+- If you want to start the work on a feature that is not listed in the planned features, please create a discussion topic first to discuss it with the project maintainers.
 - You can also create your own fork of the project and implement any features you want. The maintainers might integrate your features into the main project later, but the timeframe is not guaranteed.
 
 **Contribute to this documentation**
