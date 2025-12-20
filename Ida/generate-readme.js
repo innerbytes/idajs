@@ -6,7 +6,7 @@ const path = require("path");
 const os = require("os");
 
 // Configuration
-const GIT_URL = "https://github.com/innerbytes/ida-private";
+const GIT_URL = "https://github.com/innerbytes/idajs";
 
 /**
  * Executes a shell command and returns the output
