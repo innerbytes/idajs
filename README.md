@@ -1,6 +1,6 @@
 # IdaJS for Little Big Adventure 2
 
-IdaJS is a modern JavaScript scripting layer built on top of the community-maintained Little Big Adventure 2 (LBA2) engine sources. It enables creators to script gameplay, extend mechanics, and craft new stories and mods within the LBA2 world using a modern, high-level programming language.
+IdaJS is a JavaScript scripting layer built on top of the community-maintained Little Big Adventure 2 (LBA2) engine sources. It enables creators to script gameplay, extend mechanics, and craft new stories and mods within the LBA2 world using a modern, high-level programming language.
 
 - [Ida JS Releases](https://github.com/innerbytes/idajs/releases)
 - [Documentation and API](https://ida.innerbytes.com/)
