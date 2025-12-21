@@ -17,7 +17,7 @@
     "minor": "npm version minor --no-git-tag-version && git add package.json package-lock.json && node version-commit.js && node release.js",
     "major": "npm version major --no-git-tag-version && git add package.json package-lock.json && node version-commit.js && node release.js",
     "push": "git push --follow-tags",
-    "docs": "node generate-readme.js && npx typedoc && npx open-cli ./docs/index.html",
+    "docs": "node generate-readme.js && node generate-typedoc-config.js && npx typedoc && npx open-cli ./docs/index.html && rm README.md && node generate-typedoc-config.js --reset",
     "create": "node srcjs/create-mod/index.js",
     "publish:types": "node check-publish.js srcjs/types && node publish-package.js srcjs/types",
     "publish:types:dev": "node check-publish.js srcjs/types --dev-publish && node publish-package.js srcjs/types --dev",
