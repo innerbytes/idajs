@@ -53,10 +53,7 @@ module.exports = {
     ida.life(
       objectId,
       ida.Life.LM_ADD_CHOICE,
-      text.update(
-        SceneProperties.choices[1],
-        "Bae, gimme sec, gotta peep on him real quick"
-      )
+      text.update(SceneProperties.choices[1], "Bae, gimme sec, gotta peep on him real quick")
     );
 
     ida.life(
@@ -72,9 +69,7 @@ module.exports = {
     );
 
     // Now checking what player selected
-    if (
-      ida.lifef(objectId, ida.Life.LF_CHOICE) === SceneProperties.choices[0]
-    ) {
+    if (ida.lifef(objectId, ida.Life.LF_CHOICE) === SceneProperties.choices[0]) {
       // Chosing to stay with Zoe, back to kissing
       S.storyPhase = StoryPhases.Kissing;
       startCoroutine(SceneProperties.zoeId, "kissing");
@@ -98,11 +93,7 @@ module.exports = {
 
     // Twinsen's dialog with Dino near the Window
     ida.life(objectId, ida.Life.LM_MESSAGE, 530); // I don't see Dino fly
-    ida.life(
-      objectId,
-      ida.Life.LM_MESSAGE,
-      text.update(SceneProperties.textId, "Oh, wait...")
-    );
+    ida.life(objectId, ida.Life.LM_MESSAGE, text.update(SceneProperties.textId, "Oh, wait..."));
 
     // Showing Dino's image
     ida.life(objectId, ida.Life.LM_PCX, image.use("dino.png"), 0);
@@ -133,10 +124,7 @@ module.exports = {
     ida.life(
       objectId,
       ida.Life.LM_MESSAGE,
-      text.update(
-        SceneProperties.textId,
-        "OMG Dino, chill fam! I'm on it, I swear."
-      )
+      text.update(SceneProperties.textId, "OMG Dino, chill fam! I'm on it, I swear.")
     );
 
     ida.life(
@@ -197,20 +185,13 @@ module.exports = {
       )
     );
 
-    ida.life(
-      objectId,
-      ida.Life.LM_MESSAGE,
-      text.update(SceneProperties.textId, "Wait, what-fr?")
-    );
+    ida.life(objectId, ida.Life.LM_MESSAGE, text.update(SceneProperties.textId, "Wait, what-fr?"));
 
     ida.life(
       objectId,
       ida.Life.LM_MESSAGE_OBJ,
       SceneProperties.zoeId,
-      text.update(
-        SceneProperties.textId,
-        "Yuh. Come, lemme show you. Follow me, daddy."
-      )
+      text.update(SceneProperties.textId, "Yuh. Come, lemme show you. Follow me, daddy.")
     );
 
     // Zoe will go to the bathroom now
@@ -218,11 +199,7 @@ module.exports = {
 
     // Exiting cinema mode and giving control to player
     ida.life(objectId, ida.Life.LM_CINEMA_MODE, 0);
-    ida.life(
-      objectId,
-      ida.Life.LM_SET_CONTROL,
-      object.ControlModes.PlayerControl
-    );
+    ida.life(objectId, ida.Life.LM_SET_CONTROL, object.ControlModes.PlayerControl);
 
     // Switching story phase and behavior
     const S = useSceneStore();
@@ -243,25 +220,17 @@ module.exports = {
     // If already at Bathroom entrance
     if (currentZone === SceneProperties.zoneBathroomEntranceValue) {
       // Removing control from Twinsen and making him invisible
-      ida.life(
-        objectId,
-        ida.Life.LM_SET_CONTROL,
-        object.ControlModes.NoMovement
-      );
+      ida.life(objectId, ida.Life.LM_SET_CONTROL, object.ControlModes.NoMovement);
       ida.life(objectId, ida.Life.LM_INVISIBLE, 1);
 
       // Set normal stance, so we don't hear his legs if he was in a sportive mode
-      ida.life(
-        objectId,
-        ida.Life.LM_COMPORTEMENT_HERO,
-        object.TwinsenStances.Normal
-      );
+      ida.life(objectId, ida.Life.LM_COMPORTEMENT_HERO, object.TwinsenStances.Normal);
 
       // Setting anim to Idle
       ida.life(objectId, ida.Life.LM_ANIM, 0);
 
-      // Switching story phase and winsen behavior to the next one
-      S.storyPhase = StoryPhases.DialogInBathhroom;
+      // Switching story phase and Twinsen behavior to the next one
+      S.storyPhase = StoryPhases.DialogInBathroom;
       S.twinsenBehavior = "talkInBathroom";
       return;
     }
@@ -270,11 +239,7 @@ module.exports = {
     // Here we use trigger, again - only when he entered the ZoneExit. If he stays there - will not trigger.
     // If he reenters - will trigger again.
     if (
-      isTriggeredTrue(
-        S,
-        "twinsenWantsToExitHouse",
-        currentZone === SceneProperties.zoneExitValue
-      )
+      isTriggeredTrue(S, "twinsenWantsToExitHouse", currentZone === SceneProperties.zoneExitValue)
     ) {
       // Telling player he can't leave yet
       ida.life(
@@ -332,10 +297,7 @@ module.exports = {
       image.use("bath.png"),
       0,
       SceneProperties.twinsenId,
-      text.update(
-        SceneProperties.textId,
-        "fr? With you here? 10/10, no patch notes needed."
-      )
+      text.update(SceneProperties.textId, "fr? With you here? 10/10, no patch notes needed.")
     );
 
     ida.life(

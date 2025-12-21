@@ -7,10 +7,7 @@ module.exports = {
     const S = useSceneStore();
 
     // Twinsen might even enter the Bathroom first, then we need to remove Zoe's object from the scene
-    if (
-      S.storyPhase === StoryPhases.DialogInBathhroom ||
-      S.storyPhase === StoryPhases.DinoScene
-    ) {
+    if (S.storyPhase === StoryPhases.DialogInBathroom || S.storyPhase === StoryPhases.DinoScene) {
       // Stopping walking coroutine
       stopCoroutine(SceneProperties.zoeId);
 
@@ -29,10 +26,7 @@ module.exports = {
     }
 
     // If zoe is now in the bathroom
-    if (
-      ida.lifef(objectId, ida.Life.LF_ZONE) ===
-      SceneProperties.zoneBathroomEntranceValue
-    ) {
+    if (ida.lifef(objectId, ida.Life.LF_ZONE) === SceneProperties.zoneBathroomEntranceValue) {
       // If Zoe entered the bathroom, and Twinsen is still just walking around, showing WTF exclamation on him - he is suprised where Zoe dipped
       if (S.storyPhase === StoryPhases.TwinsenIsControlledByPlayer) {
         ida.life(

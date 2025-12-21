@@ -13,7 +13,7 @@ const dinoBehaviors = require("./dinoLife");
 // We will use custom images in this mod
 ida.useImages({
   // We import dino.png and bath.png with LBA palette to use dialogs on top of it, thus we need to specify it in the configuration
-  // If no configuraton to useImages is passed, all images will be imported with palette, derived from the png file.
+  // If no configuration to useImages is passed, all images will be imported with palette, derived from the png file.
   images: {
     "dino.png": {
       paletteIndex: 0, // 0 - means game palette
@@ -100,7 +100,7 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
   scene.updateWaypoint(SceneProperties.wpToBathroom1, [9472, 2048, 1500]);
   scene.updateWaypoint(SceneProperties.wpToBathroom2, [14300, 2048, 2048]);
   scene.updateWaypoint(SceneProperties.wpToBathroom3, [14320, 2048, 0]);
-  scene.updateWaypoint(SceneProperties.wpNull, [0, 2048, 13000]); // This is a point outside of the scene, where we can place temporarly unused objects
+  scene.updateWaypoint(SceneProperties.wpNull, [0, 2048, 13000]); // This is a point outside of the scene, where we can place temporary unused objects
 
   // === Objects setup ===
 
@@ -111,7 +111,7 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
   dino.setEntity(109); // Dino fly entity (we can look entities, bodies and animation numbers in the LBAArchitect application).
   dino.setBody(37); // Normal dino body, without Twinsen
 
-  // Setting collisions with environment, with other objects, and also fallable flags - normal for an actor
+  // Setting collisions with environment, with other objects, and also CanFall flags - it's usual for an actor
   // In additional also setting Invisible flag, we should not see Dino-Fly yet, he will appear in the end of our scenario.
   dino.setStaticFlags(
     object.Flags.CheckCollisionsWithScene |
@@ -137,7 +137,7 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
   // The first register of the bonus zone stores the bonuses it can give, the second one - amount of the bonus
   nightstand.setRegisters([object.Bonuses.LIFE, 16, 0, 0, 0, 0, 0, 0]);
 
-  // Modifying the exit scene zoom into sceneric zone, so we can control it from the script
+  // Disabling the exit door zone, so player cannot leave the scene
   const exitDoor = scene.getZone(SceneProperties.zoneExitDoorId);
   const exitDoorRegisters = exitDoor.getRegisters();
   // Disabling the exit door (the enabled/disabled bit is at the register 7 for Teleport zones)
@@ -145,7 +145,7 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
   exitDoor.setRegisters(exitDoorRegisters);
 
   // Modify the Zoe Portrait text zone to display different text
-  // Text zone is a special type of zone, that just automatically displays some text when the player interracts within it
+  // Text zone is a special type of zone, that just automatically displays some text when the player interacts within it
   // In the original LBA2, the text zones can only display static text, defined in the scene file
   // However, here we show you how to also dynamically set the text of a text zone from the JavaScript
 

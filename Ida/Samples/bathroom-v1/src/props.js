@@ -7,7 +7,7 @@ const StoryPhases = {
   GoingToTheWindow: 2,
   TalkNearWindow: 3,
   TwinsenIsControlledByPlayer: 4,
-  DialogInBathhroom: 5,
+  DialogInBathroom: 5,
   DinoScene: 6,
 };
 
