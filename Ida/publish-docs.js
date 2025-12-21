@@ -32,6 +32,7 @@ const deleteIndex = argv.indexOf("--delete");
 if (deleteIndex !== -1) {
   // Support "--delete <version>";
   deleteVersionArg = argv[deleteIndex + 1] || null;
+  console.log(`⚠️  Delete mode activated for version: ${deleteVersionArg}`);
 }
 
 /**
