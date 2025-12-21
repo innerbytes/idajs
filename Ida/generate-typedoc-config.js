@@ -59,6 +59,7 @@ try {
 const footerContent = fs
   .readFileSync(FOOTER_FILE, "utf8")
   .trim()
+  .replace(/\$\(currentYear\)/g, new Date().getFullYear())
   .replace(/\n/g, "")
   .replace(/\s+/g, " ");
 
