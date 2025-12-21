@@ -1216,6 +1216,9 @@ npm run publish:docs
 
 # Publish the updated documentation to the latest, without releasing a new version (if needed)
 npm run publish:docs:update
+
+# Delete a documentation version (if needed)
+npm run publish:docs:delete v0.1.2
 ```
 
 **Before publishing the documentation:**
