@@ -48,7 +48,7 @@ Our scenario:
 - Twinsen answers: sweet, we don't have a bathroom. The developers put everything to our house, only they forgot to include a bathroom.
 - Zoe tells: no no, darling, they added bathroom. They just put a door to the place player couldn't see, so he doesn't distract from the game too much.
 - Twinsen says: "Oh?"
-- Zoe days: "Let me show you. Follow me"
+- Zoe says: "Let me show you. Follow me"
 - Zoe continues to the corner of the room. 
 - The control is given to the player.
 - Zoe disappears in the corner. 
