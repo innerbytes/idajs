@@ -30,7 +30,7 @@ If you find this project useful and would like to support its development, here 
 <details>
   <summary>Click to expand versions</summary>
 
-**NB:** If the version for your current release is missing, please check the latest previous one, it means there were no changes in the documentation since then.
+If you are using older version of IdaJS engine, and is not ready to upgrade yet, you can find the documentation for older versions here.
 
 <div id="versions-list">Loading versions...</div>
 
