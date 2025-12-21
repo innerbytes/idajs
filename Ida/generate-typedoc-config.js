@@ -2,8 +2,11 @@ const fs = require("fs");
 const { execSync } = require("child_process");
 const path = require("path");
 
+require("dotenv").config();
+
 const TYPEDOC_CONFIG = "./typedoc.json";
 const FOOTER_FILE = "./typedoc-footer.html";
+const GIT_URL = (process.env.MAIN_REPO_URL || "").replace(/\/$/, "");
 
 // Check if typedoc-footer.html exists
 if (!fs.existsSync(FOOTER_FILE)) {
@@ -68,6 +71,9 @@ const typedocConfig = JSON.parse(fs.readFileSync(TYPEDOC_CONFIG, "utf8"));
 
 // Inject footer content
 typedocConfig.customFooterHtml = footerContent;
+if (GIT_URL) {
+  typedocConfig.sourceLinkTemplate = `${GIT_URL}/blob/{gitRevision}/{path}#L{line}`;
+}
 
 // Write updated config
 fs.writeFileSync(TYPEDOC_CONFIG, JSON.stringify(typedocConfig, null, 2) + "\n");
