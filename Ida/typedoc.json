@@ -18,6 +18,7 @@
   "excludePrivate": false,
   "excludeProtected": false,
   "customFooterHtmlDisableWrapper": true,
+  "sourceLinkTemplate": "https://innerbytes.com/{path}?at={gitRevision}#line={line}",
   "highlightLanguages": ["typescript", "javascript", "cpp", "bash", "json", "powershell", "cmd"],
   "navigationLinks": {
     "❤️ Support IdaJS ❤️": "https://innerbytes.com/#about",
