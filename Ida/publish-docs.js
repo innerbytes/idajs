@@ -25,6 +25,15 @@ For GitHub Actions:
   process.exit(1);
 }
 
+// Parse CLI arguments early and decide mode
+const argv = process.argv.slice(2);
+let deleteVersionArg = null;
+const deleteIndex = argv.indexOf("--delete");
+if (deleteIndex !== -1) {
+  // Support "--delete <version>";
+  deleteVersionArg = argv[deleteIndex + 1] || null;
+}
+
 /**
  * Executes a shell command and returns the output
  * @param {string} command - The command to execute
@@ -282,7 +291,9 @@ async function publishDocs() {
     const versionsJson = buildVersionsJson(versions);
     const versionsJsonPath = path.join(tempDir, "versions.json");
     fs.writeFileSync(versionsJsonPath, JSON.stringify(versionsJson, null, 2), "utf8");
-    console.log(`✓ Generated versions.json with ${versions.length} version(s): ${versions.join(", ")}\n`);
+    console.log(
+      `✓ Generated versions.json with ${versions.length} version(s): ${versions.join(", ")}\n`
+    );
 
     // Run typedoc
     console.log(`Step ${step++}: Generating documentation with typedoc...`);
@@ -305,7 +316,10 @@ async function publishDocs() {
     if (isDev) {
       const entries = fs.readdirSync(tempDir, { withFileTypes: true });
       for (const entry of entries) {
-        if (entry.isDirectory() && (entry.name === currentTag || entry.name.startsWith(`${currentTag}-`))) {
+        if (
+          entry.isDirectory() &&
+          (entry.name === currentTag || entry.name.startsWith(`${currentTag}-`))
+        ) {
           const oldVersionPath = path.join(tempDir, entry.name);
           console.log(`  → Removing old dev version folder: ${entry.name}`);
           removeRecursive(oldVersionPath);
@@ -399,5 +413,152 @@ async function publishDocs() {
   }
 }
 
-// Run the script
-publishDocs();
+/**
+ * Deletes documentation for a given version.
+ * @param {string} versionToDelete - Version string like "v0.2.1" or "v0.2.1-5"
+ */
+async function deleteDocs(versionToDelete) {
+  if (!versionToDelete || !/^v\d+\.\d+\.\d+$/.test(versionToDelete)) {
+    console.error(
+      "❌ ERROR: Please provide a valid version to delete in format v<major>.<minor>.<patch>, e.g. --delete v0.2.1"
+    );
+    process.exit(1);
+  }
+
+  console.log(`Starting delete process for documentation version: ${versionToDelete}\n`);
+
+  const tempDir = path.join(os.tmpdir(), `ida-docs-deploy-${Date.now()}`);
+  let deployRepoCloned = false;
+  let step = 1;
+
+  try {
+    // Step 1: Clone deploy repository
+    console.log(`Step ${step++}: Cloning docs deploy repository...`);
+    console.log(`Cloning to: ${tempDir}`);
+    exec(`git clone ${DEPLOY_REPO_URL} "${tempDir}"`);
+    deployRepoCloned = true;
+    console.log("✓ Repository cloned successfully\n");
+
+    // Step 2: Delete version folder if exists
+    console.log(`Step ${step++}: Removing version folder if present...`);
+    const targetVersionDir = path.join(tempDir, versionToDelete);
+    if (fs.existsSync(targetVersionDir)) {
+      console.log(`  → Deleting folder: ${versionToDelete}`);
+      removeRecursive(targetVersionDir);
+      console.log("✓ Version folder removed\n");
+    } else {
+      console.log(`ℹ No folder found for ${versionToDelete}; continuing to update versions.json`);
+    }
+
+    // Step 3: Update versions.json
+    console.log(`Step ${step++}: Updating versions.json...`);
+    const versionsJsonPath = path.join(tempDir, "versions.json");
+    if (!fs.existsSync(versionsJsonPath)) {
+      throw new Error("versions.json not found in deploy repository root");
+    }
+
+    const raw = fs.readFileSync(versionsJsonPath, "utf8");
+    /** @type {{name:string,url:string}[]} */
+    let versionsJson;
+    try {
+      versionsJson = JSON.parse(raw);
+      if (!Array.isArray(versionsJson)) {
+        throw new Error("versions.json is not an array");
+      }
+    } catch (e) {
+      throw new Error(`Failed to parse versions.json: ${e.message}`);
+    }
+
+    const beforeCount = versionsJson.length;
+    versionsJson = versionsJson.filter((entry) => {
+      if (!entry || typeof entry !== "object") return true;
+      // Only match by name: "0.1.2" or "0.1.2 <suffix>" where suffix starts after a space
+      const verNoV = versionToDelete.substring(1);
+      const name = typeof entry.name === "string" ? entry.name : "";
+      const matches = name === verNoV || name.startsWith(`${verNoV} `);
+      return !matches;
+    });
+
+    if (versionsJson.length === beforeCount) {
+      console.log("ℹ No matching entry found in versions.json; it may have already been removed.");
+    } else {
+      console.log(`✓ Removed ${beforeCount - versionsJson.length} entr(y/ies) from versions.json`);
+    }
+
+    fs.writeFileSync(versionsJsonPath, JSON.stringify(versionsJson, null, 2), "utf8");
+    console.log("✓ versions.json updated\n");
+
+    // Step 4: Stage and show status + diff
+    console.log(`Step ${step++}: Staging changes and showing status + diff...`);
+    exec("git add -A", { cwd: tempDir });
+    console.log("\n— Staged files (git status) —\n");
+    exec("git status", { cwd: tempDir });
+    console.log("\n— Diff for versions.json (staged) —\n");
+    try {
+      exec("git diff --staged -- versions.json", { cwd: tempDir });
+    } catch (_) {
+      // ignore if no diff
+    }
+
+    // Step 5: Confirm
+    console.log("\nPlease review the staged changes above.");
+    const confirmed = await new Promise((resolve) => {
+      const readline = require("readline");
+      const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+      rl.question("Proceed with commit and push? (y/N): ", (answer) => {
+        rl.close();
+        const a = String(answer || "")
+          .trim()
+          .toLowerCase();
+        resolve(a === "y" || a === "yes");
+      });
+    });
+
+    if (!confirmed) {
+      console.log("✋ Operation aborted by user. Cleaning up...");
+      removeRecursive(tempDir);
+      console.log("✓ Removed temporary deploy repository\n");
+      return;
+    }
+
+    // Step 6: Commit and push
+    console.log(`Step ${step++}: Committing and pushing changes...`);
+    const commitMessage = `Delete documentation for ${versionToDelete}`;
+    const status = exec("git status --porcelain", { cwd: tempDir, silent: true });
+    if (!status) {
+      console.log("ℹ No changes staged; nothing to commit.");
+    } else {
+      exec(`git commit -m "${commitMessage}"`, { cwd: tempDir });
+      exec("git push", { cwd: tempDir });
+      console.log("✓ Changes committed and pushed successfully\n");
+    }
+
+    // Step 7: Cleanup
+    console.log(`Step ${step++}: Cleaning up...`);
+    removeRecursive(tempDir);
+    console.log("✓ Removed temporary deploy repository\n");
+
+    console.log("🎉 Documentation version deleted successfully!");
+    console.log(`Version: ${versionToDelete}`);
+  } catch (error) {
+    console.error("\n❌ Error during documentation deletion:");
+    console.error(error.message);
+    console.log("\nCleaning up after error...");
+    try {
+      if (deployRepoCloned && fs.existsSync(tempDir)) {
+        removeRecursive(tempDir);
+        console.log("✓ Removed temporary deploy repository");
+      }
+    } catch (cleanupError) {
+      console.error("Error during cleanup:", cleanupError.message);
+    }
+    process.exit(1);
+  }
+}
+
+// Decide which function to run based on parsed args
+if (deleteIndex !== -1) {
+  deleteDocs(deleteVersionArg);
+} else {
+  publishDocs();
+}
