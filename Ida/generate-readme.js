@@ -1,12 +1,21 @@
 #!/usr/bin/env node
 
+require("dotenv").config();
+
 const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
 // Configuration
-const GIT_URL = "https://github.com/innerbytes/idajs";
+const GIT_URL =
+  process.env.MAIN_REPO_URL ||
+  (() => {
+    console.warn(
+      "⚠️  Warning: MAIN_REPO_URL not set in .env file. Using default: https://example.com/repo"
+    );
+    return "https://example.com/repo";
+  })().replace(/\/$/, "");
 
 /**
  * Executes a shell command and returns the output
