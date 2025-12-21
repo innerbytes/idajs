@@ -38,10 +38,7 @@ function* goingToTheWindow() {
 // After the dialog near the window, Twinsen makes a few steps towards Zoe
 function* twinsenIsGoingToZoe() {
   // Turning South to face Zoe
-  yield doMove(
-    ida.Move.TM_ANGLE,
-    object.directionToAngle(object.ZoneDirections.South)
-  );
+  yield doMove(ida.Move.TM_ANGLE, object.directionToAngle(object.ZoneDirections.South));
 
   // Start walking animation
   yield doMove(ida.Move.TM_ANIM, 1);
@@ -141,10 +138,7 @@ function* dinoTurningAround() {
   yield doSceneStore((s) => (s.dinoPhase = 3));
 
   // Turning to the East
-  yield doMove(
-    ida.Move.TM_ANGLE,
-    object.directionToAngle(object.ZoneDirections.East)
-  );
+  yield doMove(ida.Move.TM_ANGLE, object.directionToAngle(object.ZoneDirections.East));
 
   // Playing "cringed" animation
   yield doMove(ida.Move.TM_ANIM, 7);
@@ -181,6 +175,9 @@ function* soundsFromBathroom() {
 
   // Doing infinitely
   while (true) {
+    // Good practice to put in the beginning of infinite loops to avoid coroutine counter from increasing indefinitely. Otherwise it might slow down the loading of new scenes after a while.
+    yield doReduce();
+
     // Wait randomly for 0 - 0.4 seconds
     yield doMove(ida.Move.TM_WAIT_NB_DIZIEME_RND, 40);
 
