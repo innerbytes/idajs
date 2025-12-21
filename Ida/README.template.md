@@ -30,7 +30,7 @@ If you find this project useful and would like to support its development, here 
 <details>
   <summary>Click to expand versions</summary>
 
-If you are using older version of IdaJS engine, and is not ready to upgrade yet, you can find the documentation for older versions here.
+If you are using older version of IdaJS engine, and are not ready to upgrade yet, you can find the documentation for older versions here.
 
 <div id="versions-list">Loading versions...</div>
 
