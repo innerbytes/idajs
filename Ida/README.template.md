@@ -485,7 +485,7 @@ This way you can combine your custom life script logic with the original LBA 2 b
 **What are Move Scripts?**
 
 Move scripts are **coroutines** that execute animation and movement sequences over multiple frames.
-Unlike life scripts that run completely each frame, move scripts pause and resume their execution across many frames.
+Unlike life scripts that run completely each frame, move scripts continue their execution across many frames.
 
 **Key Characteristics:**
 
@@ -933,7 +933,7 @@ Your mod project contains a small set of folders and files:
 - `src/` — your mod code. Start with `src/index.js` (or `.ts` for TS template). This is the entry point loaded by {{{ida}}}.
 - `media/` — assets used by your mod. {{{ida}}} will convert media assets to LBA2 formats automatically.
   - `media/sprites/` — small PNGs used as dialog sprites and similar inline images.
-  - `media/images/` — full‑screen PNGs for dialogs/backgrounds. 
+  - `media/images/` — full‑screen PNGs (640x480) for dialogs/backgrounds. 
 - Root files — tooling and configuration; not part of gameplay logic:
   - `package.json` — metadata (name, description, author) and handy scripts.
   - `.idajs.json` — {{{ida}}} config (the path to {{{ida}}} project).
