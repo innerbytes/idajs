@@ -439,15 +439,27 @@ async function deleteDocs(versionToDelete) {
     deployRepoCloned = true;
     console.log("✓ Repository cloned successfully\n");
 
-    // Step 2: Delete version folder if exists
+    // Step 2: Delete version folder (exact or with revision suffix)
     console.log(`Step ${step++}: Removing version folder if present...`);
-    const targetVersionDir = path.join(tempDir, versionToDelete);
-    if (fs.existsSync(targetVersionDir)) {
-      console.log(`  → Deleting folder: ${versionToDelete}`);
-      removeRecursive(targetVersionDir);
+    const entries = fs.readdirSync(tempDir, { withFileTypes: true });
+    let removedFolder = null;
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const name = entry.name;
+      if (name === versionToDelete || name.startsWith(`${versionToDelete}-`)) {
+        const folderPath = path.join(tempDir, name);
+        console.log(`  → Deleting folder: ${name}`);
+        removeRecursive(folderPath);
+        removedFolder = name;
+        break; // There will be only one folder starting with this version
+      }
+    }
+    if (removedFolder) {
       console.log("✓ Version folder removed\n");
     } else {
-      console.log(`ℹ No folder found for ${versionToDelete}; continuing to update versions.json`);
+      console.log(
+        `ℹ No folder found matching ${versionToDelete} or ${versionToDelete}-<rev>; continuing to update versions.json`
+      );
     }
 
     // Step 3: Update versions.json
