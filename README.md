@@ -1,6 +1,6 @@
 # IdaJS for Little Big Adventure 2
 
-<a href="https://ida.innerbytes.com" target="_blank"><img width="320" height="320" alt="IdaJS logo image" src="https://github.com/user-attachments/assets/b5b4557f-1fc7-414c-9ed2-88cd5f54617b" /></a><a href="https://www.youtube.com/watch?v=GrzfcKwTVaM" target="_blank"><img width="469" height="320" alt="IdaJS demo video" src="https://github.com/user-attachments/assets/56e88c8c-cfe1-424b-b980-ff7a71e469f3" /></a>
+<a href="https://ida.innerbytes.com" target="_blank"><img width="320" height="320" alt="IdaJS logo image" title="IdaJS - a JavaScript-powered scripting engine for LBA2" src="https://github.com/user-attachments/assets/b5b4557f-1fc7-414c-9ed2-88cd5f54617b" /></a><a href="https://www.youtube.com/watch?v=GrzfcKwTVaM" target="_blank"><img width="469" height="320" alt="IdaJS demo video image" title="See the demo video" src="https://github.com/user-attachments/assets/56e88c8c-cfe1-424b-b980-ff7a71e469f3" /></a>
 
 - [**See the demo mod video**](https://www.youtube.com/watch?v=GrzfcKwTVaM)
 - [**See the mod JavaScript code**](https://github.com/innerbytes/idajs/blob/main/Ida/Samples/bathroom-v1/src/index.js)
