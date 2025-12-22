@@ -89,7 +89,7 @@ Quality Control: Emmanuel Oualid
 
 ## Copyright
 
-IdaJS source code: Copyright (c) 2024–2025 Andriy Tevelyev ([Innerbytes Software](https://innerbytes.com)) and the IdaJS contributors. This notice applies only to the IdaJS source code added on top of the LBA2 community sources. The combined work (IdaJS + LBA2 sources) is distributed under the GNU General Public License v2 (GPLv2).
+IdaJS source code: Copyright (c) 2024–2025 Andriy Tevelyev ([Innerbytes Software](https://innerbytes.com)) and the IdaJS contributors. This notice applies only to the IdaJS source code added on top of the LBA2 community sources, and except third party source code. The combined work (IdaJS + LBA2 sources) is distributed under the GNU General Public License v2 (GPLv2).
 
 The intellectual property of LBA 2 is currently owned by [[2.21]](https://www.2point21.com/). Copyright [2.21]
 
