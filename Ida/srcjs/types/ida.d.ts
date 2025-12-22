@@ -45,7 +45,7 @@ export type LogLevel = LogLevels[keyof Omit<LogLevels, "$">];
  * - u8 - unsigned 8-bit integer (from 0 to 255)
  * - u16 - unsigned 16-bit integer (from 0 to 65535)
  * - i16 - signed 16-bit integer (from -32768 to 32767)
- * - pc16 - 16-bit signed offset (little-endian) used as a jump destination, absolute (from 0 to 65535)
+ * - pc16 - 16-bit signed offset (little-endian) used as a jump destination, absolute
  * - u32 - unsigned 32-bit integer (from 0 to 4294967295)
  *
  * @globalAccess {@link ida.Life}
