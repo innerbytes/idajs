@@ -304,9 +304,21 @@ In the original LBA 2 game the objects on each scene are pre-defined in the edit
 - The entry point of your mod should be {@link index!SceneEvents.afterLoadScene} event, to which you can subscribe using {@link index!Scene.addEventListener:1} function. This will allow you to configure the scene after it loads.
 - {@link index!SceneEvents.afterLoadScene} is also called _scene setup phase_.
 
-**Scene Entities**
+Read next about the scene Ids and 3 types of the main scene entities, that are used to build the gameplay.
 
-There are 3 types of configurable scene entities:
+#### Scene Identifiers
+
+When working with {{{ida}}}, you need to know integer scene identifiers (IDs) to refer to specific scenes in your scripts.
+
+{{{ida}}} will include scene names and ids to its type definitions later, but for now, just open the Lba2Remake Scene locator files, provided below, and read them. 
+The ids in these files are structured by `Islands` and by `Sections`.
+
+The sections in those files are also scenes, used to logically group other closely located scenes together. So, the section id is also just a scene id.
+
+- [Twinsun Planet scene ids](https://github.com/innerbytes/idajs/blob/main/Ida/srcjs/lba2editor/Twinsun.ts)
+- [Emerald Moon scene ids](https://github.com/innerbytes/idajs/blob/main/Ida/srcjs/lba2editor/Moon.ts)
+- [Zeelich Planet Surface scene ids](https://github.com/innerbytes/idajs/blob/main/Ida/srcjs/lba2editor/ZeelishSurface.ts)
+- [Zeelich Planet Undergas scene ids](https://github.com/innerbytes/idajs/blob/main/Ida/srcjs/lba2editor/ZeelishUndergas.ts)
 
 #### Game Objects (Actors)
 
