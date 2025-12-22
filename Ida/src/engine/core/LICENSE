@@ -1,8 +1,11 @@
 MIT License
 
 Copyright (c) 2025 Andriy Tevelyev
-This LICENSE applies to the original Ida Core source code located under the Ida/ directory.
-Ida Core is a separate project, which was used here to build IdaJS engine on top of the LBA2 community sources.
+
+This LICENSE applies to the original Ida Core source code located under 
+src/engine/core and in certain other files under the Ida/ directory. 
+Ida Core is a separate project, which was used here to build IdaJS engine 
+on top of the LBA2 community sources.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

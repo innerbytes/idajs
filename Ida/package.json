@@ -3,7 +3,8 @@
   "version": "0.2.3",
   "description": "IdaJS game engine for Little Big Adventure 2 game modding",
   "author": "Andriy Tevelyev",
-  "license": "MIT",
+  "license": "GPL-2.0",
+  "private": true,
   "scripts": {
     "build": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Release -Passive",
     "rebuild": "pwsh -ExecutionPolicy Bypass -File ../build.ps1 -BuildType Release -Clean -Passive",
