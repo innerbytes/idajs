@@ -66,6 +66,9 @@ Our scenario:
 scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
   if (sceneId !== 0) return;
 
+  // Resetting tempStore on each scene load
+  SceneProperties.tempStore = {};
+
   // Will handle life and move scripts for Zoe and Twinsen
   const twinsen = scene.getObject(SceneProperties.twinsenId);
   const zoe = scene.getObject(SceneProperties.zoeId);

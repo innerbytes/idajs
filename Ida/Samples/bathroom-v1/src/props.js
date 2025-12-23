@@ -42,6 +42,9 @@ const SceneProperties = {
 
   // Will use this for custom texts in the dialogs
   textId: -1,
+
+  // Temporary store for non-persistent triggers (for example, handy for checking player pressed action key)
+  tempStore: null,
 };
 
 // Export the objects that should be accessible in other modules

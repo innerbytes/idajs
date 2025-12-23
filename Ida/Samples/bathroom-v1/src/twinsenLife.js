@@ -258,7 +258,7 @@ module.exports = {
     if (
       currentZone === SceneProperties.zoneWindowValue &&
       isTriggeredTrue(
-        this, // When triggering Action we use "this" object as a store, because we don't need to persist the previous state of action pressed between save/load
+        SceneProperties.tempStore, // When triggering Action we use tempStore object as a store, because we don't need to persist the previous state of action pressed between save/load
         "action",
         ida.lifef(objectId, ida.Life.LF_ACTION) > 0
       )
