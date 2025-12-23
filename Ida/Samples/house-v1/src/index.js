@@ -23,7 +23,7 @@ const areaName = "house";
 const twinsenId = 0; // The player has always id 0
 const nitroMegaPenguinId = 1; // Is present on every scene where it can be used, and has always id 1. We don't need to use this in our mod script.
 const cellarDoorId = 2; // An actor for the cellar door
-const sendelPortraitId = 3; // An actor for the sendell portrait
+const sendellPortraitId = 3; // An actor for the sendell portrait
 const zoeId = 4; // Zoe
 const zoeOutId = 5; // An actor for scripts that process zoe outside timings
 // (because depdending how long Twinsen stays in the house, Zoe will be in different place outside)
@@ -57,8 +57,13 @@ const varKidnappedChildrenQuestState = 83; // Within this scene, this variable u
 // We can use it for custom text in the script
 let scriptTextId;
 
+// Use this as baking state for non-persistent triggers, for example checking player action key press
+let tempStore = null;
+
 // afterLoadScene event allows to modify the scene objects, zones, and waypoints when the scene is loaded
 scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
+  tempStore = {}; // Resetting temp store on each scene load
+
   // In this mod we handle the main house room only - this is the scene with id 0
   if (sceneId === 0) {
     setupHouseMainRoom(startMode);
@@ -94,6 +99,11 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
     }
     */
   }
+});
+
+// Handy to see which saved file is loaded
+scene.addEventListener(scene.Events.afterLoadSavedState, (sceneId, filePath) => {
+  console.log(`Saved state loaded for scene ${sceneId} from file ${filePath}`);
 });
 
 // Below there are life script handler functions for the scene actors
@@ -154,7 +164,7 @@ function setupHouseMainRoom(startMode) {
   const zoe = scene.getObject(zoeId);
   const cellarDoor = scene.getObject(cellarDoorId);
   const zoeOut = scene.getObject(zoeOutId);
-  const sendellPortrait = scene.getObject(sendelPortraitId);
+  const sendellPortrait = scene.getObject(sendellPortraitId);
 
   // Providing our mod's life script handler functions for the scene objects, so that we control their behavior
   twinsen.handleLifeScript(handleTwinsenLifeScript);
@@ -275,9 +285,8 @@ const houseTwinsenBehaviors = {
   playerControlled: (objectId) => {
     // Checking if action key is pressed by player
     if (
-      // When we check the action is triggered it is enough to use this object for the backing state,
-      // as we don't need to persist the previous state of the action button in the save game
-      isTriggeredTrue(this, "playerAction", ida.lifef(objectId, ida.Life.LF_ACTION) > 0)
+      // When we check the action is triggered it is enough to use tempStore object for the backing state as we don't need to persist the previous state of the action button in the save game
+      isTriggeredTrue(tempStore, "playerAction", ida.lifef(objectId, ida.Life.LF_ACTION) > 0)
     ) {
       // If distance to Zoe is close, we handle interactions with Zoe
       if (ida.lifef(objectId, ida.Life.LF_DISTANCE, zoeId) < 1250) {
@@ -865,7 +874,7 @@ function twinsenHandleInteractionsWithHouseZones(objectId) {
           readTextBehindSendellPortrait(objectId);
         } else {
           // Need to start opening of the portrait
-          startCoroutine(sendelPortraitId, "sendellPortraitIsOpening");
+          startCoroutine(sendellPortraitId, "sendellPortraitIsOpening");
         }
       }
 
