@@ -154,6 +154,7 @@ function setupHouseMainRoom(startMode) {
   const zoe = scene.getObject(zoeId);
   const cellarDoor = scene.getObject(cellarDoorId);
   const zoeOut = scene.getObject(zoeOutId);
+  const sendellPortrait = scene.getObject(sendelPortraitId);
 
   // Providing our mod's life script handler functions for the scene objects, so that we control their behavior
   twinsen.handleLifeScript(handleTwinsenLifeScript);
@@ -166,6 +167,7 @@ function setupHouseMainRoom(startMode) {
   zoe.handleMoveScript();
   cellarDoor.handleMoveScript();
   zoeOut.handleMoveScript();
+  sendellPortrait.handleMoveScript();
 
   // NOTE, that here we don't touch the NitroMecaPingouin object, which is always object with id 1 on every scene, where it can be used. By default this object is disabled, and is enabled only when the player uses this dangerous toy. The NitroMecaPingouin behavior is handled by LBA 2 internal code, and it has no life or move scripts.
 
