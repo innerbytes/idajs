@@ -453,19 +453,11 @@ void	MenuComportement( S32 affone )
 	if( Comportement==C_PROTOPACK
 	OR  Comportement==C_JETPACK )
 	{
-#ifdef	LBA_EDITOR
-		HQ_StopOneSample( NUM_SAMPLE(COMMON_NUM_DEF,SAMPLE_PROTOPACK) ) ;
-#else
 		HQ_StopOneSample( SAMPLE_PROTOPACK ) ;
-#endif
 		ptrobj->SampleAlways = 0 ;
 
 		// pour pouvoir restaurer anim marche protopack
-#ifdef	LBA_EDITOR
-		if( !stricmp(ptrobj->StringAnim,GEN_ANIM_MARCHE) )
-#else
 		if( ptrobj->GenAnim==GEN_ANIM_MARCHE )
-#endif
 		{
 			flagproto = TRUE ;
 		}
@@ -479,17 +471,6 @@ void	MenuComportement( S32 affone )
 
 		ptrobj->PtrFile3D = ListComportement[n].PtrFile3d ;
 
-#ifdef	LBA_EDITOR
-		bodyhero = SearchBody( ptrobj->StringBody, NUM_PERSO ) ;
-		if( bodyhero==-1 )
-		{
-			bodyhero = SearchBody( GEN_BODY_NORMAL, NUM_PERSO ) ;
-			if( bodyhero==-1 )
-			{
-				MessageF( TRUE, "Erreur: Body %s Comportement %d introuvable", GEN_BODY_NORMAL, n ) ;
-			}
-		}
-#else
 		bodyhero = SearchBody( ptrobj->GenBody, NUM_PERSO ) ;
 
 		if( bodyhero==-1 )
@@ -500,7 +481,6 @@ void	MenuComportement( S32 affone )
 				TheEnd( NAME_NOT_FOUND, Itoa( GEN_BODY_NORMAL ) ) ;
 			}
 		}
-#endif
 
 		ObjectInitBody( &InvObjTwinsen[n], (void*)bodyhero ) ;
 		ObjectInitAnim( &InvObjTwinsen[n], (void*)ListComportement[n].AnimRien )	;
@@ -536,9 +516,6 @@ void	MenuComportement( S32 affone )
 		ManageTime() ;
 		if( affone AND (TimerRefHR>affone+savetimer) )	flag = TRUE ;
 
-#ifdef	DEBUG_TOOLS
-		CheckSaveLogPcx( PtrPalNormal ) ;
-#endif
 		if( !affone )	MyGetInput() ;
 
 		if( release )
