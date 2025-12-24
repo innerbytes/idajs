@@ -112,7 +112,6 @@ namespace core
         {
             v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
 
-            /*
             // Binding host objects
             Console console;
             Timer timer;
@@ -122,7 +121,6 @@ namespace core
             timer.inscope_bind(isolate, global);
             performance.inscope_bind(isolate, global);
             require.inscope_bind(isolate, global);
-            */
 
             // Create a new context
             v8::Local<v8::Context> context = v8::Context::New(isolate, nullptr, global);
@@ -134,17 +132,15 @@ namespace core
 
                 // Add modScriptPath to the global object
 
-                /*
                 v8::Local<v8::String> scriptPathKey =
                     v8::String::NewFromUtf8(isolate, "modScriptPath").ToLocalChecked();
                 v8::Local<v8::String> scriptPathValue =
                     v8::String::NewFromUtf8(isolate, scriptFullPath.c_str()).ToLocalChecked();
                 globalObject->Set(context, scriptPathKey, scriptPathValue).Check();
-                */
 
                 // Binding client objects
-                // auto clientObjects = bindObjectsCallback();
-                // clientObjects->init(isolate, globalObject);
+                auto clientObjects = bindObjectsCallback();
+                clientObjects->init(isolate, globalObject);
 
                 try
                 {
