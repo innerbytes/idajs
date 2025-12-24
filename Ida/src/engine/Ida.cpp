@@ -303,6 +303,9 @@ namespace Ida
         mLastProfileTime = 0;
         mProfileFrameCount = 0;
 
+        // TODO - remove
+        return;
+
         if (!mIsScriptProvided)
         {
             return;
@@ -342,6 +345,9 @@ namespace Ida
     {
         clearMediaMemory();
 
+        // TODO - remove
+        return;
+
         if (!mIsScriptProvided)
         {
             return;
@@ -369,6 +375,9 @@ namespace Ida
 
     void Ida::afterLoadGame(const int sceneId, const char *loadFilePath)
     {
+        // TODO - remove
+        return;
+
         if (!mIsScriptProvided)
         {
             return;
@@ -400,6 +409,9 @@ namespace Ida
     {
         std::string filePathWithExtension = files::replaceExtension(saveFilePath, ".json");
 
+        // TODO - remove
+        return;
+
         if (!mIsScriptProvided)
         {
             // If no mod is enabled, deleting the json file that might have left from the previous mod session
@@ -425,6 +437,9 @@ namespace Ida
 
     void Ida::saveValidPos()
     {
+        // TODO - remove
+        return;
+
         if (!mIsScriptProvided)
         {
             return;
@@ -437,6 +452,11 @@ namespace Ida
 
     void Ida::restoreValidPos()
     {
+        if (!mIsScriptProvided)
+        {
+            return;
+        }
+
         core::runFunction(scene_loadBackup, true, [](v8::Local<v8::Context> context) {
             return core::inscope_GetObject(context, SceneObjectName);
         });
@@ -519,6 +539,9 @@ namespace Ida
 
     const bool Ida::controlsDialogText(const int textId)
     {
+        // TODO - temp - remove
+        return false;
+
         if (!mIsScriptProvided)
         {
             return false;
@@ -561,6 +584,9 @@ namespace Ida
 
     const unsigned char Ida::getDialogFlag(const int textId)
     {
+        // TODO - remove
+        return 0;
+
         if (!mIsScriptProvided)
         {
             return 0;
@@ -658,6 +684,10 @@ namespace Ida
     const DialogColorHandle Ida::getTextColor(uint32_t textId)
     {
         DialogColorHandle resultColorHandle;
+
+        // TODO - remove
+        return resultColorHandle;
+
         if (!mIsScriptProvided)
         {
             return resultColorHandle;

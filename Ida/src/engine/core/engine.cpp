@@ -104,20 +104,25 @@ namespace core
             return false;
         }
 
+        callback();
+
         // Scopes
         v8::Isolate::Scope isolateScope(isolate);
         v8::HandleScope mainScope(isolate);
         {
+            v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
+
+            /*
             // Binding host objects
             Console console;
             Timer timer;
             Performance performance;
             Require require;
-            v8::Local<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
             console.inscope_bind(isolate, global);
             timer.inscope_bind(isolate, global);
             performance.inscope_bind(isolate, global);
             require.inscope_bind(isolate, global);
+            */
 
             // Create a new context
             v8::Local<v8::Context> context = v8::Context::New(isolate, nullptr, global);
@@ -128,24 +133,29 @@ namespace core
                 v8::Local<v8::Object> globalObject = context->Global();
 
                 // Add modScriptPath to the global object
+
+                /*
                 v8::Local<v8::String> scriptPathKey =
                     v8::String::NewFromUtf8(isolate, "modScriptPath").ToLocalChecked();
                 v8::Local<v8::String> scriptPathValue =
                     v8::String::NewFromUtf8(isolate, scriptFullPath.c_str()).ToLocalChecked();
                 globalObject->Set(context, scriptPathKey, scriptPathValue).Check();
+                */
 
                 // Binding client objects
-                auto clientObjects = bindObjectsCallback();
-                clientObjects->init(isolate, globalObject);
+                // auto clientObjects = bindObjectsCallback();
+                // clientObjects->init(isolate, globalObject);
 
                 try
                 {
+                    /*
                     std::string globalScriptPath = "global.js";
                     auto globalScriptResult = inscope_runScript(context, globalScriptPath);
                     if (globalScriptResult.IsEmpty())
                     {
                         throw std::logic_error("Failed to load global script");
                     }
+                    */
                 }
                 catch (std::logic_error &e)
                 {
@@ -153,7 +163,7 @@ namespace core
                     return false;
                 }
 
-                callback();
+                // callback();
             }
         }
 
@@ -338,6 +348,9 @@ namespace core
 
     void processTasks()
     {
+        // TODO - temp
+        return;
+
         if (!isInit)
         {
             return;
