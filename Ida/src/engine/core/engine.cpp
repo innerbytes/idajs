@@ -104,7 +104,8 @@ namespace core
             return false;
         }
 
-        callback();
+        // If we call the callback here, outside of v8 scope, it never crashes
+        // callback();
 
         // Scopes
         v8::Isolate::Scope isolateScope(isolate);
@@ -159,10 +160,12 @@ namespace core
                     return false;
                 }
 
-                // callback();
+                // If we run the callback here, use the Comportment in the game from 1 to any amount of time, then exit the game loop, this function causes V8 crash in the isolate->Exit or context->Exit methods (one or another happens)
+                callback();
             }
         }
 
+        // That's where CRASH happens
         return true;
     }
 

@@ -1287,7 +1287,8 @@ startloop:
                      OR (ptrobj->Move == MOVE_BUGGY_MANUAL))
                 )
                 {
-                        MenuComportement( FALSE ) ;
+                        // NOTE - calling this causes V8 crash later in the loop
+                       MenuComportement( FALSE ) ;
                 }
 
                 // changement d'arme ou de comportement
