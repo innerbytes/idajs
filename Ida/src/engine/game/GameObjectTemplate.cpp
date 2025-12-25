@@ -40,6 +40,7 @@ namespace Ida
                                FN(getTalkColor),
                                FN(getEntity),
                                FN(getBody),
+                               FN(getAllBodies),
                                FN(getAnimation),
                                FN(getBonusFlags),
                                FN(getBonusQuantity),

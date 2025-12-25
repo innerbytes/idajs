@@ -100,7 +100,7 @@ public:
     /// Allocates outBodies array, the caller is responsible to free it
     /// @param outCount - will be 0 if no bodies found, no memory allocated in this case
     /// @returns true if no error; false, if error (no memory allocated in this case)
-    bool findAllBodies(int32_t numobj, uint8_t **outBodies, int32_t *outCount);
+    bool findAllBodies(int numobj, unsigned char **outBodies, int *outCount);
 
     void requestPaletteSync();
 

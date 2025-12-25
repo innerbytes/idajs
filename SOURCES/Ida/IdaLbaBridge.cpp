@@ -241,7 +241,7 @@ bool IdaLbaBridge::testObjectZoneDirection(int objectX, int objectZ, int objectB
     return TestObjectZoneDirection(objectX, objectZ, objectBeta, zonePtr, direction);    
 }
 
-bool findAllBodies(int32_t numobj, uint8_t **outBodies, int32_t *outCount) 
+bool IdaLbaBridge::findAllBodies(int numobj, unsigned char **outBodies, int *outCount) 
 {
 	return FindAllBodies(numobj, outBodies, (S32 *)outCount);
 }
