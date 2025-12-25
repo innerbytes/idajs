@@ -1210,3 +1210,82 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 }
 /*══════════════════════════════════════════════════════════════════════════*/
 
+// Ida - Find all the valid animation numbers in an object
+bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount)
+{
+	U8 command;
+	U16 numgene;
+	U16 *anims;
+	S32	count;
+
+	*outAnims = 0;
+	*outCount = 0;
+
+	T_OBJET *ptrobj = &ListObjet[numobj];
+	if (!ptrobj->IndexFile3D) return false;
+
+	U8 *ptrc = ptrobj->PtrFile3D;
+	if (!ptrc) return false;
+
+	// First pass: count the number of animations
+	count = 0;
+	while((command = *ptrc++) != 255)
+	{
+		switch(command)
+		{
+		case F_ANIM:
+			count++;
+			ptrc+=2;	// skip num name generique (U16)
+			ptrc += *ptrc;	// skip to next
+			break;
+
+		case F_BODY:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+			break;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	if (count == 0) return true;
+
+	// Allocate array for animation numbers
+	anims = (U16*)malloc(count * sizeof(U16));
+	if (!anims) return false;
+
+	// Second pass: collect all animation numbers
+	ptrc = ptrobj->PtrFile3D;
+	count = 0;
+
+	while((command = *ptrc++) != 255)
+	{
+		switch(command)
+		{
+		case F_ANIM:
+			numgene = *(U16*)ptrc; 	// lit num name generique
+			anims[count++] = numgene;
+			ptrc += 2;	// skip U16
+			ptrc += *ptrc;	// skip to next
+			break;
+
+		case F_BODY:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+			break;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	*outAnims = anims;
+	*outCount = count;
+
+	return true;
+}
+/*══════════════════════════════════════════════════════════════════════════*/
+

@@ -246,6 +246,11 @@ bool IdaLbaBridge::findAllBodies(int numobj, unsigned char **outBodies, int *out
 	return FindAllBodies(numobj, outBodies, (S32 *)outCount);
 }
 
+bool IdaLbaBridge::findAllAnimations(int numobj, unsigned short **outAnims, int *outCount)
+{
+	return FindAllAnims(numobj, outAnims, (S32 *)outCount);
+}
+
 void IdaLbaBridge::requestPaletteSync() 
 {
 	FlagPal = TRUE;

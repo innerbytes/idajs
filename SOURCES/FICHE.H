@@ -24,6 +24,9 @@ extern S32  SearchBody(U8 numbody,S32 numobj);
 // Ida - new function to get all body numbers in an object
 extern bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount);
 
+// Ida - new function to get all animation numbers in an object
+extern bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount);
+
 /*--------------------------------------------------------------------------*/
 
 #endif	// FICHE_H

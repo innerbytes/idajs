@@ -102,6 +102,13 @@ public:
     /// @returns true if no error; false, if error (no memory allocated in this case)
     bool findAllBodies(int numobj, unsigned char **outBodies, int *outCount);
 
+    /// @brief Finds all animations used by an object in the current scene
+    /// Reads object 3D Entity, so it needs to be present
+    /// Allocates outAnims array, the caller is responsible to free it
+    /// @param outCount - will be 0 if no animations found, no memory allocated in this case
+    /// @returns true if no error; false, if error (no memory allocated in this case)
+    bool findAllAnimations(int numobj, unsigned short **outAnims, int *outCount);
+
     void requestPaletteSync();
 
     int getGold();

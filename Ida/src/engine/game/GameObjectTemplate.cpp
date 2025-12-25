@@ -42,6 +42,7 @@ namespace Ida
                                FN(getBody),
                                FN(getAllBodies),
                                FN(getAnimation),
+                               FN(getAllAnimations),
                                FN(getBonusFlags),
                                FN(getBonusQuantity),
                                FN(getControlMode),
@@ -253,6 +254,14 @@ namespace Ida
             return;
         }
 
+        if (count == 0)
+        {
+            Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, 0);
+            Local<v8::Uint8Array> uint8Array = v8::Uint8Array::New(arrayBuffer, 0, 0);
+            args.GetReturnValue().Set(uint8Array);
+            return;
+        }
+
         std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
             allBodies, count, [](void *data, size_t length, void *deleter_data) { delete[] static_cast<U8 *>(data); },
             nullptr);
@@ -272,6 +281,43 @@ namespace Ida
         BIND_OBJECT(T_OBJET, object);
         uint16_t animation = object->GenAnim;
         args.GetReturnValue().Set(animation);
+    }
+
+    void GameObjectTemplate::getAllAnimations(const FunctionCallbackInfo<Value> &args)
+    {
+        BEGIN_SCOPE
+        EPP_DENY(ExecutionPhase::None, ExecutionPhase::BeforeSceneLoad)
+        BIND_OBJECT(T_OBJET, object);
+
+        uint16_t *allAnims;
+        int32_t count;
+        bool result = lbaBridge->findAllAnimations(objectIndexValue, &allAnims, &count);
+        if (!result)
+        {
+            core::inscope_ThrowReferenceError(
+                isolate,
+                "Failed to get all animations for the object. Make sure you set object Entity first. Current entity: " +
+                    std::to_string(object->IndexFile3D));
+            return;
+        }
+
+        if (count == 0)
+        {
+            Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, 0);
+            Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, 0);
+            args.GetReturnValue().Set(uint16Array);
+            return;
+        }
+
+        std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
+            allAnims, count * sizeof(uint16_t), 
+            [](void *data, size_t length, void *deleter_data) { delete[] static_cast<U16 *>(data); },
+            nullptr);
+
+        Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, std::move(backingStore));
+        Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, count);
+
+        args.GetReturnValue().Set(uint16Array);
     }
 
     void GameObjectTemplate::getBonusQuantity(const FunctionCallbackInfo<Value> &args)
