@@ -240,8 +240,8 @@ namespace Ida
         EPP_DENY(ExecutionPhase::None, ExecutionPhase::BeforeSceneLoad)
         BIND_OBJECT(T_OBJET, object);
 
-        U8 *allBodies;
-        S32 count;
+        uint8_t *allBodies;
+        int32_t count;
         bool result = lbaBridge->findAllBodies(objectIndexValue, &allBodies, &count);
         if (!result)
         {

@@ -95,6 +95,13 @@ public:
     /// @param direction - direction to check (if set to None, will be read from zone->Info2)
     bool testObjectZoneDirection(int objectX, int objectZ, int objectBeta, void *zone, ZoneDirection direction);
 
+    /// @brief Finds all bodies used by an object in the current scene
+    /// Reads object 3D Entity, so it needs to be present
+    /// Allocates outBodies array, the caller is responsible to free it
+    /// @param outCount - will be 0 if no bodies found, no memory allocated in this case
+    /// @returns true if no error; false, if error (no memory allocated in this case)
+    bool findAllBodies(int32_t numobj, uint8_t **outBodies, int32_t *outCount);
+
     void requestPaletteSync();
 
     int getGold();

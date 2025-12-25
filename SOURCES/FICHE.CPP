@@ -1172,6 +1172,8 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 		}
 	}
 
+	if (count == 0) return true;
+
 	// Allocate array for body numbers
 	bodies = (U8*)malloc(count);
 	if (!bodies) return false;
