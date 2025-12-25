@@ -30,7 +30,7 @@
 ;	parm		[eax] [ecx] [edx]	\
 ;	modify		[ebx esi edi]
 
-RotateM		proc
+RotateM		proc uses ebx esi edi
 
 		and		edx, 4095
 		jz		norot

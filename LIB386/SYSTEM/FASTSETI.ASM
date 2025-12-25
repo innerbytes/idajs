@@ -14,9 +14,9 @@
 
 ;#pragma aux FastSetI	       	       	\
 ;	parm	[edi] [eax] [ecx]	\
-;	modify	[ebx edx]
+;	modify	[ebx edx esi]
 
-FastSetI		PROC
+FastSetI		PROC uses ebx esi
 
 			and	eax, 0FFh	; 000C
 
