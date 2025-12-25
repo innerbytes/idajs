@@ -36,6 +36,7 @@ namespace Ida
     static IdaSpy *spy = nullptr;
 
     // Move and life handlers
+    // TODO - let's clean globals up before exiting the context, so they don't hold reference to the old context
     static v8::Global<v8::Function> mSceneMoveHandler;
     static std::unordered_map<int, v8::Global<v8::Function>> mSceneLifeHandlers;
 
