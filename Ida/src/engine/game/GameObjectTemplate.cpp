@@ -252,15 +252,14 @@ namespace Ida
             return;
         }
 
-        Local<Array> returnArray = Array::New(isolate, count);
-        for (S32 i = 0; i < count; i++)
-        {
-            returnArray->Set(isolate->GetCurrentContext(), i, Integer::New(isolate, allBodies[i])).Check();
-        }
+        std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
+            allBodies, count, [](void *data, size_t length, void *deleter_data) { delete[] static_cast<U8 *>(data); },
+            nullptr);
 
-        delete[] allBodies;
+        Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, std::move(backingStore));
+        Local<v8::Uint8Array> uint8Array = v8::Uint8Array::New(arrayBuffer, 0, count);
 
-        args.GetReturnValue().Set(returnArray);
+        args.GetReturnValue().Set(uint8Array);
     }
 
     // The higher byte contains the animation number, if it's a special actor animation
