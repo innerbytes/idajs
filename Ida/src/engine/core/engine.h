@@ -18,7 +18,10 @@ namespace core
 
     v8::Isolate *getIsolate();
 
-    bool runModScript(std::string &scriptFullPath, BindObjectsCallback bindObjectsCallback, RunCallback callback);
+    /// @brief Use it to run a javascript from user code.
+    /// Provide cleanupCallback if any Global or Persistent handles need to be cleaned up.
+    bool runModScript(std::string &scriptFullPath, BindObjectsCallback bindObjectsCallback, RunCallback callback,
+                      RunCallback cleanupCallback = nullptr);
 
     void runSyncEvent(const std::string &eventName, const ObjectProviderCallback objectProvider,
                       const ArgumentsProviderCallback argumentsProvider = nullptr);

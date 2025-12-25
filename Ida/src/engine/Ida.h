@@ -53,7 +53,7 @@ namespace Ida
 
         void clearMedia();
         void clearMediaMemory();
-        void clearSceneLoadOverrides();
+        __declspec(noinline) void clearGlobals();
         void clearSceneHandlers();
 
         long long mLastProfileTime = 0;

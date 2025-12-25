@@ -97,7 +97,8 @@ namespace core
         return isolate;
     }
 
-    bool runModScript(std::string &scriptFullPath, BindObjectsCallback bindObjectsCallback, RunCallback callback)
+    bool runModScript(std::string &scriptFullPath, BindObjectsCallback bindObjectsCallback, RunCallback callback,
+                      RunCallback cleanupCallback)
     {
         if (!isInit)
         {
@@ -149,13 +150,23 @@ namespace core
             catch (std::logic_error &e)
             {
                 err() << "JS compile error: " << e.what();
+                if (cleanupCallback)
+                {
+                    cleanupCallback();
+                }
+
                 return false;
             }
 
             callback();
 
-            return true;
+            if (cleanupCallback)
+            {
+                cleanupCallback();
+            }
         }
+
+        return true;
     }
 
     void runSyncEvent(const std::string &eventName, const ObjectProviderCallback objectProvider,

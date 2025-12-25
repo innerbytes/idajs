@@ -191,9 +191,12 @@ namespace Ida
     }
 
     // This should be only reset when the mod is reloaded
-    void Ida::clearSceneLoadOverrides()
+    // Cleaning V8 Globals is safe, even before V8 is initialized
+    void Ida::clearGlobals()
     {
         mSceneMoveHandler.Reset();
+        clearSceneHandlers();
+
         mForcedStorm = 0;
         mForcedIslandModel = 0;
         mLightningDisabled = false;
@@ -247,7 +250,7 @@ namespace Ida
         // Cleaning up before new run
         mIsScriptProvided = false;
         clearMedia();
-        clearSceneLoadOverrides();
+        clearGlobals();
 
         if (!mIsModProvided)
         {
@@ -271,7 +274,7 @@ namespace Ida
             auto lbaBridge = mLbaBridge.get();
             bool runSuccess = core::runModScript(
                 modEntryScriptPath, [lbaBridge]() { return std::make_unique<LbaClientObjects>(lbaBridge, idaBridge); },
-                gameLoop);
+                gameLoop, [this]() { clearGlobals(); });
 
             if (!runSuccess)
             {
@@ -437,6 +440,11 @@ namespace Ida
 
     void Ida::restoreValidPos()
     {
+        if (!mIsScriptProvided)
+        {
+            return;
+        }
+
         core::runFunction(scene_loadBackup, true, [](v8::Local<v8::Context> context) {
             return core::inscope_GetObject(context, SceneObjectName);
         });
