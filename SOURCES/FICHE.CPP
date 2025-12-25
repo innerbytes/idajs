@@ -1060,6 +1060,7 @@ S32	SearchAnim( U16 numanim, S32 numobj )
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
+
 S32	SearchBody( U8 numbody, S32 numobj )
 {
 	U8	command ;
@@ -1128,6 +1129,78 @@ S32	SearchBody( U8 numbody, S32 numobj )
 		}
 	}
 	return -1 ;
+}
+/*══════════════════════════════════════════════════════════════════════════*/
+
+// Ida - Find all the valid body numbers in an object
+void FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
+{
+	U8 command;
+	U8 numgene;
+	U8 *bodies;
+	S32	count;
+
+	*outBodies = 0;
+	*outCount = 0;
+
+	T_OBJET *ptrobj = &ListObjet[numobj];
+	U8 *ptrc = ptrobj->PtrFile3D;
+	if (!ptrc) return;
+
+	// First pass: count the number of bodies
+	count = 0 ;
+	while((command = *ptrc++) != 255)
+	{
+		switch(command)
+		{
+		case F_BODY:
+			count++;
+			ptrc++;	// skip num name generique
+			ptrc += *ptrc;	// skip to next
+			break ;
+
+		case F_ANIM:
+			ptrc+=2;	// gen sur S16
+			ptrc += *ptrc;
+			break ;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	// Allocate array for body numbers
+	bodies = (U8*)malloc(count);
+	if (!bodies) return;
+
+	// Second pass: collect all body numbers
+	ptrc = ptrobj->PtrFile3D ;
+	count = 0;
+
+	while((command = *ptrc++) != 255)
+	{
+		switch( command )
+		{
+		case F_BODY:
+			numgene = *ptrc++; 	// lit num name generique
+			bodies[count++] = numgene;
+			ptrc += *ptrc;	// skip to next
+			break;
+
+		case F_ANIM:
+			ptrc+=2;	// gen sur S16
+			ptrc += *ptrc;
+			break;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	*outBodies = bodies;
+	*outCount = count;
 }
 /*══════════════════════════════════════════════════════════════════════════*/
 

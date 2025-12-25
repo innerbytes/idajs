@@ -21,4 +21,9 @@ extern S32  SearchAnim(U16 numanim,S32 numobj);
 extern S32  SearchBody(U8 numbody,S32 numobj);
 /*--------------------------------------------------------------------------*/
 
+// Ida - new function to get all body numbers in an object
+extern void FindAllBodies(S32 numobj,U8** outBodies,S32* outCount);
+
+/*--------------------------------------------------------------------------*/
+
 #endif	// FICHE_H
