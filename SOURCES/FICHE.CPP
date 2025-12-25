@@ -1133,7 +1133,7 @@ S32	SearchBody( U8 numbody, S32 numobj )
 /*══════════════════════════════════════════════════════════════════════════*/
 
 // Ida - Find all the valid body numbers in an object
-void FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
+bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 {
 	U8 command;
 	U8 numgene;
@@ -1144,8 +1144,10 @@ void FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 	*outCount = 0;
 
 	T_OBJET *ptrobj = &ListObjet[numobj];
+	if (!ptrobj->IndexFile3D) return false;
+
 	U8 *ptrc = ptrobj->PtrFile3D;
-	if (!ptrc) return;
+	if (!ptrc) return false;
 
 	// First pass: count the number of bodies
 	count = 0 ;
@@ -1172,7 +1174,7 @@ void FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 
 	// Allocate array for body numbers
 	bodies = (U8*)malloc(count);
-	if (!bodies) return;
+	if (!bodies) return false;
 
 	// Second pass: collect all body numbers
 	ptrc = ptrobj->PtrFile3D ;
@@ -1201,6 +1203,8 @@ void FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 
 	*outBodies = bodies;
 	*outCount = count;
+
+	return true;
 }
 /*══════════════════════════════════════════════════════════════════════════*/
 

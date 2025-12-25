@@ -32,6 +32,7 @@ namespace Ida
         static void getTalkColor(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void getEntity(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void getBody(const v8::FunctionCallbackInfo<v8::Value> &args);
+        static void getAllBodies(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void getAnimation(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void getSpriteId(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void getLifeScript(const v8::FunctionCallbackInfo<v8::Value> &args);

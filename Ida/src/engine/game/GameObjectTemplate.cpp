@@ -234,6 +234,35 @@ namespace Ida
         args.GetReturnValue().Set(body);
     }
 
+    void GameObjectTemplate::getAllBodies(const FunctionCallbackInfo<Value> &args)
+    {
+        BEGIN_SCOPE
+        EPP_DENY(ExecutionPhase::None, ExecutionPhase::BeforeSceneLoad)
+        BIND_OBJECT(T_OBJET, object);
+
+        U8 *allBodies;
+        S32 count;
+        bool result = lbaBridge->findAllBodies(objectIndexValue, &allBodies, &count);
+        if (!result)
+        {
+            core::inscope_ThrowReferenceError(
+                isolate,
+                "Failed to get all bodies for the object. Make sure you set object Entity first. Current entity: " +
+                    std::to_string(object->IndexFile3D));
+            return;
+        }
+
+        Local<Array> returnArray = Array::New(isolate, count);
+        for (S32 i = 0; i < count; i++)
+        {
+            returnArray->Set(isolate->GetCurrentContext(), i, Integer::New(isolate, allBodies[i])).Check();
+        }
+
+        delete[] allBodies;
+
+        args.GetReturnValue().Set(returnArray);
+    }
+
     // The higher byte contains the animation number, if it's a special actor animation
     // The lower bytes can contain general animation numbers
     void GameObjectTemplate::getAnimation(const FunctionCallbackInfo<Value> &args)
@@ -580,7 +609,7 @@ namespace Ida
         {
             flags[objectIndexValue] &= ~IDA_OBJ_LIFE_ENABLED;
         }
-        else 
+        else
         {
             flags[objectIndexValue] |= IDA_OBJ_LIFE_ENABLED;
         }
