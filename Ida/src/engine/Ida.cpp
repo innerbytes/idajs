@@ -248,6 +248,10 @@ namespace Ida
         // Cleaning up before new run
         mIsScriptProvided = false;
         clearMedia();
+
+        // TODO - make a cleanup callback out of it that can be passed to core::runModScript
+        // Also add a clearSceneHandlers
+        // Name it maybe cleanupGlobals()
         clearSceneLoadOverrides();
 
         if (!mIsModProvided)
