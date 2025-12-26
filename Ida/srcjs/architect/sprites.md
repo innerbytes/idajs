@@ -1,0 +1,353 @@
+## Sprites information
+
+Extracted from lba2_sprites.hqd from LBAArchitect.
+
+Use this to find an existing LBA2 sprite id when creating your mods.
+The sprite id is set by calling `actor.setSpriteId(id)` on your actor object, that is a sprite (has IsSprite static flag set).
+
+- 0: Text window top-left corner
+- 1: Text window bottom-left corner
+- 2: Text window bottom-right corner
+- 3: Text window top-right corner
+- 4: Text window top-left corner (filled)
+- 5: Text window bottom-left corner (filled)
+- 6: Text window bottom-right corner (filled)
+- 7: Text window top-right corner (filled)
+- 8: Twinsen running
+- 9: Sendell 'S' symbol (used in Save Game)
+- 10: Text window rounded rectange (filled)
+- 11: LBA 2 logo #1
+- 12: LBA 2 logo #2
+- 13: Cross
+- 14: Text window top-right Baldino picture
+- 15: Text window top-right Zoe picture
+- 16: Twinsen's Odyssey logo #1
+- 17: Twinsen's Odyssey logo #2
+
+- 18-99: 1x1 sprite (unused)
+
+- 100: Door (SE)
+- 101: Portait of Sendell (SW)
+- 102: Uncoevered text (SW)
+- 103: Dark-cyan door (SW)
+- 104: Red door (SW)
+- 105: Crate-moving apparatus
+- 106: Dark-gray elevator
+- 107: Cyan crate
+- 108: Light-brown fragile crate
+- 109: Unpushed lever (SE)
+- 110: Unpushed lever (SW)
+- 111: Pushed lever (SE)
+- 112: Pushed lever (SW)
+- 113: Empty Proto-Pack crate
+- 114: Light-cyan door, left part (SE)
+- 115: Light-cyan door, right part (SE)
+- 116: Back arrow (SW)
+- 117: Forward arrow (SW)
+- 118: Back arrow (SE)
+- 119: Forward arrow (SE)
+- 120: Wooden door with glass (SE)
+- 121: Portrait of yellow groboclone (SW)
+- 122: Unpushed tunic-releasing lever (SE)
+- 123: Pushed tunic-releasing lever (SE)
+- 124: Dark-cyan gate (SE)
+- 125: Dark-cyan gate (SW)
+- 126: Top of weather-wizard's kettle
+- 127: Unpushed floor lever (SW)
+- 128: Pushed floor lever (SW)
+- 129: Sewers elevator
+- 130: Rubbish bin top with umbrella inside
+- 131: Electricity switch off (SW)
+- 132: Electricity switch on (SW)
+- 133: Dark-brown door, left part (SW)
+- 134: Dark-brown door, right part (SW)
+- 135: Dark-brown door, right part (SE)
+- 136: Dark-brown door, left part (SE)
+- 137: Closed top of chest (SW)
+- 138: Open top of chest (SW)
+- 139: Spiked door (SW)
+- 140: Spiked door (SE)
+- 141: Golden flat top (SW)
+- 142: Hacienda elevator
+- 143: Black transparent ellipse
+- 144: Top of a light
+- 145: Top of a desk (covered text) (SW)
+- 146: Top of a desk (uncovered text) (SW)
+- 147: Chain (SW)
+- 148: Top of a white desk, with documentation (SE)
+- 149: Top of a white desk, closed (SE)
+- 150: Top of a white desk, w/ controls, w/o token (SW)
+- 151: Top of a white desk, w/ controls, w/ token (SW)
+- 152: Top of a white desk, animated token, part #1 (SW)
+- 153: Top of a white desk, animated token, part #2 (SW)
+- 154: Top of a white desk, animated token, part #3 (SW)
+- 155: Top of a white desk, with unpushed controls (SW)
+- 156: Top of a white desk, with pushed controls (SW)
+- 157: Yellow magic ball
+- 158: Open proto-pack crate
+- 159: Door with round window (SE)
+- 160: Elevator in Esmers' base
+- 161: Dark-cyan door (SE)
+- 162: Pyramid-shaped key
+- 163: Top of a barrel
+- 164: Magic slate back arrow, unpushed
+- 165: Magic slate forward arrow, unpushed
+- 166: Magic slate back arrow, pushed
+- 167: Magic slate forward arrow, pushed
+- 168: Piece of gray wall (SE)
+- 169: Gray-cyan gate (SE)
+- 170: Talking bubble (speaker at left)
+- 171: Talking bubble (speaker at right)
+- 172: Floppy disk icon
+- 173: Twinsen's face icon
+- 174: Light-gray screw-holders
+- 175: Dark-gray screw-holders
+- 176: Three mushrooms #1
+- 177: Two mushrooms
+- 178: Three mushrooms #2
+- 179: One mushroom
+- 180: Sewers 'S' symbol, w/o water
+- 181: Zeelichian (Otringal) elevator
+- 182: Dark-cyan door with keyhole (SW)
+- 183: Dark-cyan gate with keyhole (SE)
+- 184: Orange door with round window (SW)
+- 185: Orange door with round window (SE)
+- 186: Dark-cyan gate with keyhole (SW)
+- 187: Wall for #185
+- 188: Metal bar stripes (SW)
+- 189: Metal bar stripes (SE)
+- 190: Sewers 'S' symbol, animated water, part #1
+- 191: Sewers 'S' symbol, animated water, part #2
+- 192: Sewers 'S' symbol, animated water, part #3
+- 193: Sewers 'S' symbol, animated water, part #4
+- 194: Lever (SE)
+- 195: Lever bottom???? (SE)
+- 196: Lever (SW)
+- 197: Lever bottom???? (SW)
+- 198: Ventilation holes (SW)
+- 199: Tourist information terminal top, animation part #1 (SE)
+- 200: Tourist information terminal top, animation part #2 (SE)
+- 201: Token terminal, w/o token (SW)
+- 202: Token terminal, token animation, part #1
+- 203: Token terminal, token animation, part #2
+- 204: Token terminal, token animation, part #3
+- 205: Unpushed switch (SE)
+- 206: Pushed switch (SE)
+- 207: Unpushed switch (SW)
+- 208: Pushed switch (SW)
+- 209: Shuttle space-suit-blocking door (SW)
+- 210: Emerald moon-type door (SE)
+- 211: Animated, door-controlling, metal wheel, part #1
+- 212: Animated, door-controlling, metal wheel, part #2
+- 213: Animated, door-controlling, metal wheel, part #3
+- 214: Colored lever, OFF (SE)
+- 215: Colored level, turning ON, part #1 (SE)
+- 216: Colored level, turning ON, part #2 (SE)
+- 217: Small door-controlling lever, unpushed (SW)
+- 218: Small door-controlling lever, pushed (SW)
+- 219: Small door-controlling lever, unpushed (SE)
+- 220: Small door-controlling lever, pushed (SE)
+- 221: Empty sprite
+- 222: Metal cylinder with red indicator OFF
+- 223: Metal cylinder with red indicator ON
+- 224: Metal cylinder with lever, turned down (SE)
+- 225: Metal cylinder with lever, turned left (SE)
+- 226: Metal cylinder with light OFF (SE)
+- 227: Metal cylinder with light ON (SE)
+- 228: Emerald moon radio, animation part #1 (SW)
+- 229: Emerald moon radio, animation part #2 (SW)
+- 230: Emerald moon radio, broken (SW)
+- 231: Museum door-controlling lever, unpushed (SE)
+- 232: Museum door-controlling lever, pushed (SE)
+- 233: Proto-Pack crate with the Proto-Pack
+- 234: Otringal upper-city door with keyhole (SE)
+- 235: Otringal upper-city door with keyhole (SW)
+- 236: Gray-yellow door (SE)
+- 237: Emerald moon-type door with keyhole (SW)
+- 238: Notes (SW)
+- 239: Brown-black elevator
+- 240: Brown-black gate with keyhole (SW)
+- 241: Some turning circle animation #1, left, part #1 (SW)
+- 242: Some turning circle animation #1, left, part #2 (SW)
+- 243: Some turning circle animation #1, left, part #3 (SW)
+- 244: Brown-black door with keyhole (SW)
+- 245: Some turning circle animation #1, right, part #1 (SW)
+- 246: Some turning circle animation #1, right, part #2 (SW)
+- 247: Some turning circle animation #1, right, part #3 (SW)
+- 248: Many Twinsunian stones (SE)
+- 249: Many Twinsunian stones (SW)
+- 250: Dark Monk statue in deposti (SW)
+- 251: Covered dark-cyan crate
+- 252: Uncovered dark-cyan crate
+- 253: Some white stones
+- 254: Some turning circle animation #2, left, part #1 (SW)
+- 255: Some turning circle animation #2, left, part #2 (SW)
+- 256: Some turning circle animation #2, left, part #3 (SW)
+- 257: Orange wall piece with left arrow (SE)
+- 258: Orange wall piece with right arrow (SE)
+- 259: Unpushed lever (SW)
+- 260: Pushed lever (SW)
+- 261: Wall light, turned ON (SE)
+- 262: Bamboo door with keyhole (SW)
+- 263: Bamboo bridge (SE)
+- 264: Broken bamboo bridge (SE)
+- 265: Green apple
+- 266: Dark, metal, floor tile
+- 267: Brown door with keyhole (SE)
+- 268: Brown door with sign (SW)
+- 269: Brown door w/o sign (SW)
+- 270: Brown door with window (SE)
+- 271: Brown door with window (SW)
+- 272: Wall metal tile (SW)
+- 273: Wall metal tile (SE)
+- 274: Golden holder #1 (SE)
+- 275: Golden holder #2 (SW)
+- 276: Golden chain (SW)
+- 277: Rope with golden holders (SE)
+- 278: Unpushed lever on dark surface
+- 279: Pushed lever on dark surface
+- 280: Small metal floor tile
+- 281: Ornament, made of Zlitos (SE)
+- 282: Door, made of Zlitos, with keyhole (SE)
+- 283: Tall movable pillar
+- 284: Medium movable pillar
+- 285: Double-wheel animation, part #1
+- 286: Double-wheel animation, part #2
+- 287: Double-wheel animation, part #3
+- 288: Slot machine lever in initial position
+- 289: Turned slot machine lever
+- 290: Slot machine light #1
+- 291: Slot machine line animation #1, part #1
+- 292: Slot machine line animation #1, part #2
+- 293: Slot machine line animation #1, part #3
+- 294: Slot machine line animation #1, part #4
+- 295: Slot machine line animation #1, part #5
+- 296: Slot machine light #2
+- 297: Slot machine piece #1
+- 298: Slot machine piece #2
+- 299: Slot machine piece #3
+- 300: Slot machine piece #4
+- 301: Slot machine line animation #1, part #1
+- 302: Slot machine line animation #1, part #2
+- 303: Slot machine line animation #1, part #3
+- 304: Slot machine line animation #1, part #4
+- 305: Slot machine line animation #1, part #5
+- 306: Francos' factory lever (S-E) animation, part #1
+- 307: Francos' factory lever (S-E) animation, part #2
+- 308: Francos' factory lever (S-E) animation, part #3
+- 309: Francos' factory lever (S-W) animation #1, part #1
+- 310: Francos' factory lever (S-W) animation #1, part #2
+- 311: Francos' factory lever (S-W) animation #1, part #3
+- 312: Francos' factory lever (S-W) animation #2, part #1
+- 313: Francos' factory lever (S-W) animation #2, part #2
+- 314: Francos' factory lever (S-W) animation #2, part #3
+- 315: Big elevator
+- 316: Small elevator
+- 317: Red box with key (S-E)
+- 318: Open red box (S-E)
+- 319: Red box with key (S-W)
+- 320: Open red box (S-W)
+- 321: Light metal gate (S-E), part #2
+- 322: Light metal gate (S-E), part #1
+- 323: Cyan metal door (S-E)
+- 324: Cyan metal door (S-W)
+- 325: Temple of Bu wooden door (S-W), part #1
+- 326: Temple of Bu wooden door (S-W), part #2
+- 327: Temple of Bu wooden door (S-E), part #1
+- 328: Temple of Bu wooden door (S-E), part #2
+- 329: Closed orange container top
+- 330: Open orange container top
+- 331: Bookshelf, built into a wall
+- 332: Dark metal door (S-E), with keyhole
+- 333: Golden chain with lock
+- 334: Laser-sensor wall (S-E)
+- 335: Laser-sensor wall (S-W)
+- 336: Red floor tile
+- 337: Cyan metal door (S-E), with keyole
+- 338: Cyan metal door (S-W), with keyhole
+- 339: Mosquibee's bridge element (S-W bridge)
+- 340: Undergas wooden floor tile
+- 341: Dog "mud"
+- 342: Closed emperor's palace chest (S-E)
+- 343: Open emperor's palace chest (S-E)
+- 344: Closed emperor's palace chest (S-W)
+- 345: Open emperor's palace chest (S-W)
+- 346: Closed emperor's palace chest (N-W)
+- 347: Open emperor's palace chest (N-W)
+- 348: Closed emperor's palace chest (N-E)
+- 349: Open emperor's palace chest (N-E)
+- 350: Closed big emperor's palace chest (S-W)
+- 351: Open big emperor's palace chest (S-W)
+- 352: Unpushed red lever
+- 353: Pushed red lever
+- 354: Gray-yellow metal X-door (S-W)
+- 355: Imperial dark gray door (S-W), with keyhole
+- 356: Dark-cyan door, with window (S-W)
+- 357: Imperial elevator
+- 358: Reactor-control lever in initial position (S-E)
+- 359: Turned reactor-control lever (S-E)
+- 360: Yellow lever, on dark holder, up (S-W)
+- 361: Yellow lever, on dark holder, down (S-W)
+- 362: Undergas elevator activation lever, up (N-W)
+- 363: Undergas elevator activation lever, down (N-W)
+- 364: Esmers' base elevator
+- 365: Protective spell base elevator #1
+- 366: Protective spell base elevator #2
+- 367: Cage
+- 368: Protective spell base lever, down (S-E)
+- 369: Protective spell base lever, up (S-E)
+- 370: Protective spell base lever, down (S-W)
+- 371: Protective spell base lever, up (S-W)
+- 372: Protective spell protection bar #1, left
+- 373: Protective spell protection bar #1, right
+- 374: Protective spell protection bar #2, left
+- 375: Protective spell protection bar #2, right
+- 376: Protective spell protection bar #3, left
+- 377: Protective spell protection bar #3, right
+- 378: Protective spell protection bar, left, animation part #1
+- 379: Protective spell protection bar, left, animation part #2
+- 380: Protective spell protection bar, left, animation part #3
+- 381: Protective spell protection bar, left, animation part #4
+- 382: Protective spell protection bar, left, animation part #5
+- 383: Protective spell protection bar, left, animation part #6
+- 384: Protective spell protection bar, left, animation part #7
+- 385: Protective spell protection bar, left, animation part #8
+- 386: Protective spell protection bar, right, animation part #1
+- 387: Protective spell protection bar, right, animation part #2
+- 388: Protective spell protection bar, right, animation part #3
+- 389: Protective spell protection bar, right, animation part #4
+- 390: Protective spell protection bar, right, animation part #5
+- 391: Protective spell protection bar, right, animation part #6
+- 392: Protective spell protection bar, right, animation part #7
+- 393: Protective spell protection bar, right, animation part #8
+- 394: Closed big emperor's palace chest, with keyhole (S-W)
+- 395: In-statue metal gate with keyhole
+- 396: Wizards'-freeing lever (S-W), up
+- 397: Wizards'-freeing lever (S-W), down
+- 398: Unpushed red X-lever
+- 399: Pushed red X-lever
+- 400: Wizards' imprisonating helmet, lights on
+- 401: Wizards' imprisonating helmet, lights off
+- 402: In-statue elevator #1
+- 403: In-statue elevator #2
+- 404: Indication wall light (S-W), off
+- 405: Indication wall light (S-W), on
+- 406: Unpushed wall lever
+- 407: Pushed wall lever
+- 408: Elevatro with green stripes
+- 409: Children's cage wall (S-W)
+- 410: Children's cage wall (S-E)
+- 411: Children's cage top
+- 412: Some round, small metal thing
+- 413: News table, with Dark Monk's staute picture, and article
+- 414: News table, with Twinsen's photo
+- 415: Sewers/School Of Magic door (S-E)
+- 416: Emerald moon door (S-E)
+- 417: Light wooden door (S-W)
+- 418: Cyan metal door (S-E), with keyhole, yellow-black stripes bottom
+- 419: Cyan metal door (S-W), with keyhole, yellow-black stripes bottom
+- 420: Red lever, on dark holder, up (S-W)
+- 421: Red lever, on dark holder, down (S-W)
+- 422: Big snow flake
+- 423: Medium snow flake
+- 424: Small snow flake
