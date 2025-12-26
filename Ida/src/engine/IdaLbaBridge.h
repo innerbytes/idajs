@@ -98,9 +98,11 @@ public:
     /// @brief Finds all bodies used by an object in the current scene
     /// Reads object 3D Entity, so it needs to be present
     /// Allocates outBodies array, the caller is responsible to free it
+    /// @param outBodies - allocated array of body numbers as they need to be set in setBody function
+    /// @param outHqrIds - allocated array of HQR IDs corresponding to each body number
     /// @param outCount - will be 0 if no bodies found, no memory allocated in this case
     /// @returns true if no error; false, if error (no memory allocated in this case)
-    bool findAllBodies(int numobj, unsigned char **outBodies, int *outCount);
+    bool findAllBodies(int numobj, unsigned char **outBodies, short **outHqrIds, int *outCount);
 
     /// @brief Finds all animations used by an object in the current scene
     /// Reads object 3D Entity, so it needs to be present

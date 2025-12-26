@@ -1133,7 +1133,7 @@ S32	SearchBody( U8 numbody, S32 numobj )
 /*══════════════════════════════════════════════════════════════════════════*/
 
 // Ida - Find all the valid body numbers in an object
-bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
+bool FindAllBodies(S32 numobj, U8 **outBodies, S16 **outHqrIds, S32 *outCount)
 {
 	*outBodies = 0;
 	*outCount = 0;
@@ -1170,11 +1170,13 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 
 	if (count == 0) return true;
 
-	// Allocate array for body numbers
+	// Allocate array for body numbers and HQR IDs
 	U8 *bodies = (U8*)malloc(count);
 	if (!bodies) return false;
+	
+	S16 *hqrIds = (S16*)malloc(count * sizeof(S16));
 
-	// Second pass: collect all body numbers
+	// Second pass: collect all body numbers and HQR IDs
 	ptrc = ptrobj->PtrFile3D ;
 	size_t index = 0;
 	U8 numgene;
@@ -1184,8 +1186,10 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 		{
 		case F_BODY:
 			numgene = *ptrc++; 	// lit num name generique
-			bodies[index++] = numgene;
-			ptrc += *ptrc;	// skip to next
+			bodies[index] = numgene;
+			hqrIds[index] = *(S16*)(ptrc + 1);  // ptrc points to size, hqrbody is at ptrc+1
+			index++;
+			ptrc += *ptrc;	// skip to next using size
 			break;
 
 		case F_ANIM:
@@ -1200,6 +1204,7 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 	}
 
 	*outBodies = bodies;
+	*outHqrIds = hqrIds;
 	*outCount = count;
 
 	return true;

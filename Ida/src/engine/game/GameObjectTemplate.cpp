@@ -243,8 +243,9 @@ namespace Ida
         BIND_OBJECT(T_OBJET, object);
 
         uint8_t *allBodies;
+        int16_t *allHqrIds;
         int32_t count;
-        bool result = lbaBridge->findAllBodies(objectIndexValue, &allBodies, &count);
+        bool result = lbaBridge->findAllBodies(objectIndexValue, &allBodies, &allHqrIds, &count);
         if (!result)
         {
             core::inscope_ThrowReferenceError(
@@ -254,22 +255,22 @@ namespace Ida
             return;
         }
 
-        if (count == 0)
+        Local<Object> resultObj = Object::New(isolate);
+        auto context = args.GetIsolate()->GetCurrentContext();
+        for (int32_t i = 0; i < count; i++)
         {
-            Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, 0);
-            Local<v8::Uint8Array> uint8Array = v8::Uint8Array::New(arrayBuffer, 0, 0);
-            args.GetReturnValue().Set(uint8Array);
-            return;
+            Local<Number> key = Number::New(isolate, allBodies[i]);
+            Local<Number> value = Number::New(isolate, allHqrIds[i]);
+            resultObj->Set(context, key, value).Check();
+        }
+        
+        if (count > 0)
+        {
+            free(allBodies);
+            free(allHqrIds);
         }
 
-        std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
-            allBodies, count, [](void *data, size_t length, void *deleter_data) { delete[] static_cast<U8 *>(data); },
-            nullptr);
-
-        Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, std::move(backingStore));
-        Local<v8::Uint8Array> uint8Array = v8::Uint8Array::New(arrayBuffer, 0, count);
-
-        args.GetReturnValue().Set(uint8Array);
+        args.GetReturnValue().Set(resultObj);
     }
 
     // The higher byte contains the animation number, if it's a special actor animation
@@ -311,7 +312,7 @@ namespace Ida
 
         std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
             allAnims, count * sizeof(uint16_t),
-            [](void *data, size_t length, void *deleter_data) { delete[] static_cast<U16 *>(data); }, nullptr);
+            [](void *data, size_t length, void *deleter_data) { free(data); }, nullptr);
 
         Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, std::move(backingStore));
         Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, count);
