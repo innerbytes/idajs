@@ -379,7 +379,7 @@ The LBA game uses integer 3D based coordinate system.
 The Actor's angle in the horizontal plane is expressed in 4096 integer units per full rotation (360 degrees).
 To ease the navigation by the coordinate, there is also concept of the world directions.
 
-{{{ida}}} uses the original coordinate system of the LBA2 game. Same as [LBAArchitect][architect] project does.
+{{{ida}}} uses the original coordinate system of the LBA2 game. Same as [LBArchitect][architect] project does.
 
 ```
      N [Z-] 2048
@@ -622,7 +622,7 @@ Vanilla game variables have no name, only index. Some of them are exposed here:
 - {@link index!GameVariables}
 - The variables that start with `INV_` are the inventory items. The value of this variable is the quantity of the item in the inventory.
 - The variables that start with `VAR_` are auxiliary LBA world and player state variables.
-- There is more game variables, that used in the vanilla LBA story, but they are not exposed, because they are story-related. You can read their numbers in the [LBAArchitect][architect], in the original LBA2 game scripts. **Example:** Has the player cured the Dino Fly? Has Aliens landed?
+- There is more game variables, that used in the vanilla LBA story, but they are not exposed, because they are story-related. You can read their numbers in the [LBArchitect][architect], in the original LBA2 game scripts. **Example:** Has the player cured the Dino Fly? Has Aliens landed?
 
 **2. Scene Variables**
 
@@ -811,7 +811,7 @@ The coroutines will be resumed if there are any in the saved data.
 
 ### 3.8 Key Takeaways for Modders
 
-- **Start with scenes:** Understand the scene structure and what entities exist. Explore the LBA 2 scenes using [LBAArchitect][architect] tool. Unfortunately, LBAArchitect supports only indoor scenes. However, you can also explore outdoor scenes and their objects using https://lba2remake.net/ in the Editor mode.
+- **Start with scenes:** Understand the scene structure and what entities exist. Explore the LBA 2 scenes using [LBArchitect][architect] tool. Unfortunately, LBArchitect supports only indoor scenes. However, you can also explore outdoor scenes and their objects using https://lba2remake.net/ in the Editor mode.
 
 - **Read and run Samples:** Start with House sample. It re-implements the Twinsen's house scene 1:1 as it is implemented in the original LBA 2 game, but using only {{{ida}}} modding capabilities. See [IdaJS Samples](#5-idajs-samples) section.
 
@@ -1046,11 +1046,11 @@ Here you will find a list of useful tools and resources to help you get started.
 The first 2 tools are essential for writing LBA 2 mods. 
 They've also proven very useful while developing {{{ida}}} itself and the [Samples](#5-idajs-samples).
 
-1. [LBAArchitect][architect] - An editor and viewer for LBA 1 and LBA 2 game data files. This is an essential local tool when you are writing your own story in LBA game or modding existing one. 
+1. [LBArchitect][architect] - An editor and viewer for LBA 1 and LBA 2 game data files. This is an essential local tool when you are writing your own story in LBA game or modding existing one. 
     - Useful to quickly explore indoor scenes, objects, zones, waypoints. 
     - No internet connection needed, works offline.
     - Can read all the original Live and Move scripts on the indoor locations.
-    - Using LBAArchitect you can also find the ids of the Actors models and animations - it displays named annotations for Actor entities.
+    - Using LBArchitect you can also find the ids of the Actors models and animations - it displays named annotations for Actor entities.
     - **Limitation**: limited to indoor locations only for LBA 2. For outdoor locations use the next project. 
 
 2. https://lba2remake.net/ - LBA 2 Remake project website. It has a very powerful in-browser scene viewer/editor with a lot of features.

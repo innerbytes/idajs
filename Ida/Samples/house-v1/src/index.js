@@ -15,9 +15,9 @@ Start new game to run the sample.
 const areaName = "house";
 
 // Objects
-// To know which object, zone or waypoint on the scene has which Id use LBAArchitect application.
-// LBAArchitect 1.2: https://moonbase.kaziq.net/index.php?page=d_prog  (for the source code: https://github.com/LBALab/LBArchitect)
-// LBAArchitect is handy but is limited to indoor scenes only.
+// To know which object, zone or waypoint on the scene has which Id use LBArchitect application.
+// LBArchitect 1.2: https://moonbase.kaziq.net/index.php?page=d_prog  (for the source code: https://github.com/LBALab/LBArchitect)
+// LBArchitect is handy but is limited to indoor scenes only.
 // For the outdoor scenes, you can use https://lba2remake.net Editor mode.
 // There you can also investigate the scene objects, zones, waypoints and variables
 const twinsenId = 0; // The player has always id 0
@@ -46,7 +46,7 @@ const zoneCameraCentralValue = 1; // The camera zone in the center of the room, 
 // LBA game variables
 // The LBA game variables store global game state. We need to check and modify them to make our mod scripts work with the rest of the LBA world
 // Unfortunately the legacy LBA script contain only numbers for those variables and no names, so we need to guess their
-// purpose by reading script in the LBAArchitect and/or in https://lba2remake.net Editor mode.
+// purpose by reading script in the LBArchitect and/or in https://lba2remake.net Editor mode.
 const varZoeLocation = 40; // Responsible to track Zoe's location - first she's in the room, then exiting, then going to DinoFLy outside, and so on
 const varDragonIsCured = 42; // Responsible to track if the Dino FLy is cured
 const varTwinsenIsWizard = 109; // Responsible to track if Twinsen is already a wizard

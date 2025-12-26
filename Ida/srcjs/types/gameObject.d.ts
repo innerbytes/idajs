@@ -70,7 +70,7 @@ export interface GameObject {
 
   /**
    * Returns the rotation speed of the object.
-   * LBAArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
+   * LBArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
    * `speed = 50 * 1024 / delay`
    */
   getRotationSpeed(): number;
@@ -198,7 +198,7 @@ export interface GameObject {
   /**
    * Sets the rotation speed of the object.
    * @param rotationSpeed The rotation speed value should be an integer from -32768 to 32767.
-   * LBAArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
+   * LBArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
    * `speed = 50 * 1024 / delay`
    */
   setRotationSpeed(rotationSpeed: number): void;

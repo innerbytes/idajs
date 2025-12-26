@@ -1,6 +1,6 @@
 ## Characters information:
 
-Extracted from lba2_ress.hqd from LBAArchitect.
+Extracted from lba2_ress.hqd from LBArchitect.
 
 Use this to find an existing LBA2 entity id when creating your mods.
 The entity id is set by calling `actor.setEntity(id)` on your actor object.

@@ -31,7 +31,7 @@ export interface Zone {
    *
    * The meaning of the registers depends on the zone type.
    *
-   * This is not documented enough yet. You will need to open the scene in LBAArchitect tool, in order to see what each register means for each zone type.
+   * This is not documented enough yet. You will need to open the scene in LBArchitect tool, in order to see what each register means for each zone type.
    *
    * @see {@link setRegisters} - to set the zone registers.
    */
@@ -40,7 +40,7 @@ export interface Zone {
   /**
    * The zone value is an extra register of the zone, that can have different meaning depending on zone type.
    *
-   * This is not documented enough yet. You will need to open the scene in LBAArchitect tool, in order to see what the zone value means for each zone type.
+   * This is not documented enough yet. You will need to open the scene in LBArchitect tool, in order to see what the zone value means for each zone type.
    *
    * @see {@link setZoneValue} - to set the zone value.
    */

@@ -194,7 +194,7 @@ export interface StaticFlags {
  *
  * @see
  * - {@link GameObject.setBonusFlags} and {@link GameObject.setBonusQuantity} to set bonuses on Game Objects (loot when they die).
- * - Zones should have type {@link ZoneTypes.Bonus} and use registers to set bonus type and quantity. Please look at the LBAArchitect on how bonuses are setup on the zones.
+ * - Zones should have type {@link ZoneTypes.Bonus} and use registers to set bonus type and quantity. Please look at the LBArchitect on how bonuses are setup on the zones.
  *
  * @globalAccess {@link object.Bonuses}.
  */
@@ -212,7 +212,7 @@ export interface BonusFlags {
 /**
  * Zone types available in the game.
  *
- * This is not documented enough yet. Please look in the LBAArchitect tool on how the zones are setup.
+ * This is not documented enough yet. Please look in the LBArchitect tool on how the zones are setup.
  *
  * @globalAccess {@link object.ZoneTypes}.
  */
@@ -260,7 +260,7 @@ export type ZoneDirection = ZoneDirections[keyof Omit<ZoneDirections, "$">];
 /**
  * Control modes available for Game Objects (actors).
  *
- * This is not documented enough yet. Please look in the LBAArchitect, IdaJS samples, and original game scripts to see which control modes are setup for different objects.
+ * This is not documented enough yet. Please look in the LBArchitect, IdaJS samples, and original game scripts to see which control modes are setup for different objects.
  *
  * @globalAccess {@link object.ControlModes}.
  */

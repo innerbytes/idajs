@@ -90,8 +90,8 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
 
   // Add a Window waypoint, for Twinsen to walk there
   SceneProperties.wpWindowId = scene.addWaypoints();
-  // The desired position of the waypoint can be looked in the LBAArchitect application or by a script
-  // This is the position from the LBAArchitect where Zoe was initially standing, so by the window
+  // The desired position of the waypoint can be looked in the LBArchitect application or by a script
+  // This is the position from the LBArchitect where Zoe was initially standing, so by the window
   scene.updateWaypoint(SceneProperties.wpWindowId, [3931, 2048, 400]);
 
   // Add waypoints to walk to the bathroom and also an outside waypoint
@@ -111,7 +111,7 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
   SceneProperties.dinoId = scene.addObjects(); // Adds one more empty object to the scene and returns its Id
   const dino = scene.getObject(SceneProperties.dinoId); // Getting reference to the Dino object, so we can set it up
   dino.setTalkColor(text.Colors.TealGreen); // Dino's text color
-  dino.setEntity(109); // Dino fly entity (we can look entities, bodies and animation numbers in the LBAArchitect application).
+  dino.setEntity(109); // Dino fly entity (we can look entities, bodies and animation numbers in the LBArchitect application).
   dino.setBody(37); // Normal dino body, without Twinsen
 
   // Setting collisions with environment, with other objects, and also CanFall flags - it's usual for an actor

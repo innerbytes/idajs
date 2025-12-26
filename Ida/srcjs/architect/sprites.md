@@ -1,6 +1,6 @@
 ## Sprites information
 
-Extracted from lba2_sprites.hqd from LBAArchitect.
+Extracted from lba2_sprites.hqd from LBArchitect.
 
 Use this to find an existing LBA2 sprite id when creating your mods.
 The sprite id is set by calling `actor.setSpriteId(id)` on your actor object, that is a sprite (has IsSprite static flag set).

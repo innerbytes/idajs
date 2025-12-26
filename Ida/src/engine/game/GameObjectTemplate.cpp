@@ -198,7 +198,7 @@ namespace Ida
         args.GetReturnValue().Set(hitPower);
     }
 
-    // Rotation speed is connected to desired rotation delay (used in LBAArchitect) by the formula: speed = 1024 * 50 /
+    // Rotation speed is connected to desired rotation delay (used in LBArchitect) by the formula: speed = 1024 * 50 /
     // delay
     void GameObjectTemplate::getRotationSpeed(const FunctionCallbackInfo<Value> &args)
     {
@@ -310,9 +310,8 @@ namespace Ida
         }
 
         std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
-            allAnims, count * sizeof(uint16_t), 
-            [](void *data, size_t length, void *deleter_data) { delete[] static_cast<U16 *>(data); },
-            nullptr);
+            allAnims, count * sizeof(uint16_t),
+            [](void *data, size_t length, void *deleter_data) { delete[] static_cast<U16 *>(data); }, nullptr);
 
         Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, std::move(backingStore));
         Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, count);
