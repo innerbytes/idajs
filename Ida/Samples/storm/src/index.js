@@ -61,11 +61,7 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, loadMode) => {
     const mage = scene.getObject(meteoMageId);
 
     mage.setTalkColor(text.Colors.Seafoam);
-    mage.setEntity(15); // Meteomage entity (we can look entities, bodies and animation numbers in the LBArchitect application).
-
-    const bodies = mage.getAllBodies();
-    console.log("This Entity bodies count and contents:", bodies.length, bodies);
-
+    mage.setEntity(67); // Meteomage entity (we can look entities, bodies and animation numbers in the LBArchitect application).
     mage.setBody(0);
 
     // Setting collisions with environment, with other objects, and also fallable flags - normal for an actor
