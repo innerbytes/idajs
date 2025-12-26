@@ -11,6 +11,8 @@ class IdaLbaBridge
 public:
     int getNumObjects();
 
+    int getNum3DEntities();
+
     void setNumObjects(int numObjects);
 
     void initObject(int objectIndex);
@@ -95,21 +97,20 @@ public:
     /// @param direction - direction to check (if set to None, will be read from zone->Info2)
     bool testObjectZoneDirection(int objectX, int objectZ, int objectBeta, void *zone, ZoneDirection direction);
 
-    /// @brief Finds all bodies used by an object in the current scene
-    /// Reads object 3D Entity, so it needs to be present
+    /// @brief Finds all bodies of a 3D entity
     /// Allocates outBodies array, the caller is responsible to free it
     /// @param outBodies - allocated array of body numbers as they need to be set in setBody function
     /// @param outHqrIds - allocated array of HQR IDs corresponding to each body number
     /// @param outCount - will be 0 if no bodies found, no memory allocated in this case
     /// @returns true if no error; false, if error (no memory allocated in this case)
-    bool findAllBodies(int numobj, unsigned char **outBodies, short **outHqrIds, int *outCount);
+    bool findAllBodies(int entityId, unsigned char **outBodies, short **outHqrIds, int *outCount);
 
-    /// @brief Finds all animations used by an object in the current scene
-    /// Reads object 3D Entity, so it needs to be present
+    /// @brief Finds all animations of a 3D entity
     /// Allocates outAnims array, the caller is responsible to free it
+    /// @param outAnims - allocated array of animation numbers as they need to be set in setAnimation function
     /// @param outCount - will be 0 if no animations found, no memory allocated in this case
     /// @returns true if no error; false, if error (no memory allocated in this case)
-    bool findAllAnimations(int numobj, unsigned short **outAnims, int *outCount);
+    bool findAllAnimations(int entityId, unsigned short **outAnims, int *outCount);
 
     void requestPaletteSync();
 

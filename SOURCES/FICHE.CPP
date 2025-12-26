@@ -1133,15 +1133,19 @@ S32	SearchBody( U8 numbody, S32 numobj )
 /*══════════════════════════════════════════════════════════════════════════*/
 
 // Ida - Find all the valid body numbers in an object
-bool FindAllBodies(S32 numobj, U8 **outBodies, S16 **outHqrIds, S32 *outCount)
+bool FindAllBodies(S32 entityId, U8 **outBodies, S16 **outHqrIds, S32 *outCount)
 {
 	*outBodies = 0;
 	*outCount = 0;
 
-	T_OBJET *ptrobj = &ListObjet[numobj];
-	if (!ptrobj->IndexFile3D) return false;
+	int entitiesCount = GetFile3DCount();
+	
+	printf("FindAllBodies: entityId=%d, entitiesCount=%d\n", entityId, entitiesCount);
 
-	U8 *ptrc = ptrobj->PtrFile3D;
+	if (entityId < 0 || entityId >= entitiesCount) return false;
+
+	U8* ptrFile3D = LoadFile3D(entityId);
+	U8* ptrc = ptrFile3D;
 	if (!ptrc) return false;
 
 	// First pass: count the number of bodies
@@ -1177,7 +1181,7 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S16 **outHqrIds, S32 *outCount)
 	S16 *hqrIds = (S16*)malloc(count * sizeof(S16));
 
 	// Second pass: collect all body numbers and HQR IDs
-	ptrc = ptrobj->PtrFile3D ;
+	ptrc = ptrFile3D;
 	size_t index = 0;
 	U8 numgene;
 	while((command = *ptrc++) != 255)

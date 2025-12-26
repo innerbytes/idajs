@@ -40,9 +40,7 @@ namespace Ida
                                FN(getTalkColor),
                                FN(getEntity),
                                FN(getBody),
-                               FN(getAllBodies),
                                FN(getAnimation),
-                               FN(getAllAnimations),
                                FN(getBonusFlags),
                                FN(getBonusQuantity),
                                FN(getControlMode),
@@ -236,43 +234,6 @@ namespace Ida
         args.GetReturnValue().Set(body);
     }
 
-    void GameObjectTemplate::getAllBodies(const FunctionCallbackInfo<Value> &args)
-    {
-        BEGIN_SCOPE
-        EPP_DENY(ExecutionPhase::None, ExecutionPhase::BeforeSceneLoad)
-        BIND_OBJECT(T_OBJET, object);
-
-        uint8_t *allBodies;
-        int16_t *allHqrIds;
-        int32_t count;
-        bool result = lbaBridge->findAllBodies(objectIndexValue, &allBodies, &allHqrIds, &count);
-        if (!result)
-        {
-            core::inscope_ThrowReferenceError(
-                isolate,
-                "Failed to get all bodies for the object. Make sure you set object Entity first. Current entity: " +
-                    std::to_string(object->IndexFile3D));
-            return;
-        }
-
-        Local<Object> resultObj = Object::New(isolate);
-        auto context = args.GetIsolate()->GetCurrentContext();
-        for (int32_t i = 0; i < count; i++)
-        {
-            Local<Number> key = Number::New(isolate, allBodies[i]);
-            Local<Number> value = Number::New(isolate, allHqrIds[i]);
-            resultObj->Set(context, key, value).Check();
-        }
-        
-        if (count > 0)
-        {
-            free(allBodies);
-            free(allHqrIds);
-        }
-
-        args.GetReturnValue().Set(resultObj);
-    }
-
     // The higher byte contains the animation number, if it's a special actor animation
     // The lower bytes can contain general animation numbers
     void GameObjectTemplate::getAnimation(const FunctionCallbackInfo<Value> &args)
@@ -282,42 +243,6 @@ namespace Ida
         BIND_OBJECT(T_OBJET, object);
         uint16_t animation = object->GenAnim;
         args.GetReturnValue().Set(animation);
-    }
-
-    void GameObjectTemplate::getAllAnimations(const FunctionCallbackInfo<Value> &args)
-    {
-        BEGIN_SCOPE
-        EPP_DENY(ExecutionPhase::None, ExecutionPhase::BeforeSceneLoad)
-        BIND_OBJECT(T_OBJET, object);
-
-        uint16_t *allAnims;
-        int32_t count;
-        bool result = lbaBridge->findAllAnimations(objectIndexValue, &allAnims, &count);
-        if (!result)
-        {
-            core::inscope_ThrowReferenceError(
-                isolate,
-                "Failed to get all animations for the object. Make sure you set object Entity first. Current entity: " +
-                    std::to_string(object->IndexFile3D));
-            return;
-        }
-
-        if (count == 0)
-        {
-            Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, 0);
-            Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, 0);
-            args.GetReturnValue().Set(uint16Array);
-            return;
-        }
-
-        std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
-            allAnims, count * sizeof(uint16_t),
-            [](void *data, size_t length, void *deleter_data) { free(data); }, nullptr);
-
-        Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, std::move(backingStore));
-        Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, count);
-
-        args.GetReturnValue().Set(uint16Array);
     }
 
     void GameObjectTemplate::getBonusQuantity(const FunctionCallbackInfo<Value> &args)
@@ -565,8 +490,10 @@ namespace Ida
         BEGIN_SCOPE
         EPP_ALLOW(ExecutionPhase::SceneLoad)
         VALIDATE_ARGS_COUNT(1);
-        VALIDATE_VALUE(int32_t, Int32, args[0], entity);
         BIND_OBJECT(T_OBJET, object);
+
+        int entityCount = lbaBridge->getNum3DEntities();
+        VALIDATE_INT_VALUE(args[0], entity, -1, entityCount - 1);
 
         bool hasChanged = object->IndexFile3D != entity;
         object->IndexFile3D = entity;
