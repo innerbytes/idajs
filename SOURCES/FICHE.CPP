@@ -1135,11 +1135,6 @@ S32	SearchBody( U8 numbody, S32 numobj )
 // Ida - Find all the valid body numbers in an object
 bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 {
-	U8 command;
-	U8 numgene;
-	U8 *bodies;
-	S32	count;
-
 	*outBodies = 0;
 	*outCount = 0;
 
@@ -1150,7 +1145,8 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 	if (!ptrc) return false;
 
 	// First pass: count the number of bodies
-	count = 0 ;
+	S32 count = 0;
+	U8 command;
 	while((command = *ptrc++) != 255)
 	{
 		switch(command)
@@ -1175,20 +1171,20 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 	if (count == 0) return true;
 
 	// Allocate array for body numbers
-	bodies = (U8*)malloc(count);
+	U8 *bodies = (U8*)malloc(count);
 	if (!bodies) return false;
 
 	// Second pass: collect all body numbers
 	ptrc = ptrobj->PtrFile3D ;
-	count = 0;
-
+	size_t index = 0;
+	U8 numgene;
 	while((command = *ptrc++) != 255)
 	{
 		switch( command )
 		{
 		case F_BODY:
 			numgene = *ptrc++; 	// lit num name generique
-			bodies[count++] = numgene;
+			bodies[index++] = numgene;
 			ptrc += *ptrc;	// skip to next
 			break;
 
@@ -1213,11 +1209,6 @@ bool FindAllBodies(S32 numobj, U8 **outBodies, S32 *outCount)
 // Ida - Find all the valid animation numbers in an object
 bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount)
 {
-	U8 command;
-	U16 numgene;
-	U16 *anims;
-	S32	count;
-
 	*outAnims = 0;
 	*outCount = 0;
 
@@ -1228,7 +1219,8 @@ bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount)
 	if (!ptrc) return false;
 
 	// First pass: count the number of animations
-	count = 0;
+	S32	count = 0;
+	U8 command;
 	while((command = *ptrc++) != 255)
 	{
 		switch(command)
@@ -1253,12 +1245,13 @@ bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount)
 	if (count == 0) return true;
 
 	// Allocate array for animation numbers
-	anims = (U16*)malloc(count * sizeof(U16));
+	U16 *anims = (U16*)malloc(count * sizeof(U16));
 	if (!anims) return false;
 
 	// Second pass: collect all animation numbers
 	ptrc = ptrobj->PtrFile3D;
-	count = 0;
+	size_t index = 0;
+	U16 numgene;
 
 	while((command = *ptrc++) != 255)
 	{
@@ -1266,7 +1259,7 @@ bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount)
 		{
 		case F_ANIM:
 			numgene = *(U16*)ptrc; 	// lit num name generique
-			anims[count++] = numgene;
+			anims[index++] = numgene;
 			ptrc += 2;	// skip U16
 			ptrc += *ptrc;	// skip to next
 			break;
