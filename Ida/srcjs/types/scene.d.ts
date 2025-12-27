@@ -271,13 +271,14 @@ export interface Scene {
    * @param waypointIndex The index of the waypoint to get.
    * @returns The waypoint at the given index as an array of three numbers (x, y, z).
    */
-  getWaypoint(waypointIndex: number): [number, number, number];
+  getWaypoint(waypointIndex: number): number[];
 
   /**
    * Returns the start position of the player in the current scene.
    * The start position is used in the new game or if player teleports to this scene.
+   * @returns Array of 3 values representing the position as [x, y, z]
    */
-  getStartPos(): [number, number, number];
+  getStartPos(): number[];
 
   /**
    * Returns a scene variable value by its index
@@ -302,8 +303,9 @@ export interface Scene {
   /**
    * Sets a start position of the hero
    * The start position is used in the new game or if player teleports to this scene.
+   * @param pos Array of 3 values representing the position as [x, y, z]
    */
-  setStartPos(pos: [number, number, number]): void;
+  setStartPos(pos: number[]): void;
 
   /**
    * Sets a scene variable value by its index.
@@ -559,7 +561,7 @@ export interface Scene {
    * @param id The index of the waypoint to update
    * @param pos The new position of the waypoint as an array of three numbers (x, y, z)
    */
-  updateWaypoint(id: number, pos: [number, number, number]): void;
+  updateWaypoint(id: number, pos: number[]): void;
 
   /**
    * An iterable property that allows iteration over all objects (actors) in the scene.
@@ -598,6 +600,8 @@ export interface Scene {
    * This provides a convenient way to iterate through all scene waypoints using for...of loops.
    * Also provides length propery and [index] operator.
    *
+   * @returns An array of waypoints, each represented as an array of three numbers (x, y, z).
+   *
    * @example
    * ```javascript
    * for (const waypoint of scene.waypoints) {
@@ -607,7 +611,7 @@ export interface Scene {
    * scene.waypoints[0]; // The same as scene.getWaypoint(0)
    * ```
    */
-  readonly waypoints: [number, number, number][];
+  readonly waypoints: number[][];
 
   /**
    * All the possible scene load modes (why the scene is being loaded).

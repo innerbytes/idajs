@@ -18,13 +18,15 @@ export interface Zone {
 
   /**
    * Returns the lowest bounding box corner of the zone as [x, y, z] (West, Down, North)
+   * @returns Array of 3 values representing the position as [x, y, z]
    */
-  getPos1(): [number, number, number];
+  getPos1(): number[];
 
   /**
    * Returns the highest bounding box corner of the zone as [x, y, z] (East, Up, South)
+   * @returns Array of 3 values representing the position as [x, y, z]
    */
-  getPos2(): [number, number, number];
+  getPos2(): number[];
 
   /**
    * Returns the registers of the zone as an array of 8 numbers.
@@ -55,13 +57,13 @@ export interface Zone {
    * Sets the lowest bounding box corner of the zone (West, Down, North).
    * @param pos Array of 3 numbers: [x, y, z].
    */
-  setPos1(pos: [number, number, number]): void;
+  setPos1(pos: number[]): void;
 
   /**
    * Sets the highest bounding box corner of the zone (East, Up, South).
    * @param pos Array of 3 numbers: [x, y, z].
    */
-  setPos2(pos: [number, number, number]): void;
+  setPos2(pos: number[]): void;
 
   /**
    * Sets the registers of the zone.

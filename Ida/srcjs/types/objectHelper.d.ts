@@ -371,7 +371,7 @@ export interface ObjectHelper {
    *
    * The Y component of vectors is ignored in the calculation.
    */
-  directionToAngle(direction: ZoneDirection | [number, number, number]): number;
+  directionToAngle(direction: ZoneDirection | number[]): number;
 
   /**
    * Converts Euler degrees (0-360) to the game's angle system (0-4096)

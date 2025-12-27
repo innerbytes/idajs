@@ -37,8 +37,10 @@ export interface GameObject {
 
   /**
    * Returns the current position of the object in the world.
+   *
+   * @return Array of 3 values representing the position as [x, y, z]
    */
-  getPos(): [number, number, number];
+  getPos(): number[];
 
   /**
    * Returns array of 4 values that represent the object info registers
@@ -163,7 +165,7 @@ export interface GameObject {
    * Sets the position of the object in the world.
    * @param pos Array of 3 numbers: [x, y, z].
    */
-  setPos(pos: [number, number, number]): void;
+  setPos(pos: number[]): void;
 
   /**
    * Sets the angle of the object around Y in 0-4096 degrees.
