@@ -1139,9 +1139,6 @@ bool FindAllBodies(S32 entityId, U8 **outBodies, S16 **outHqrIds, S32 *outCount)
 	*outCount = 0;
 
 	int entitiesCount = GetFile3DCount();
-	
-	printf("FindAllBodies: entityId=%d, entitiesCount=%d\n", entityId, entitiesCount);
-
 	if (entityId < 0 || entityId >= entitiesCount) return false;
 
 	U8* ptrFile3D = LoadFile3D(entityId);

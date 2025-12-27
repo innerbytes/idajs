@@ -352,3 +352,4 @@ __Entities 344 and 345 were added on top of LBArchitect's list, as they are pres
 - 342: Quetch child
 - 343: Piece of metal
 - 344: Mechanic rabbibunny near the end
+- 345: Don't use it, crashes the game
