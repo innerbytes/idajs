@@ -36,7 +36,7 @@ Start a new game to see this sample in action.
 // It's handy to describe the scenario before starting to implement it
 /*
 Our scenario:
-- Twinsen and Zoe are standing in the bathroom and kissing
+- Twinsen and Zoe are standing in the bedroom and kissing
 - Twinsen tells Zoe - I need to check how is Dino there, I'm worried for him
 - Twinsen approaches the window
 - He says first the standard message "I cannot see my Dino from here..."
