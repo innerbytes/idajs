@@ -1,5 +1,6 @@
 [ida]: https://ida.innerbytes.com
 [architect]: https://moonbase.kaziq.net/index.php?page=d_prog
+[remake]: https://lba2remake.net/
 
 # JavaScript-powered engine for LBA2 game modding
 
@@ -622,7 +623,9 @@ Vanilla game variables have no name, only index. Some of them are exposed here:
 - {@link index!GameVariables}
 - The variables that start with `INV_` are the inventory items. The value of this variable is the quantity of the item in the inventory.
 - The variables that start with `VAR_` are auxiliary LBA world and player state variables.
-- There is more game variables, that used in the vanilla LBA story, but they are not exposed, because they are story-related. You can read their numbers in the [LBArchitect][architect], in the original LBA2 game scripts. **Example:** Has the player cured the Dino Fly? Has Aliens landed?
+- There is more game variables, that used in the vanilla LBA story, but they are not exposed, because they are story-related. 
+You can read their numbers in the original LBA2 game scripts using [LBArchitect][architect] or [LBA Remake][remake]. 
+**Example:** Has the player cured the Dino Fly? Has Aliens landed?
 
 **2. Scene Variables**
 
@@ -811,7 +814,8 @@ The coroutines will be resumed if there are any in the saved data.
 
 ### 3.8 Key Takeaways for Modders
 
-- **Start with scenes:** Understand the scene structure and what entities exist. Explore the LBA 2 scenes using [LBArchitect][architect] tool. Unfortunately, LBArchitect supports only indoor scenes. However, you can also explore outdoor scenes and their objects using https://lba2remake.net/ in the Editor mode.
+- **Start with scenes:** Understand the scene structure and what entities exist. Explore the LBA 2 scenes using [LBArchitect][architect] tool. Unfortunately, LBArchitect supports only indoor scenes. 
+However, you can also explore outdoor scenes and their objects using [LBA Remake][remake] in the Editor mode.
 
 - **Read and run Samples:** Start with House sample. It re-implements the Twinsen's house scene 1:1 as it is implemented in the original LBA 2 game, but using only {{{ida}}} modding capabilities. See [IdaJS Samples](#5-idajs-samples) section.
 
@@ -1010,6 +1014,10 @@ Each sample has its own folder. Here are the list of the samples in the order fr
   - This mod is implemented in a modular way, using multiple JavaScript files, to keep the code organized.
   - It also uses custom images in the dialogs, and custom zones in the scene.
   - A great next step after `house-v1` sample, to see more advanced modding techniques.
+- `animations` - a tool sample that allows to view all the existing LBA 2 Actor models, their bodies and animations in 3D.
+  - A very useful tool to explore LBA 2 Actor models and animations.
+  - Set the EntityId you want to view on top of the `index.js` file, and run the sample to explore the Entity bodies and animations ids.
+  - To find the id of an entity you need, see here: {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/entities.md
 
 ### 5.2 How to run the Samples
 
@@ -1038,19 +1046,27 @@ code .
 5. All the standard {{{ida}}} mod project structure and actions are also available in the samples after the setup above.
 Read more here and further: [Mod project structure overview](#44-mod-project-structure-overview)
 
-## 6. Useful tools and resources
+## 6. Tools and resources
 
 Writing custom mods and story in {{{ida}}} requires some ways to explore the existing LBA 2 scenes and assets. 
 Here you will find a list of useful tools and resources to help you get started.
 
-The first 2 tools are essential for writing LBA 2 mods. 
-They've also proven very useful while developing {{{ida}}} itself and the [Samples](#5-idajs-samples).
+### 6.1 Find Ida of scenes, entities, bodies, animations, sprites, etc.
+
+1. Here you can view some of the ids you will need when writing your own story in LBA 2:
+    - **View all the 3D entities with their ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/entities.md
+    - **View all the sprites with their ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/sprites.md
+    - **View all the scene ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/lba2editor
+
+2. `Ida/Samples/animations` - this allows to view all the existing LBA 2 Actor models, their boides and animations in 3D.
+    - See the [Samples](#5-idajs-samples) section for more details.
+
+### 6.2 Editor tools to visually explore scenes and scripts
 
 1. [LBArchitect][architect] - An editor and viewer for LBA 1 and LBA 2 game data files. This is an essential local tool when you are writing your own story in LBA game or modding existing one. 
     - Useful to quickly explore indoor scenes, objects, zones, waypoints. 
     - No internet connection needed, works offline.
     - Can read all the original Live and Move scripts on the indoor locations.
-    - Using LBArchitect you can also find the ids of the Actors models and animations - it displays named annotations for Actor entities.
     - **Limitation**: limited to indoor locations only for LBA 2. For outdoor locations use the next project. 
 
 2. https://lba2remake.net/ - LBA 2 Remake project website. It has a very powerful in-browser scene viewer/editor with a lot of features.
@@ -1059,11 +1075,13 @@ They've also proven very useful while developing {{{ida}}} itself and the [Sampl
     - Objects, zones, and waypoints, their coordinates and other parameters (beware that the coordinate system used in LBA2Remake might be different from the original LBA2 and {{{ida}}} one, in this case you would need to translate coordinates accordingly).
     - This project can also be run offline locally, but requires some setup. See instructions on their GitHub page: https://github.com/LBALab/lba2remake
 
-3. [LBA 2 HQR files reference](https://lbafileinfo.kaziq.net/index.php/LBA_2_files) - this is very useful to find ids of existing assets, such as models, animations, sounds, dialogs, etc. To setup the scene objects and modify the existing content of the game, those ids will be needed.
+### 6.3 Other useful resources
 
-4. [LBA tools](https://magicball.net/devtools/) - A collection of all the LBA modding tools in one place.
+5. [LBA 2 HQR files reference](https://lbafileinfo.kaziq.net/index.php/LBA_2_files) - this is very useful to find ids of existing assets, such as models, animations, sounds, dialogs, etc. To setup the scene objects and modify the existing content of the game, those ids will be needed.
 
-5. [LBA community forum](https://forum.magicball.net/) - A place to ask questions, share your mods, and discuss LBA modding with other enthusiasts.
+6. [LBA tools](https://magicball.net/devtools/) - A collection of all the LBA modding tools in one place.
+
+7. [LBA community forum](https://forum.magicball.net/) - A place to ask questions, share your mods, and discuss LBA modding with other enthusiasts.
 
 ## 7. Supported features
 
@@ -1107,9 +1125,9 @@ _Planned features are not guaranteed to be implemented, but are on the roadmap._
 - Support custom music tracks for the mods and importing of audio files from one of common formats (wav, mp3, ogg)
 - Support custom SFX sounds
 - Modify NitroMecaPingouin behavior.
-- Support custom weapons and particle effects (far fetched goal)
-- Support importing of custom actor models and animations (far fetched goal)
-- Support LBA 1 assets importing (far fetched goal)
+- Support custom weapons and particle effects
+- Support importing of custom actor models and animations
+- Support LBA 1 assets importing
 
 ### 8.3 IdaJS integrations and component model
 - Provide high-level scene and object components, support custom router configuration

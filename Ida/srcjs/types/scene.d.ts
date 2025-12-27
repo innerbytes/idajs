@@ -93,7 +93,7 @@ export type SceneLoadMode = SceneLoadModes[keyof Omit<SceneLoadModes, "$">];
 
 /**
  * Callback for beforeLoadScene event
- * @param sceneId The ID of the scene that will be loaded
+ * @param sceneId The ID of the scene that will be loaded. You can view all the scene ids in `Ida/srcjs/lba2editor` folder.
  * @param sceneLoadMode The mode of the scene loading
  * @see {@link SceneLoadModes}
  */
@@ -109,7 +109,7 @@ export type AfterLoadSceneCallback = (sceneId: number, sceneLoadMode: SceneLoadM
 
 /**
  * Callback for afterLoadSavedState event
- * @param sceneId The ID of the scene that was loaded. Will be -1 if the game state is restored from the backup.
+ * @param sceneId The ID of the scene that was loaded. Will be -1 if the game state is restored from the backup. You can view all the scene ids in `Ida/srcjs/lba2editor` folder.
  * @param filePath The path to the save file that was loaded. Will be an empty string if the game state is restored from the backup.
  *
  * @warning This is intended for internal usage only. Use this only if you know what you are doing.

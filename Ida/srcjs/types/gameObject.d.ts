@@ -213,19 +213,19 @@ export interface GameObject {
 
   /**
    * Sets the entity index of a 3D object.
-   * @param entity The entity index.
+   * @param entity The 3D entity id. You can view all the entity ids in `Ida/srcjs/architect/entities.md` file.
    */
   setEntity(entity: number): void;
 
   /**
    * Sets the body type of a 3D object.
-   * @param body The body type value.
+   * @param body The body id. You can view all the body ids for a particular 3D entity, using `Ida/Samples/animations` sample.
    */
   setBody(body: number): void;
 
   /**
    * Sets the animation id of a 3D object.
-   * @param animation The animation id.
+   * @param animation The animation id. You can view all the animation ids for a particular 3D entity, using `Ida/Samples/animations` sample.
    */
   setAnimation(animation: number): void;
 

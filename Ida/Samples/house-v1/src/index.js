@@ -15,7 +15,7 @@ Start new game to run the sample.
 const areaName = "house";
 
 // Objects
-// To know which object, zone or waypoint on the scene has which Id use LBArchitect application.
+// To easily explore which object, zone or waypoint on the scene has which Id use LBArchitect application.
 // LBArchitect 1.2: https://moonbase.kaziq.net/index.php?page=d_prog  (for the source code: https://github.com/LBALab/LBArchitect)
 // LBArchitect is handy but is limited to indoor scenes only.
 // For the outdoor scenes, you can use https://lba2remake.net Editor mode.
