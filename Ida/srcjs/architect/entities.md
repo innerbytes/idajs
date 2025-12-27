@@ -5,6 +5,8 @@ Extracted from lba2_ress.hqd from LBArchitect.
 Use this to find an existing LBA2 entity id when creating your mods.
 The entity id is set by calling `actor.setEntity(id)` on your actor object.
 
+__Entities 344 and 345 were added on top of LBArchitect's list, as they are present in the HQR__
+
 - 000: Twinsen, normal mode
 - 001: Twinsen, sporty mode
 - 002: Twinsen, aggressive mode
@@ -349,3 +351,4 @@ The entity id is set by calling `actor.setEntity(id)` on your actor object.
 - 341: Rabbibunny child
 - 342: Quetch child
 - 343: Piece of metal
+- 344: Mechanic rabbibunny near the end

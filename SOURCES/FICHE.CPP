@@ -1216,15 +1216,13 @@ bool FindAllBodies(S32 entityId, U8 **outBodies, S16 **outHqrIds, S32 *outCount)
 /*══════════════════════════════════════════════════════════════════════════*/
 
 // Ida - Find all the valid animation numbers in an object
-bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount)
+bool FindAllAnims(S32 entityId, U16 **outAnims, S32 *outCount)
 {
 	*outAnims = 0;
 	*outCount = 0;
 
-	T_OBJET *ptrobj = &ListObjet[numobj];
-	if (!ptrobj->IndexFile3D) return false;
-
-	U8 *ptrc = ptrobj->PtrFile3D;
+	U8* ptrFile3D = LoadFile3D(entityId);
+	U8* ptrc = ptrFile3D;
 	if (!ptrc) return false;
 
 	// First pass: count the number of animations
@@ -1258,7 +1256,7 @@ bool FindAllAnims(S32 numobj, U16 **outAnims, S32 *outCount)
 	if (!anims) return false;
 
 	// Second pass: collect all animation numbers
-	ptrc = ptrobj->PtrFile3D;
+	ptrc = ptrFile3D;
 	size_t index = 0;
 	U16 numgene;
 
