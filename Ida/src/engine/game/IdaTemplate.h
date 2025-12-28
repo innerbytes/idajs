@@ -26,6 +26,8 @@ namespace Ida
         static void lifef(const v8::FunctionCallbackInfo<v8::Value> &args);
 
         // Allowed in all phases except None, BeforeSceneLoad
+        static void getAnimations(const v8::FunctionCallbackInfo<v8::Value> &args);
+        static void _getBodies(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void _isMoveActive(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void _stopMove(const v8::FunctionCallbackInfo<v8::Value> &args);
         static void _enableMove(const v8::FunctionCallbackInfo<v8::Value> &args);

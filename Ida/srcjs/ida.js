@@ -213,6 +213,21 @@ const idaProto = {
     CelebrationRisen: 4,
   },
 
+  getBodies: function (entityId) {
+    const allBodies = this._getBodies(entityId);
+    if (Object.keys(allBodies).length === 0) {
+      return {};
+    }
+
+    const lba2Body = require("./lba2Body");
+
+    return Object.fromEntries(
+      Object.entries(allBodies).map(([key, hqrBodyId]) => [
+        key,
+        lba2Body[hqrBodyId] || `Unknown Body (${hqrBodyId})`,
+      ])
+    );
+  },
   setLogLevel: function (level) {
     if (typeof level !== "number" || level < 0 || level > 4) {
       throw new Error("Invalid log level. Must be a number between 0 and 4.");

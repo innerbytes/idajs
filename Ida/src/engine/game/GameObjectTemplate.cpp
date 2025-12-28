@@ -196,7 +196,7 @@ namespace Ida
         args.GetReturnValue().Set(hitPower);
     }
 
-    // Rotation speed is connected to desired rotation delay (used in LBAArchitect) by the formula: speed = 1024 * 50 /
+    // Rotation speed is connected to desired rotation delay (used in LBArchitect) by the formula: speed = 1024 * 50 /
     // delay
     void GameObjectTemplate::getRotationSpeed(const FunctionCallbackInfo<Value> &args)
     {
@@ -490,8 +490,10 @@ namespace Ida
         BEGIN_SCOPE
         EPP_ALLOW(ExecutionPhase::SceneLoad)
         VALIDATE_ARGS_COUNT(1);
-        VALIDATE_VALUE(int32_t, Int32, args[0], entity);
         BIND_OBJECT(T_OBJET, object);
+
+        int entityCount = lbaBridge->getNum3DEntities();
+        VALIDATE_INT_VALUE(args[0], entity, -1, entityCount - 1);
 
         bool hasChanged = object->IndexFile3D != entity;
         object->IndexFile3D = entity;
@@ -580,7 +582,7 @@ namespace Ida
         {
             flags[objectIndexValue] &= ~IDA_OBJ_LIFE_ENABLED;
         }
-        else 
+        else
         {
             flags[objectIndexValue] |= IDA_OBJ_LIFE_ENABLED;
         }

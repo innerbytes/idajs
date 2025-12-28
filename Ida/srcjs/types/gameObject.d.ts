@@ -37,8 +37,10 @@ export interface GameObject {
 
   /**
    * Returns the current position of the object in the world.
+   *
+   * @return Array of 3 values representing the position as [x, y, z]
    */
-  getPos(): [number, number, number];
+  getPos(): number[];
 
   /**
    * Returns array of 4 values that represent the object info registers
@@ -70,7 +72,7 @@ export interface GameObject {
 
   /**
    * Returns the rotation speed of the object.
-   * LBAArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
+   * LBArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
    * `speed = 50 * 1024 / delay`
    */
   getRotationSpeed(): number;
@@ -163,7 +165,7 @@ export interface GameObject {
    * Sets the position of the object in the world.
    * @param pos Array of 3 numbers: [x, y, z].
    */
-  setPos(pos: [number, number, number]): void;
+  setPos(pos: number[]): void;
 
   /**
    * Sets the angle of the object around Y in 0-4096 degrees.
@@ -198,7 +200,7 @@ export interface GameObject {
   /**
    * Sets the rotation speed of the object.
    * @param rotationSpeed The rotation speed value should be an integer from -32768 to 32767.
-   * LBAArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
+   * LBArchitect shows rotation delay instead. Rotation speed is connected to the delay by the formula:
    * `speed = 50 * 1024 / delay`
    */
   setRotationSpeed(rotationSpeed: number): void;
@@ -211,19 +213,19 @@ export interface GameObject {
 
   /**
    * Sets the entity index of a 3D object.
-   * @param entity The entity index.
+   * @param entity The 3D entity id. You can view all the entity ids in `Ida/srcjs/architect/entities.md` file.
    */
   setEntity(entity: number): void;
 
   /**
    * Sets the body type of a 3D object.
-   * @param body The body type value.
+   * @param body The body id. You can view all the body ids for a particular 3D entity, using `Ida/Samples/animations` sample.
    */
   setBody(body: number): void;
 
   /**
    * Sets the animation id of a 3D object.
-   * @param animation The animation id.
+   * @param animation The animation id. You can view all the animation ids for a particular 3D entity, using `Ida/Samples/animations` sample.
    */
   setAnimation(animation: number): void;
 

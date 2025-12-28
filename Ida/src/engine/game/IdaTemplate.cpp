@@ -53,6 +53,7 @@ namespace Ida
                                   FN(enableLightning),
                                   FN(disableLightning),
                                   FN(getLogLevel),
+                                  FN(getAnimations),
 
                                   FN(halt),
                                   FN(useImages),
@@ -71,6 +72,7 @@ namespace Ida
                                   // Undocumented
                                   FN(_setLogLevel),
                                   FN(_setEppEnabled),
+                                  FN(_getBodies),
                               });
 
         mTemplate.Reset(mIsolate, tmpl);
@@ -585,4 +587,81 @@ namespace Ida
         idaBridge->setMoveHandler(&moveScriptHandler);
     }
 
+    void IdaTemplate::_getBodies(const FunctionCallbackInfo<Value> &args)
+    {
+        BEGIN_SCOPE
+        EPP_DENY(ExecutionPhase::None, ExecutionPhase::BeforeSceneLoad)
+
+        VALIDATE_ARGS_COUNT(1)
+        BIND_BRIDGE
+        VALIDATE_INT_VALUE(args[0], entityId, 0, lbaBridge->getNum3DEntities() - 1)
+
+        uint8_t *allBodies;
+        int16_t *allHqrIds;
+        int32_t count;
+        bool result = lbaBridge->findAllBodies(entityId, &allBodies, &allHqrIds, &count);
+        if (!result)
+        {
+            count = 0;
+            wrn() << "Failed to get bodies for the entity. Make sure your HQR files are "
+                     "from vanilla game, or they are correctly modified. EntityId: "
+                  << entityId;
+        }
+
+        Local<Object> resultObj = Object::New(isolate);
+        auto context = args.GetIsolate()->GetCurrentContext();
+        for (int32_t i = 0; i < count; i++)
+        {
+            Local<Number> key = Number::New(isolate, allBodies[i]);
+            Local<Number> value = Number::New(isolate, allHqrIds[i]);
+            resultObj->Set(context, key, value).Check();
+        }
+
+        if (count > 0)
+        {
+            free(allBodies);
+            free(allHqrIds);
+        }
+
+        args.GetReturnValue().Set(resultObj);
+    }
+
+    void IdaTemplate::getAnimations(const FunctionCallbackInfo<Value> &args)
+    {
+        BEGIN_SCOPE
+        EPP_DENY(ExecutionPhase::None, ExecutionPhase::BeforeSceneLoad)
+
+        VALIDATE_ARGS_COUNT(1)
+        BIND_BRIDGE
+        VALIDATE_INT_VALUE(args[0], entityId, 0, lbaBridge->getNum3DEntities() - 1)
+
+        uint16_t *allAnims;
+        int32_t count;
+        bool result = lbaBridge->findAllAnimations(entityId, &allAnims, &count);
+        if (!result)
+        {
+            count = 0;
+            wrn() << "Failed to get animations for the entity. Make sure your HQR files are "
+                     "from vanilla game, that this entity contains animations, or that your HQR modifications are "
+                     "correct. EntityId: "
+                  << entityId;
+        }
+
+        if (count == 0)
+        {
+            Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, 0);
+            Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, 0);
+            args.GetReturnValue().Set(uint16Array);
+            return;
+        }
+
+        std::unique_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(
+            allAnims, count * sizeof(uint16_t), [](void *data, size_t length, void *deleter_data) { free(data); },
+            nullptr);
+
+        Local<v8::ArrayBuffer> arrayBuffer = v8::ArrayBuffer::New(isolate, std::move(backingStore));
+        Local<v8::Uint16Array> uint16Array = v8::Uint16Array::New(arrayBuffer, 0, count);
+
+        args.GetReturnValue().Set(uint16Array);
+    }
 }  // namespace Ida

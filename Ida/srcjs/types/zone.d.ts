@@ -18,20 +18,22 @@ export interface Zone {
 
   /**
    * Returns the lowest bounding box corner of the zone as [x, y, z] (West, Down, North)
+   * @returns Array of 3 values representing the position as [x, y, z]
    */
-  getPos1(): [number, number, number];
+  getPos1(): number[];
 
   /**
    * Returns the highest bounding box corner of the zone as [x, y, z] (East, Up, South)
+   * @returns Array of 3 values representing the position as [x, y, z]
    */
-  getPos2(): [number, number, number];
+  getPos2(): number[];
 
   /**
    * Returns the registers of the zone as an array of 8 numbers.
    *
    * The meaning of the registers depends on the zone type.
    *
-   * This is not documented enough yet. You will need to open the scene in LBAArchitect tool, in order to see what each register means for each zone type.
+   * This is not documented enough yet. You will need to open the scene in LBArchitect tool, in order to see what each register means for each zone type.
    *
    * @see {@link setRegisters} - to set the zone registers.
    */
@@ -40,7 +42,7 @@ export interface Zone {
   /**
    * The zone value is an extra register of the zone, that can have different meaning depending on zone type.
    *
-   * This is not documented enough yet. You will need to open the scene in LBAArchitect tool, in order to see what the zone value means for each zone type.
+   * This is not documented enough yet. You will need to open the scene in LBArchitect tool, in order to see what the zone value means for each zone type.
    *
    * @see {@link setZoneValue} - to set the zone value.
    */
@@ -55,13 +57,13 @@ export interface Zone {
    * Sets the lowest bounding box corner of the zone (West, Down, North).
    * @param pos Array of 3 numbers: [x, y, z].
    */
-  setPos1(pos: [number, number, number]): void;
+  setPos1(pos: number[]): void;
 
   /**
    * Sets the highest bounding box corner of the zone (East, Up, South).
    * @param pos Array of 3 numbers: [x, y, z].
    */
-  setPos2(pos: [number, number, number]): void;
+  setPos2(pos: number[]): void;
 
   /**
    * Sets the registers of the zone.

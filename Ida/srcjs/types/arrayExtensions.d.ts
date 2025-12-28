@@ -9,7 +9,7 @@ export interface ArrayExtensions<T> {
    * @returns A new array with the results of element-wise addition
    * @throws Error if the argument is not an array or arrays have different lengths
    */
-  plus(other: [number, number, number]): [number, number, number];
+  plus(other: number[]): number[];
 
   /**
    * Performs element-wise subtraction between this array and another numeric array.
@@ -18,7 +18,7 @@ export interface ArrayExtensions<T> {
    * @returns A new array with the results of element-wise subtraction
    * @throws Error if the argument is not an array or arrays have different lengths
    */
-  minus(other: [number, number, number]): [number, number, number];
+  minus(other: number[]): number[];
 
   /**
    * Calculates the magnitude (length) of the array as a vector.
@@ -40,7 +40,7 @@ export interface ArrayExtensions<T> {
    * @returns A new array with each element multiplied by the scalar
    * @throws Error if the argument is not a number
    */
-  mul(scalar: number): [number, number, number];
+  mul(scalar: number): number[];
 
   /**
    * Performs scalar division on all components of the array.
@@ -48,7 +48,7 @@ export interface ArrayExtensions<T> {
    * @returns A new array with each element divided by the scalar
    * @throws Error if the argument is not a number or is zero
    */
-  div(scalar: number): [number, number, number];
+  div(scalar: number): number[];
 
   /**
    * Returns a random element from the array.

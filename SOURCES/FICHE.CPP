@@ -1060,6 +1060,7 @@ S32	SearchAnim( U16 numanim, S32 numobj )
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
+
 S32	SearchBody( U8 numbody, S32 numobj )
 {
 	U8	command ;
@@ -1128,6 +1129,160 @@ S32	SearchBody( U8 numbody, S32 numobj )
 		}
 	}
 	return -1 ;
+}
+/*══════════════════════════════════════════════════════════════════════════*/
+
+// Ida - Find all the valid body numbers in an object
+bool FindAllBodies(S32 entityId, U8 **outBodies, S16 **outHqrIds, S32 *outCount)
+{
+	*outBodies = 0;
+	*outCount = 0;
+
+	int entitiesCount = GetFile3DCount();
+	if (entityId < 0 || entityId >= entitiesCount) return false;
+
+	U8* ptrFile3D = LoadFile3D(entityId);
+	U8* ptrc = ptrFile3D;
+	if (!ptrc) return false;
+
+	// First pass: count the number of bodies
+	S32 count = 0;
+	U8 command;
+	while((command = *ptrc++) != 255)
+	{
+		switch(command)
+		{
+		case F_BODY:
+			count++;
+			ptrc++;	// skip num name generique
+			ptrc += *ptrc;	// skip to next
+			break ;
+
+		case F_ANIM:
+			ptrc+=2;	// gen sur S16
+			ptrc += *ptrc;
+			break ;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	if (count == 0) return true;
+
+	// Allocate array for body numbers and HQR IDs
+	U8 *bodies = (U8*)malloc(count);
+	if (!bodies) return false;
+	
+	S16 *hqrIds = (S16*)malloc(count * sizeof(S16));
+
+	// Second pass: collect all body numbers and HQR IDs
+	ptrc = ptrFile3D;
+	size_t index = 0;
+	U8 numgene;
+	while((command = *ptrc++) != 255)
+	{
+		switch( command )
+		{
+		case F_BODY:
+			numgene = *ptrc++; 	// lit num name generique
+			bodies[index] = numgene;
+			hqrIds[index] = *(S16*)(ptrc + 1);  // ptrc points to size, hqrbody is at ptrc+1
+			index++;
+			ptrc += *ptrc;	// skip to next using size
+			break;
+
+		case F_ANIM:
+			ptrc+=2;	// gen sur S16
+			ptrc += *ptrc;
+			break;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	*outBodies = bodies;
+	*outHqrIds = hqrIds;
+	*outCount = count;
+
+	return true;
+}
+/*══════════════════════════════════════════════════════════════════════════*/
+
+// Ida - Find all the valid animation numbers in an object
+bool FindAllAnims(S32 entityId, U16 **outAnims, S32 *outCount)
+{
+	*outAnims = 0;
+	*outCount = 0;
+
+	U8* ptrFile3D = LoadFile3D(entityId);
+	U8* ptrc = ptrFile3D;
+	if (!ptrc) return false;
+
+	// First pass: count the number of animations
+	S32	count = 0;
+	U8 command;
+	while((command = *ptrc++) != 255)
+	{
+		switch(command)
+		{
+		case F_ANIM:
+			count++;
+			ptrc+=2;	// skip num name generique (U16)
+			ptrc += *ptrc;	// skip to next
+			break;
+
+		case F_BODY:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+			break;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	if (count == 0) return true;
+
+	// Allocate array for animation numbers
+	U16 *anims = (U16*)malloc(count * sizeof(U16));
+	if (!anims) return false;
+
+	// Second pass: collect all animation numbers
+	ptrc = ptrFile3D;
+	size_t index = 0;
+	U16 numgene;
+
+	while((command = *ptrc++) != 255)
+	{
+		switch(command)
+		{
+		case F_ANIM:
+			numgene = *(U16*)ptrc; 	// lit num name generique
+			anims[index++] = numgene;
+			ptrc += 2;	// skip U16
+			ptrc += *ptrc;	// skip to next
+			break;
+
+		case F_BODY:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+			break;
+
+		default:
+			ptrc++;	// gen
+			ptrc += *ptrc;
+		}
+	}
+
+	*outAnims = anims;
+	*outCount = count;
+
+	return true;
 }
 /*══════════════════════════════════════════════════════════════════════════*/
 

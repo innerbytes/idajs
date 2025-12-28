@@ -25,5 +25,8 @@ namespace core
 
         // Helper method to log to a stream
         static void logToStream(const v8::FunctionCallbackInfo<v8::Value> &args, Logger::LogLine &&stream);
+        
+        // Helper method to format a value for display
+        static std::string inscope_FormatValue(v8::Isolate *isolate, v8::Local<v8::Value> value, int depth, int maxDepth);
     };
 }  // namespace core

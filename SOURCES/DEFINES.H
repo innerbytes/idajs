@@ -37,6 +37,9 @@
 
 #define	LoadFile3D(index)       (BufferFile3D + *( (U32*)BufferFile3D+(index) ) )
 
+// Ida - Get the number of 3D files in the loaded 3D file buffer
+#define GetFile3DCount()        (*((U32*)BufferFile3D) / sizeof(U32))
+
 /*----------------*/
 
 #define	MAX_ANGLE	4096

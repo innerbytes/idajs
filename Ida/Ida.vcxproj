@@ -120,6 +120,7 @@
     <CopyFileToFolders Include="srcjs\image.js" />
     <CopyFileToFolders Include="srcjs\epp.js" />
     <CopyFileToFolders Include="srcjs\encoding.js" />
+    <CopyFileToFolders Include="srcjs\architect\lba2Body.js" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

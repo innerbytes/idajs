@@ -241,6 +241,21 @@ bool IdaLbaBridge::testObjectZoneDirection(int objectX, int objectZ, int objectB
     return TestObjectZoneDirection(objectX, objectZ, objectBeta, zonePtr, direction);    
 }
 
+int IdaLbaBridge::getNum3DEntities()
+{
+	return GetFile3DCount();
+}
+
+bool IdaLbaBridge::findAllBodies(int entityId, unsigned char **outBodies, short **outHqrIds, int *outCount) 
+{
+	return FindAllBodies(entityId, outBodies, outHqrIds, (S32 *)outCount);
+}
+
+bool IdaLbaBridge::findAllAnimations(int entityId, unsigned short **outAnims, int *outCount)
+{
+	return FindAllAnims(entityId, outAnims, (S32 *)outCount);
+}
+
 void IdaLbaBridge::requestPaletteSync() 
 {
 	FlagPal = TRUE;

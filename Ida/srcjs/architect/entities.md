@@ -1,0 +1,355 @@
+## Characters information:
+
+Extracted from lba2_ress.hqd from LBArchitect.
+
+Use this to find an existing LBA2 entity id when creating your mods.
+The entity id is set by calling `actor.setEntity(id)` on your actor object.
+
+__Entities 344 and 345 were added on top of LBArchitect's list, as they are present in the HQR__
+
+- 000: Twinsen, normal mode
+- 001: Twinsen, sporty mode
+- 002: Twinsen, aggressive mode
+- 003: Twinsen, discreet mode
+- 004: Twinsen, protopack mode
+- 005: Twinsen with Zoé
+- 006: Twinsen with Triton's Horn
+- 007: Twinsen in space suit
+- 008: Twinsen, super Jetpack mode
+- 009: Twinsen in space suit
+- 010: Twinsen in space suit
+- 011: Twinsen in space suit
+- 012: Twinsen in the car
+- 013: Twinsen X-rayed
+- 014: Nitro-Mecha-Penguin
+- 015: Zoé
+- 016: Piece of flying saucer
+- 017: Holomap
+- 018: Three darts
+- 019: Raph the Lighthouse keeper
+- 020: Tralu
+- 021: Snake
+- 022: Rabbibunny skeleton
+- 023: Flying rat
+- 024: Quetch (not from Citadel Island)
+- 025: Rabbibunny (Chez Luc's)
+- 026: Luc
+- 027: Tim (Chez Luc waiter)
+- 028: Sphero
+- 029: Quetch girl (Raph's friend)
+- 030: Sup in light-green dressing
+- 031: Yellow Franco with pistol
+- 032: Esmer dog without muzzle
+- 033: Grobo (Baggage Claim)
+- 034: Propeller (Baggage Claim)
+- 035: Rabbibunny (Baggage Claim)
+- 036: Crate-pushing apparatus
+- 037: Quetch (Baggage Claim)
+- 038: Grobo (Mr. Paul)
+- 039: Quetch (Citadel ticket office)
+- 040: Mrs. Brune (Citadel ticket office)
+- 041: Twinsen's neighbour
+- 042: Cart (Temple of Bù)
+- 043: Arrow (Temple of Bù)
+- 044: Painter (Citadel sewers)
+- 045: Female rabbibunny
+- 046: Nitro-Mecha-Penguin
+- 047: Flying Saucer
+- 048: Water platform (Esmer base)
+- 049: Franco guard with spike
+- 050: Sup
+- 051: Franco policeman with a gun
+- 052: Franco policeman with a stick
+- 053: Franco survivor
+- 054: Franco guard suit
+- 055: Baldino in space suit
+- 056: Franco guard
+- 057: Franco guard
+- 058: Grobo (Mr. Bazoo)
+- 059: Clerk (Citadel museum)
+- 060: Quetch
+- 061: Mrs. Bloop
+- 062: Tunic Container (museum)
+- 063: Trunk (sewers)
+- 064: Bird (Citadel Island)
+- 065: Little Tralu
+- 066: Joe the Elf
+- 067: Weather wizard
+- 068: Stove hologram (Wizard's cave)
+- 069: Pharmacist
+- 070: Sphero (pharmacy customer)
+- 071: Rabbibunny (pharmacy thief)
+- 072: Nomad Grobo (Desert Island)
+- 073: Quetch
+- 074: Female rabbibunny in swimming suit
+- 075: Female Grobo (Hacienda bath)
+- 076: School of Magic dean
+- 077: Female Rabbibunny (School of Magic)
+- 078: Ghost (School of Magic)
+- 079: Grobo student (School of Magic)
+- 080: Grobo student (School of Magic)
+- 081: Nomad Sphero (Desert Island)
+- 082: Male Grobo (Hacienda bath)
+- 083: Empty space suit
+- 084: Blowgun test target
+- 085: Hourglass (blowgun test)
+- 086: Flask of gallic acid
+- 087: Rabbibunny (Desert Island shop)
+- 088: Rabbibunny child
+- 089: Teacher (Citadel Island)
+- 090: Grobo child
+- 091: Quetch child
+- 092: Quetch child with a rope
+- 093: Jerome Baldino
+- 094: Memory viewer
+- 095: Notebook
+- 096: Grobo (Desert Island hotel)
+- 097: Blue dressed Sup (flying saucer)
+- 098: Female Sup (flying saucer)
+- 099: Translator
+- 100: Motorbike Rabbibunny
+- 101: Quetch (not from Citadel Island)
+- 102: Bob (covered head)
+- 103: Johnny Rocket
+- 104: Elevator
+- 105: Robot
+- 106: Felix (Citadel Island)
+- 107: Crab
+- 108: Hovercraft ferry
+- 109: Dino-Fly
+- 110: Zed
+- 111: Quetch (in love with pharmacist)
+- 112: Mushroom
+- 113: Female Rabbibunny (Raph's fiance)
+- 114: Giant crab piece
+- 115: Light beam
+- 116: Twinsen and Zoé with umbrella down
+- 117: Quetch child 1
+- 118: Quetch child 2 without rope
+- 119: Rosa the cow
+- 120: Quetch child 3 (pharmacy ceiling)
+- 121: Quetch dressed black
+- 122: Trash can (with hidden Esmer)
+- 123: Rabbibunny male with his child
+- 124: Teacher with a Quetch child
+- 125: Luc with Grobo child
+- 126: Franco with plates
+- 127: Franco with glass
+- 128: Sphero wizard (Ker'aooc)
+- 129: Female Quetch wizard (Tabata)
+- 130: Grobo wizard
+- 131: Drunk Franco
+- 132: Mosquibee
+- 133: Wannie
+- 134: Mosquibees Queen
+- 135: Mosquibee fan guy
+- 136: Quetch child 3 with cake
+- 137: Female Rabbibunny (School of Magic)
+- 138: Sup sailor with a glass
+- 139: Twinsen with a piece of cake
+- 140: Mosquibee with a full tub
+- 141: Zoé with pushchair
+- 142: Franco nurse with a child
+- 143: Franco child
+- 144: Wannie child
+- 145: Zed (on the beach)
+- 146: Woodbridge wheel
+- 147: Woodbridge transport platform
+- 148: Giant spider (Citadel Island)
+- 149: Moya the turtle
+- 150: Cactus (disguised Esmer)
+- 151: Bell (turtle call)
+- 152: Empty car
+- 153: Clover box
+- 154: Desert flower
+- 155: Desert sphero
+- 156: Camel
+- 157: Car with the racer
+- 158: Sphero (bowling player)
+- 159: Quetch (bowling player)
+- 160: Gray ball (bowling)
+- 161: Red ball
+- 162: Female quetch (swimming costume and book)
+- 163: Franco with beard (bowling player)
+- 164: Light green shirt Sup (bowling player)
+- 165: Quetch guard (Temple Park)
+- 166: Sup guy in swimming costume
+- 167: Green shell (Joe the elf)
+- 168: Eye (School of Magic)
+- 169: Chedil Amiradoo
+- 170: Balsam flower
+- 171: Sphero (near Port Ludo)
+- 172: Grobo policeman (Temple Park)
+- 173: Rabbibunny
+- 174: Yellow duck
+- 175: Twinsen with tunic and balloons
+- 176: Balloons
+- 177: Desert Grobo
+- 178: Old Rabbibunny with guitar
+- 179: Snake basket
+- 180: Sup in space suit
+- 181: Giraffe guy with a camera
+- 182: Ant guy with a backpack
+- 183: Two-head monster (Emperor's palace)
+- 184: Emperor's Sup soldier
+- 185: Sup in swimming costume
+- 186: Old Sup lady (Imperial Hotel)
+- 187: Franco guard (Imperial Hotel)
+- 188: Franco policeman
+- 189: Female Franco
+- 190: Narrow electric barrier
+- 191: Mosquibee dissident
+- 192: Sup guard (Emperor's palace)
+- 193: Leontine (zeppelin-boat)
+- 194: Old Franco
+- 195: Motor flyer driver 1
+- 196: Motor flyer driver 2
+- 197: Motor flyer
+- 198: Crate (mine company)
+- 199: Franco policeman in a car
+- 200: Shotgun
+- 201: Franco trooper
+- 202: Sup priest
+- 203: Franco (Otringal gas station)
+- 204: Green Gloom (alligator)
+- 205: Gray Gloom (alligator) holding Twinsen
+- 206: Gray Gloom (alligator)
+- 207: Franco with a drum
+- 208: Car (Otringal gas station)
+- 209: Zeelichian car without a gun
+- 210: Car gun
+- 211: Dark Monk's key
+- 212: Fire ball
+- 213: Franco survivor
+- 214: Kangaroo 1
+- 215: Kangaroo 2
+- 216: Franco priest
+- 217: Dark Monk
+- 218: Lava stone
+- 219: Mosquibee guy with a beard
+- 220: Wannie priest
+- 221: Drunk Franco guy
+- 222: Gas moster
+- 223: Wannie
+- 224: Wannie child
+- 225: Firefly
+- 226: Frog
+- 227: Ferryman in a boat
+- 228: Wannie guy
+- 229: Gem
+- 230: Undergas elevator
+- 231: Small gas monster (blue)
+- 232: Small gas monster (gray)
+- 233: Wannie guy with a pickaxe
+- 234: Undergas crane
+- 235: Undergas crane carrier 1
+- 236: Undergas crane carrier 2
+- 237: Little yellow pig
+- 238: Train locomotive with a Wannie
+- 239: Train wagon
+- 240: Firefly tart
+- 241: Red ball (Wannie house)
+- 242: Wannie's glove
+- 243: Gas monster (gray)
+- 244: Glass plate
+- 245: Mosquibees key fragment box cover
+- 246: Mosquibees Queen
+- 247: Mosquibee (green)
+- 248: Franco trooper with UZI
+- 249: Franco trooper with an explosive box
+- 250: Green Mosquibee with a flag
+- 251: Mosquibee carrying Twinsen
+- 252: Monkey monster
+- 253: Franco trooper with a parachute
+- 254: Flag
+- 255: Mosquibee entrance rope
+- 256: Franco trooper with UZI and grenade
+- 257: Double-zeppelin transporter
+- 258: Female dog (Francos Island)
+- 259: Franco worker
+- 260: Franco with a metal detector
+- 261: Franco worker with a red hat
+- 262: Mechanic owl
+- 263: Gas monster
+- 264: Rocket launcher (Island CX)
+- 265: Wannie guy with one glove
+- 266: Sup (orange dressing)
+- 267: Sup getting in a garbage can
+- 268: Sup getting in a cactus
+- 269: Light green Sup dressing with a newspaper
+- 270: Wannie guy
+- 271: Toys (of a Wannie child)
+- 272: Wannies key fragment
+- 273: Spider web
+- 274: Old Wannie
+- 275: Monkey monster
+- 276: Wannie child with a firefly
+- 277: Feet
+- 278: Sup with a cigar
+- 279: Sup with papers
+- 280: Gray ball
+- 281: Fat Mosquibee
+- 282: Blowtron
+- 283: Green Mosquibee with a red flag
+- 284: Lava fire ball
+- 285: Wheel of fortune
+- 286: Big gray Gloom with a big stick
+- 287: Female Franco dancer
+- 288: Franco fireman
+- 289: Heavy-metal Sup guy
+- 290: Female Franco dancer
+- 291: Reptile-thing (Casino)
+- 292: Dog (Casino)
+- 293: Sup (Casino)
+- 294: Green Gloom (Casino)
+- 295: Sailor
+- 296: Glass of drink
+- 297: Sailor
+- 298: Sup sailor with a glass of drink
+- 299: Young wannie with a stone
+- 300: Half of a Franco
+- 301: Franco with a gray hat and a glass
+- 302: Rick
+- 303: Gas monster
+- 304: Female Franco
+- 305: Can of Gazogem
+- 306: Twinsunian shop salesman (Otringal)
+- 307: Wizard's diploma
+- 308: Ferry ticket
+- 309: Umbrella
+- 310: Franco dissident
+- 311: Wannie guy
+- 312: Small spider
+- 313: Pighead in red dressing with a hammer
+- 314: Pighead in brown dressing with a rake
+- 315: Pighead in yellow dressing with a broom
+- 316: Stan from Time Commando
+- 317: Shy Sup girl (Imperial hotel)
+- 318: Gray Franco spy (Imperial hotel)
+- 319: Tape recorder
+- 320: Female Franco (Francos Island shop)
+- 321: Pickaxe
+- 322: Franco
+- 323: Old Franco scientist
+- 324: Female Franco nurse
+- 325: Franco child with a red hat
+- 326: Franco child
+- 327: Small Franco child
+- 328: Franco Burgermeister's brother
+- 329: Gas monster (gray)
+- 330: The Emperor
+- 331: The Emperor's wife
+- 332: Spikes (protection spell cave)
+- 333: Protection spell guardian monster
+- 334: Protection spell
+- 335: Teleportation beam
+- 336: Mechanic groboclone
+- 337: Mechanic groboclone with a missile launcher
+- 338: Quetch child
+- 339: Piece of metal
+- 340: Grobo child
+- 341: Rabbibunny child
+- 342: Quetch child
+- 343: Piece of metal
+- 344: Mechanic rabbibunny near the end
+- 345: Don't use it, crashes the game

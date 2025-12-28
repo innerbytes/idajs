@@ -17,9 +17,7 @@ const registerCoroutine = (name, generatorFunction) => {
     typeof generatorFunction !== "function" ||
     generatorFunction.constructor.name !== "GeneratorFunction"
   ) {
-    throw new Error(
-      `Generator function for ${name} must be a generator function`
-    );
+    throw new Error(`Generator function for ${name} must be a generator function`);
   }
   if (generatorRegistry.has(name)) {
     throw new Error(`Coroutine with name ${name} is already registered`);
@@ -80,9 +78,7 @@ const resumeCoroutines = () => {
     return;
   }
 
-  Object.values(store.runningCoroutines).forEach((coroutine) =>
-    resumeCoroutine(coroutine)
-  );
+  Object.values(store.runningCoroutines).forEach((coroutine) => resumeCoroutine(coroutine));
 };
 
 // Name is optional, to control we pause the expected coroutine
@@ -93,9 +89,7 @@ const pauseCoroutine = (objectId, name) => {
   if (name) validateName(name);
   const store = useSystemStore();
   if (!store.runningCoroutines || !store.runningCoroutines[objectId]) {
-    console.error(
-      `Coroutine for objectId ${objectId} is not running or already stopped`
-    );
+    console.error(`Coroutine for objectId ${objectId} is not running or already stopped`);
     return;
   }
 
@@ -108,9 +102,7 @@ const pauseCoroutine = (objectId, name) => {
     return;
   }
 
-  console.debug(
-    `Pausing coroutine for objectId ${objectId} with name ${coroutine.name}`
-  );
+  console.debug(`Pausing coroutine for objectId ${objectId} with name ${coroutine.name}`);
 
   stopCoroutine(objectId);
   savePausedCoroutine(store, coroutine);
@@ -127,15 +119,11 @@ const unpauseCoroutine = (objectId, name) => {
   const pausedCoroutine = findPausedCoroutine(store, objectId, name);
 
   if (!pausedCoroutine) {
-    console.error(
-      `There is no paused coroutine witn name ${name} for objectId ${objectId}`
-    );
+    console.error(`There is no paused coroutine witn name ${name} for objectId ${objectId}`);
     return;
   }
 
-  console.debug(
-    `Unpausing coroutine for objectId ${objectId} with name ${name}`
-  );
+  console.debug(`Unpausing coroutine for objectId ${objectId} with name ${name}`);
 
   // Stop any running coroutine for this objectId if exists
   if (store.runningCoroutines[objectId]) {
@@ -157,9 +145,7 @@ const stopPausedCoroutine = (objectId, name) => {
   validateObjectId(objectId);
   validateName(name);
   const store = useSystemStore();
-  console.debug(
-    `Stopping paused coroutine for objectId ${objectId} with name ${name}`
-  );
+  console.debug(`Stopping paused coroutine for objectId ${objectId} with name ${name}`);
   deletePausedCoroutine(store, objectId, name);
 };
 
@@ -276,8 +262,7 @@ const handleCoroutine = (objectId) => {
 const doMove = (cmd, ...args) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return (coroutine) =>
-    ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
+  return (coroutine) => ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
 };
 
 // Allows user to do an external action from the coroutine. For example change a variable, or start another coroutine.
@@ -317,10 +302,7 @@ const doReduce = (key) => {
       key = "__default";
     }
 
-    if (
-      typeof key !== "number" &&
-      (typeof key !== "string" || key.trim() === "")
-    ) {
+    if (typeof key !== "number" && (typeof key !== "string" || key.trim() === "")) {
       throw new Error("Key must be a non-empty string or a number");
     }
 
@@ -349,9 +331,7 @@ function resumeCoroutine(coroutine) {
     throw new Error(`Coroutine with name ${coroutine.name} is not registered`);
   }
 
-  console.debug(
-    `Resuming coroutine for objectId ${coroutine.id} with name ${coroutine.name}`
-  );
+  console.debug(`Resuming coroutine for objectId ${coroutine.id} with name ${coroutine.name}`);
 
   ida._stopMove(coroutine.id);
 

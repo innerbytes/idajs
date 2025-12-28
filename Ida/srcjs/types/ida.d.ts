@@ -1162,6 +1162,22 @@ export interface Ida {
   setIntroVideo(name: string): void;
 
   /**
+   * Gets the available body models for the given entity ID.
+   *
+   * @param entityId The ID of the 3D entity to get the body models for.
+   * @returns An object mapping body model IDs to their names.
+   */
+  getBodies(entityId: number): { [key: number]: string };
+
+  /**
+   * Gets the available animations for the given entity ID.
+   *
+   * @param entityId The ID of the 3D entity to get the animations for.
+   * @returns A Uint16Array containing the animation IDs.
+   */
+  getAnimations(entityId: number): Uint16Array;
+
+  /**
    * The log levels, which can be used to filter console logs.
    */
   LogLevels: LogLevels;

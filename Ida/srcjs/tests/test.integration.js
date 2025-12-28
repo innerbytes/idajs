@@ -410,6 +410,66 @@ test.group("Integration Tests", () => {
     expect.true(zoeCollidedWithTwinsen);
   });
 
+  test("getBodies and getAnimations functions work", async () => {
+    // Arrange
+    let zoeBodies = null;
+    let zoeAnimations = null;
+    let twinsenNormalBodies = null;
+    let twinsenNormalAnimations = null;
+
+    const afterLoadScene = new Promise((resolve) => {
+      scene.addEventListener(
+        "afterLoadScene",
+        () => {
+          resolve();
+
+          zoeBodies = ida.getBodies(15);
+          zoeAnimations = ida.getAnimations(15);
+          twinsenNormalBodies = ida.getBodies(0);
+          twinsenNormalAnimations = ida.getAnimations(0);
+        },
+        "test"
+      );
+    });
+
+    mark.skipVideoOnce();
+
+    // Act
+    mark.newGame();
+    await afterLoadScene;
+
+    // Assert
+    expect.objectEqual(zoeBodies, { 0: "Zoé model", 18: "Zoé with umbrella model" });
+    expect.objectEqual(twinsenNormalBodies, {
+      0: "Twinsen without tunic model",
+      1: "Twinsen with tunic model",
+      2: "Twinsen with tunic and sword model",
+      3: "Twinsen with tunic and blowgun model",
+      4: "Twinsen with tunic and blowtron model",
+      5: "Twinsen with tunic and wannie glove model",
+      6: "Twinsen with tunic and laser pistol model",
+      7: "Twinsen with wizard's tunic model",
+      8: "Twinsen with wizard's tunic and blowgun model",
+      9: "Twinsen burning model",
+      12: "Twinsen falling in Dome of the Slate model",
+      13: "Twinsen with tunic (darker shading) model",
+      14: "Twinsen with tunic (darker shading) and pick-axe model",
+      15: "Twinsen with tunic (darker shading) and portable radio model",
+      16: "Twinsen with tunic and car closed model",
+      17: "Twinsen with wizard's tunic and car closed model",
+    });
+
+    expect.collectionEqual(zoeAnimations, [0, 1, 6, 22, 5, 84, 85, 7, 8, 86, 87, 88, 89, 65, 90]);
+    expect.collectionEqual(
+      twinsenNormalAnimations,
+      [
+        0, 1, 2, 3, 4, 7, 15, 5, 6, 22, 8, 9, 27, 10, 48, 12, 30, 11, 49, 13, 31, 50, 21, 20, 51,
+        29, 33, 34, 35, 45, 52, 53, 54, 55, 56, 57, 58, 59, 36, 37, 38, 28, 24, 23, 60, 61, 62, 63,
+        64, 65, 39, 66, 67, 68, 42, 43, 41, 40, 44, 69, 70, 46, 71, 72, 47, 73, 74, 75,
+      ]
+    );
+  });
+
   test("execution protection policy works", async () => {
     // Arrange
     const m = ida.Move;
