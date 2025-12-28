@@ -101,12 +101,10 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, loadMode) => {
         printInfo();
       } else {
         // Switching animation
-
         const nextAnimation = getNextAnimation();
         console.log(`Switching to animation ${nextAnimation}`);
 
         ida.life(5, ida.Life.LM_POS_POINT, 0);
-
         ida.life(objectId, ida.Life.LM_ANIM_OBJ, 5, nextAnimation);
 
         ida.life(
