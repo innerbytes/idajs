@@ -190,9 +190,11 @@ If nothing above helped, please open an issue here: {{{GIT_URL}}}/issues
 
 #### Step 6. Important folder structure to know
 
-- `Ida/` — engine source code. You don’t need to change anything here to create mods.
-
+- `Ida/` — engine source code. You don't need to change anything here to create mods, but there are some useful folders inside:
   - `Ida/Samples/` — sample mods you can run and copy from. See the [Samples section](#5-idajs-samples) below.
+    - `Ida/Samples/animations/` — a special sample to expore all 3D entities, bodies and animations used in LBA 2, and find the needed ids.
+  - `srcjs/architect` — lists of all the 3D entities and sprite ids used in the original LBA 2 game.
+  - `srcjs/lba2editor` — lists of all the scene ids used in the original LBA 2 game, structured by Planets, Islands and Sections.
 
 - `Release/` — build output (the compiled `LBA2.exe` and related files). If you build in Debug mode, outputs will be in `Debug/` instead.
 
@@ -332,6 +334,16 @@ Everything you can see, interact with, or that moves in the scene:
 Game Objects are the heart of gameplay — they can move, animate, respond to player actions, and trigger events.
 
 Some of the Game Objects are always invisible, and serve only to execute scripts (like timers, etc).
+
+##### **Necessary ids for Game Objects**
+
+When working with Game Objects, you will often need to specify the 3D entity id, body type id and animation id to define how the object looks and animates.
+For the sprite objects, you will need to specify the sprite id.
+
+- [3D Entity Ids]({{{GIT_URL}}}/blob/main/Ida/srcjs/architect/entities.md) - list of all 3D entities used in LBA 2
+- [Sprite Ids]({{{GIT_URL}}}/blob/main/Ida/srcjs/architect/sprites.md) - list of all sprites used in LBA 2
+- **Body and Animation Ids:** Run `Ida/Samples/animations`. This is a special sample to explore all 3D entities, bodies and animations used in LBA 2, and find the needed ids.
+See more in [IdaJS Samples](#5-idajs-samples) section below.
 
 **Some useful API:**
 
@@ -1014,7 +1026,7 @@ Each sample has its own folder. Here are the list of the samples in the order fr
   - This mod is implemented in a modular way, using multiple JavaScript files, to keep the code organized.
   - It also uses custom images in the dialogs, and custom zones in the scene.
   - A great next step after `house-v1` sample, to see more advanced modding techniques.
-- `animations` - a tool sample that allows to view all the existing LBA 2 Actor models, their bodies and animations in 3D.
+- **`animations`** - a tool sample that allows to view all the existing LBA 2 Actor models, their bodies and animations in 3D.
   - A very useful tool to explore LBA 2 Actor models and animations.
   - Set the EntityId you want to view on top of the `index.js` file, and run the sample to explore the Entity bodies and animations ids.
   - To find the id of an entity you need, see here: {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/entities.md
