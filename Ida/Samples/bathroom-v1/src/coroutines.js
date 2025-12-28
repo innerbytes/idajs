@@ -193,6 +193,9 @@ function* kissingInBath() {
 
   // Doing infinitely
   while (true) {
+    // Good practice to put in the beginning of infinite loops to avoid coroutine counter from increasing indefinitely. Otherwise it might slow down the loading of new scenes after a while.
+    yield doReduce();
+
     // Waiting for a random time between 0 and 4 seconds
     yield doMove(ida.Move.TM_WAIT_NB_SECOND_RND, 4);
 
