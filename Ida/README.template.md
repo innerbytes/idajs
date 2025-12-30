@@ -4,6 +4,24 @@
 
 # JavaScript-powered engine for LBA2 game modding
 
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/XiBlQ5rBOGE?si=z2Euu9UIYMs5d9x8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## Why IdaJS
+
+- **Mod any scenes of LBA2 game:** change both `Outdoor` and `Indoor` locations of Little Big Adventure 2. Modify characters, their behaviors, dialogs, sprites, and everything else LBA2 engine code supports as much as you like.
+
+- **Easy to start:** JavaScript is beginner-friendly — even if you’ve never coded before, you can read it and understand what’s happening.
+
+- **Mod big or mod small:** IdaJS mods work perfectly together with the existing LBA2 story and behaviours on the same scene. If you want, you can rewrite the whole scenes, or just implement small additions to the existing game.
+
+- **Modern tools:** with all the tools support (VS Code, TypeScript, linters, inline documentation, formatters, intellisense, type checking, etc)
+
+- **Vibe coding friendly:** AI models are particularly good with JavaScript/TypeScript, so you can use it to help you write your mods very fast!
+
+- **Huge amount of libraries and community support:** with JavaScript, you get access to thousands of open-source npm packages — from utilities and tools to full game-logic helpers. A lot of problems are already solved, so you can focus on creating.
+
+## Get IdaJS here
+
 - Version: **{{{VERSION}}}** <span id="version-latest" style="display: none"> (latest)</span>
 - Download IdaJS: {{{GIT_URL}}}/archive/refs/tags/v{{{VERSION}}}.zip
 - Release notes: {{{GIT_URL}}}/releases/tag/v{{{VERSION}}}
