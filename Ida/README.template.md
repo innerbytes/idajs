@@ -17,9 +17,9 @@
 
 - **Mod big or mod small:** IdaJS mods work perfectly together with the existing LBA2 story and behaviours on the same scene. If you want, you can rewrite the whole scenes, or just implement small additions to the existing game.
 
-- **Modern tools:** with all the tools support (VS Code, TypeScript, linters, inline documentation, formatters, intellisense, type checking, etc)
-
 - **Vibe coding friendly:** AI models are particularly good with JavaScript/TypeScript, so you can use it to help you write your mods very fast!
+
+- **Modern tools:** with all the tools support (VS Code, TypeScript, linters, inline documentation, formatters, intellisense, type checking, etc)
 
 - **Huge amount of libraries and community support:** with JavaScript, you get access to thousands of open-source npm packages — from utilities and tools to full game-logic helpers. A lot of problems are already solved, so you can focus on creating.
 
