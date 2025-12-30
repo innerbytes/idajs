@@ -26,6 +26,18 @@
   color: var(--idajs-title-color-light);
 }
 
+.ida-video {
+  width: 560px;
+  aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 769px) {
+  .ida-video {
+    width: 100%;
+    height: auto;
+  }
+}
+
 /* 
  * Logo in header
  */
