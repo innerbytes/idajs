@@ -2,12 +2,17 @@
  * Welcome to IdaJS modding!
  * Read the documentation here: https://ida.innerbytes.com
  */
-console.log("Welcome to the IdaJS project!\n");
+console.log(
+  "Welcome to the IdaJS project!\nThis is a mod, demonstrating a secret dialog with Baldino over the radio.\nTalk to the radio while Zoe is still at home to trigger it."
+);
 
 const cellarSceneId = 1;
 
 let tempStore;
 let textId;
+
+// Vanilla Game variable, responsible for tracking Zoe's location
+const varZoeLocation = 40;
 
 /**
  * Start with this event handler to setup every scene, the mod needs to modify
@@ -28,6 +33,13 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, sceneLoadMode) => 
   twinsen.handleLifeScript((objectId) => {
     const sceneStore = useSceneStore();
 
+    // Only allowing this secret dialog with Baldino, if Zoe didn't leave the house yet
+    if (scene.getGameVariable(varZoeLocation) > 1) {
+      // If Zoe has left, let the original LBA2 life script handle the situation
+      return true;
+    }
+
+    // Baldino already finished talking - allow LBA2 life script to continue
     if (sceneStore.baldinoIsDoneTalking) {
       return true;
     }
@@ -87,7 +99,9 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, sceneLoadMode) => 
 
       sceneStore.baldinoIsDoneTalking = true;
       sceneStore.baldinoIsTalking = false;
-      return;
+
+      // Our script is handling the interaction - prevent LBA2 life script from running
+      return false;
     }
 
     const isActionPressed = ida.lifef(objectId, ida.Life.LF_ACTION);
@@ -101,8 +115,14 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId, sceneLoadMode) => 
       ) {
         ida.life(objectId, ida.Life.LM_MESSAGE, 30); // Hello !
         startCoroutine(objectId, "waitForResponse");
+
+        // Our script is handling the interacton - prevent LBA2 life script from running
+        return false;
       }
     }
+
+    // In other situation, allowing LBA2 life script to continue
+    return true;
   });
 });
 
