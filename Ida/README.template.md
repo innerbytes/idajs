@@ -4,6 +4,7 @@
 
 # JavaScript-powered engine for LBA2 game modding
 
+**Getting Started Tutorial.** [Install IdaJS and create your very first Little Big Adventure 2 mod:](https://www.youtube.com/watch?v=XiBlQ5rBOGE)
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/XiBlQ5rBOGE?si=z2Euu9UIYMs5d9x8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Why IdaJS
