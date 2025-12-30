@@ -1019,6 +1019,7 @@ Each sample has its own folder. Here are the list of the samples in the order fr
 - `do-not-hit-zoe` - the simplest mod, so it's easy to start with. Zoe doesn't get angry if you hit her, but then you die.
 - `storm` - basic sample used in this documentation. Allows to change the weather in the game through a dialog with an NPC.
 - `ts-storm` - same as `storm`, but implemented in TypeScript.
+- `radio` - a simple mod, we have created in the [IdaJS Getting Started Video tutorial](https://www.youtube.com/watch?v=XiBlQ5rBOGE). 
 - `house-v1` - a complete 1:1 re-implementation of the Twinsen's house scene from the original LBA 2 game, using only {{{ida}}} scripting capabilities. 
   - Full re-implementation of the very familiar Twinsen's house scene
   - Very much recommended to explore
@@ -1026,6 +1027,11 @@ Each sample has its own folder. Here are the list of the samples in the order fr
   - This mod is implemented in a modular way, using multiple JavaScript files, to keep the code organized.
   - It also uses custom images in the dialogs, and custom zones in the scene.
   - A great next step after `house-v1` sample, to see more advanced modding techniques.
+
+#### Tool Samples
+
+Tool samples are designed to help you with modding process:
+
 - **`animations`** - a tool sample that allows to view all the existing LBA 2 Actor models, their bodies and animations in 3D.
   - A very useful tool to explore LBA 2 Actor models and animations.
   - Set the EntityId you want to view on top of the `index.js` file, and run the sample to explore the Entity bodies and animations ids.
