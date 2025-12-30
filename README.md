@@ -2,9 +2,9 @@
 
 <a href="https://ida.innerbytes.com" target="_blank"><img width="320" height="320" alt="IdaJS logo image" title="IdaJS - a JavaScript-powered scripting engine for LBA2" src="https://github.com/user-attachments/assets/b5b4557f-1fc7-414c-9ed2-88cd5f54617b" /></a> <a href="https://www.youtube.com/watch?v=GrzfcKwTVaM" target="_blank"><img width="466" height="318" alt="IdaJS demo video image" title="See the demo video" src="https://github.com/user-attachments/assets/c501b78c-d160-466c-970a-6ce164f436e8" /></a>
 
-- [**See the demo mod video**](https://www.youtube.com/watch?v=GrzfcKwTVaM)
-- [**See the mod JavaScript code**](https://github.com/innerbytes/idajs/blob/main/Ida/Samples/bathroom-v1/src/index.js#L28)
-- [**Documentation and API**](https://ida.innerbytes.com/)
+- [**Getting Started Tutorial**](https://www.youtube.com/watch?v=XiBlQ5rBOGE)
+- [**Demo Video**](https://www.youtube.com/watch?v=GrzfcKwTVaM)
+- [**Read more here**](https://ida.innerbytes.com/)
 
 ## What is IdaJS?
 
@@ -16,7 +16,8 @@ IdaJS is a JavaScript scripting layer built on top of the community-maintained L
 
 ## Getting Started
 
-Jump straight to the [Quick Start Guide](https://ida.innerbytes.com/#2-getting-started) if you wish to build and run the project
+- Watch this Video Tutorial: https://www.youtube.com/watch?v=XiBlQ5rBOGE
+- Or jump straight to the [Quick Start Guide](https://ida.innerbytes.com/#2-getting-started) if you prefer reading.
 
 ## Related repositories
 
