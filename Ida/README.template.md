@@ -9,6 +9,10 @@
   <iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/XiBlQ5rBOGE?si=z2Euu9UIYMs5d9x8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 
+## ❤️ IdaJS supporters ❤️
+
+Huge thanks to **Alban Crequy** for supporting IdaJS project on [Patreon](https://www.patreon.com/15102220/join)!
+
 ## Why IdaJS
 
 - **Mod any scenes of LBA2 game:** change both `Outdoor` and `Indoor` locations of Little Big Adventure 2. Modify characters, their behaviors, dialogs, sprites, and everything else LBA2 engine code supports as much as you like.
