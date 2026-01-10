@@ -135,11 +135,16 @@ In short: enjoy {{{ida}}} locally and share your mods freely, but please don’t
 
 ### 2.1 Prerequisites
 
-- Windows 10 or 11 64bit
+#### Operating System
+- **Windows 10 or 11 64bit**
+- **macOS** (Apple Silicon, tested) - if you are using macOS, please install [UTM free virtual machine](https://mac.getutm.app/), and install Windows 11 ARM64 in it.
+- **Linux** (not tested) - should work in QEMU/KVM with Windows 10/11 64bit installed, but it wasn't tested yet. Please let us know if you tried it and it worked good.
+- Internet connection (needed during the setup process only, to download necessary build tools)
+
+#### LBA 2 classic installed
 - LBA 2 classic game purchased and installed on your PC. You can use [GOG](https://www.gog.com/en/game/little_big_adventure_2) or [Steam](https://store.steampowered.com/app/398000/Twinsens_Little_Big_Adventure_2_Classic/) version of the game.
   - {{{ida}}} will not modify any of your original game files, so you can always run the original game as well.
   - [itch.io](https://2-point-21.itch.io/little-big-adventure-twinsen-odyssey) version of LBA2 should also work, but it wasn't tested yet. If you tried it and it worked, please let us know.
-- Internet connection (needed during the setup process only, to download necessary build tools)
 
 ### 2.2 Install and run IdaJS engine
 
