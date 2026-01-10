@@ -1154,32 +1154,26 @@ _This list might not cover all the current {{{ida}}} engine capabilities, but we
 _Planned features are not guaranteed to be implemented, but are on the roadmap._
 
 ### 8.1 IdaJS core features
-- Coroutine API improvement, make it possible to use function instead of string for coroutine registration.
-- Implement limited external state conditions support in the coroutines
-- Implement life commands execution from the coroutines
+- API improvements (coroutines, life scripts, etc)
 - Implement the save game versioning and migration system, to allow mods updates without breaking existing saves. 
-- Allow to ship user-created HQR files together with the mod
+- Support user-created sprites, allow to ship them together with the mod
+- Support user-created 3D models and animations, allow to ship them together with the mod
 - Allow both {{{ida}}} and LBA2 move script execution for the same object
 - Performance optimizations as much as needed
 - Cross platform LBA 2 engine integration will be considered (Linux, MacOS) when there appears a stable community implementation.
 
 ### 8.2 IdaJS engine features
-- Provide modding for the chapter money bonuses system
-- Support custom inventory items and 3D models for them
-- Support custom bonuses and key types
+- Car parameters customization support
+- Provide modding for the chapter money system and money cap
+- Custom inventory system support
+- Support importing of custom actor models and animations
+- Weapons customization support
 - Allow to set custom positions on the Holomap
 - Support custom audio for the dialog and importing of audio files from one of common formats (wav, mp3, ogg)
 - Support custom videos for the mods and importing of video files from one of common formats (mp4, avi, mov)
-- Support custom music tracks for the mods and importing of audio files from one of common formats (wav, mp3, ogg)
-- Support custom SFX sounds
-- Modify NitroMecaPingouin behavior.
-- Support custom weapons and particle effects
-- Support importing of custom actor models and animations
-- Support LBA 1 assets importing
+- Support adding new scenes and islands
 
 ### 8.3 IdaJS integrations and component model
-- Provide high-level scene and object components, support custom router configuration
-- Provide high-level functions for live and move script execution
 - Provide integration with popular ICU-powered localization libraries, to allow easy localization of the mods to multiple languages.
 - Support non-latin and eastern-latin characters in the font and encoding tables
 
@@ -1187,10 +1181,18 @@ _Planned features are not guaranteed to be implemented, but are on the roadmap._
 - Support limited file system access (fs module) for custom file loading/saving from the mod code.
 - Support Web requests (http/https) from the mod code. 
 - Support WebWorkers for offloading heavy computations, such as custom AI processing, from the main thread.
-- Add expanded information about objects for console.log output
 - Debugger support
-- Extend `require` function support with .json, UNC, file://, node_modules search (whichever will appear useful).
+- Extend `require` function support with .json, UNC, file://, node_modules (whichever will appear useful).
 - Extend support of the other JavaScript standard modules (path, os, child_process, etc) if needed
+
+### 8.5 Far-fetched features
+- Support custom bonuses (except magic, health, money).
+- Support different key types (colored, for example)
+- Music system modding (add more music tracks, control when music changes, etc)
+- Support user SFX sounds
+- Modify NitroMecaPingouin behavior.
+- Support LBA 1 assets importing
+- Extended weather modding system
 
 ## 9. Contributing to the IdaJS project
 
