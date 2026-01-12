@@ -552,6 +552,8 @@ restartloop:
         uint8_t *idaFlags = ida->getObjectFlags();
 		Uint64 frameStartTime = 0;
 
+// Ida - actions before starting the main loop
+        StuckDetector::reset();
 #ifdef IDA_PROFILE
         Ida::Instrumentation instrumentation;
 #endif // IDA_PROFILE
