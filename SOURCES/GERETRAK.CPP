@@ -166,8 +166,8 @@ void	DoTrack( U8 numobj )
 		macro = *ptrtrack++ ;
 		ptrobj->OffsetTrack++ ;
 
-		// Ida - stuck fighter should reset if it is any other command than TM_GOTO_POINT
-		if (macro != TM_GOTO_POINT) 
+		// Ida - reset stuck detector if it is any other command than TM_GOTO_POINT or TM_GOTO_SYM_POINT
+		if (macro != TM_GOTO_POINT && macro != TM_GOTO_SYM_POINT) 
 		{
 			StuckDetector::resetObject(numobj);
 		}
@@ -547,11 +547,28 @@ void	DoTrack( U8 numobj )
 							angle ) ;
 			}
 
-			if( distance > 500 )
+			if (distance > 500)
 			{
-				ptrobj->OffsetTrack -= 2 ;
-				flag = FALSE ;
+				// Ida - preventing the stuck issue with some objects
+				if (StuckDetector::isObjectStuck(numobj, ptrobj, distance)) 
+				{
+					// If stuck - set position to the destination and terminate the move to point command
+					StuckDetector::unstuckObject(ptrobj, X0, Y0, Z0);
+					StuckDetector::resetObject(numobj);
+				}
+				else 
+				{
+					// Continue the walk to point command
+					ptrobj->OffsetTrack -= 2 ;
+					flag = FALSE ;
+				}
 			}
+			else 
+			{
+				// Ida - arrived to the point
+				StuckDetector::resetObject(numobj);
+			}
+
 			break ;
 
 /*-------------------------------------------------------------------------*/
