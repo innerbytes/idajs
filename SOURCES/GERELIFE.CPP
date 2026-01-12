@@ -694,8 +694,11 @@ S32    DoTest()
 
 //▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-void	CleanTrack( T_OBJET *ptrobj )
+void	CleanTrack(S32 objectIndex, T_OBJET *ptrobj)
 {
+	// Ida - reset the stuck detector when restarting a track script for an object
+	StuckDetector::resetObject(objectIndex);
+
 	U8	*ptrtrack ;
 
 	if( ptrobj->OffsetTrack!=-1 )
@@ -1099,7 +1102,7 @@ void	DoLife( U8 numobj )
 					PtrPrg += 2;
 					break;
 				}
-				CleanTrack(ptrobj);
+				CleanTrack(numobj, ptrobj);
 				ptrobj->OffsetTrack = *(S16*)PtrPrg;
 				PtrPrg += 2;
 				Track_SetLabel(ptrobj);
@@ -1119,9 +1122,9 @@ void	DoLife( U8 numobj )
 						break;
 					}
 
-					CleanTrack( &ListObjet[num] ) ;
-					ListObjet[num].OffsetTrack = *(S16*)PtrPrg ;
-					Track_SetLabel( &ListObjet[num] ) ;
+					CleanTrack(num, &ListObjet[num]);
+					ListObjet[num].OffsetTrack = *(S16*)PtrPrg;
+					Track_SetLabel(&ListObjet[num]);
 				}
 				PtrPrg += 2 ;
 				break ;
@@ -1136,7 +1139,7 @@ void	DoLife( U8 numobj )
 					break;
 				}
 
-				CleanTrack(ptrobj);
+				CleanTrack(numobj, ptrobj);
 				ptrobj->MemoLabelTrack = ptrobj->OffsetLabelTrack;
 				ptrobj->OffsetTrack = -1;
 			}
@@ -1154,9 +1157,9 @@ void	DoLife( U8 numobj )
 						break;
 					}
 
-					CleanTrack( &ListObjet[num] ) ;
-					ListObjet[num].MemoLabelTrack = ListObjet[num].OffsetLabelTrack ;
-					ListObjet[num].OffsetTrack = -1 ;
+					CleanTrack(num, &ListObjet[num]);
+					ListObjet[num].MemoLabelTrack = ListObjet[num].OffsetLabelTrack;
+					ListObjet[num].OffsetTrack = -1;
 				}
 				break ;
 
@@ -1170,7 +1173,7 @@ void	DoLife( U8 numobj )
 					break;
 				}
 
-				CleanTrack(ptrobj);
+				CleanTrack(numobj, ptrobj);
 				ptrobj->OffsetTrack = ptrobj->MemoLabelTrack;
 				Track_SetLabel(ptrobj);
 			}
@@ -1188,9 +1191,9 @@ void	DoLife( U8 numobj )
 						break;
 					}
 
-					CleanTrack( &ListObjet[num] ) ;
-					ListObjet[num].OffsetTrack = ListObjet[num].MemoLabelTrack ;
-					Track_SetLabel( &ListObjet[num] ) ;
+					CleanTrack(num, &ListObjet[num]);
+					ListObjet[num].OffsetTrack = ListObjet[num].MemoLabelTrack;
+					Track_SetLabel(&ListObjet[num]);
 				}
 				break ;
 
@@ -2469,7 +2472,7 @@ HERCULE( HPrintf( "errno= %d: %s\n", errno, strerror(errno) ) ) ;
 					break;
 				}
 
-				CleanTrack(ptrobj);
+				CleanTrack(numobj, ptrobj);
 
 				num = *PtrPrg++;
 				ptrobj->OffsetTrack = SearchOffsetTrack(ptrobj,

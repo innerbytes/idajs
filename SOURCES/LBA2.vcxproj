@@ -212,6 +212,7 @@ if not exist "$(SolutionDir)Release\LBA2.cfg" xcopy "$(SolutionDir)SOURCES\LBA2.
     <ClInclude Include="SAVEGAME.H" />
     <ClInclude Include="SCAN.H" />
     <ClInclude Include="SORT.H" />
+    <ClInclude Include="stuckDetector.h" />
     <ClInclude Include="VALIDPOS.H" />
     <ClInclude Include="WAGON.H" />
     <ClInclude Include="ZV.H" />
@@ -292,6 +293,7 @@ if not exist "$(SolutionDir)Release\LBA2.cfg" xcopy "$(SolutionDir)SOURCES\LBA2.
     <ClCompile Include="SAVEGAME.CPP" />
     <ClCompile Include="SCAN.CPP" />
     <ClCompile Include="SORT.CPP" />
+    <ClCompile Include="stuckDetector.cpp" />
     <ClCompile Include="VALIDPOS.CPP" />
     <ClCompile Include="VERSION.CPP" />
     <ClCompile Include="WAGON.CPP" />

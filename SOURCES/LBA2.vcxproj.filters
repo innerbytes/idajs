@@ -216,6 +216,9 @@
     <ClInclude Include="cfg-defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="stuckDetector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AMBIANCE.CPP">
@@ -390,6 +393,9 @@
       <Filter>Source Files\3DExt</Filter>
     </ClCompile>
     <ClCompile Include="Ida\IdaLbaBridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stuckDetector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
