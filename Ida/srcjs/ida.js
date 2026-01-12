@@ -159,7 +159,7 @@ const idaProto = {
     TM_WAIT_ANIM: 0x05,
     TM_ANGLE: 0x07,
     TM_POS_POINT: 0x08,
-    TM_GOTO_SYM_POINT: 0x0c,
+    TM_GOTO_POINT_BACK: 0x0c,
     TM_WAIT_NB_ANIM: 0x0d,
     TM_SAMPLE: 0x0e,
     TM_GOTO_POINT_3D: 0x0f,

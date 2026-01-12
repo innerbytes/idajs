@@ -784,9 +784,12 @@ export interface MoveOpcodes {
    * @param point: u8 */
   readonly TM_POS_POINT: 0x08;
 
-  /** Actor rotates to face away from the given point and waits until its animation takes it there.
+  /** Actor rotates to face away from the given point and waits until its animation takes it to the given point.
+   *
+   * This is designed to be used with walk-backwards animations.
+   *
    * @param point: u8 */
-  readonly TM_GOTO_SYM_POINT: 0x0c;
+  readonly TM_GOTO_POINT_BACK: 0x0c;
 
   /** Waits for the actor's animation to have played a number of times.
    * @param count: u8
