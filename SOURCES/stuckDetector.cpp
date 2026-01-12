@@ -2,8 +2,11 @@
 
 namespace StuckDetector 
 {
+	// Period to collect information, after which we evaluate if the object is stuck (in milliseconds)
     constexpr S32 detectIntervalMs = 1000;
-    constexpr S32 stuckThreshold = 5; // Distance threshold for the interval, to consider stuck
+	
+    // If during the detection interval the distance of the walking actor to the target changes less than this value, we consider it stuck
+    constexpr S32 stuckThreshold = 5; 
 
     typedef struct 
     {
@@ -63,26 +66,21 @@ namespace StuckDetector
 
         if (TimerRefHR - info.lastTimerRef > detectIntervalMs) 
         {
-            printf("Now testing for stuck %d\n", objectIndex);
-
-            // If no collisions detected, we were not stuck
+			// If no collisions detected, do not check for stuck
             if (info.numCollisions == 0) 
             {
-                printf("No collisions detected, not stuck %d.\n", objectIndex);
                 resetObjectInfo(objectIndex, true, distanceToTarget, TimerRefHR);
                 return false;
             }
 
-            S32 delta =  abs(info.lastDistance - distanceToTarget);
-            if (delta < stuckThreshold) 
+            S32 deltaDistance = abs(info.lastDistance - distanceToTarget);
+            if (deltaDistance < stuckThreshold) 
             {
-                printf("Object %d is stuck! Delta: %d\n", objectIndex, delta);
                 resetObjectInfo(objectIndex, false, -1, 0);
                 return true;
             }
             else 
             {
-                printf("Object %d is not stuck. Delta: %d\n", objectIndex, delta);
                 resetObjectInfo(objectIndex, true, distanceToTarget, TimerRefHR);
             }
         }
@@ -90,6 +88,8 @@ namespace StuckDetector
         return false;
     }
 
+	// This does not guarantee to move the object to the correct position, as the collision system may still interfere.
+	// But we try our best, and after this call, the walking to the point should be considered complete.
     void unstuckObject(T_OBJET *obj, S32 targetX, S32 targetY, S32 targetZ) 
     {
         obj->Obj.X = targetX;

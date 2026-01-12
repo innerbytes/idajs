@@ -1,4 +1,5 @@
-// Stuck detector helps to unstuck objects in TM_GOTO_POINT commands when they sometimes collide with the environment.
+// Stuck detector helps to unstuck objects in TM_GOTO_POINT commands when they sometimes collide with the environment or sprite objects
+
 #ifndef STUCK_DETECTOR_H
 #define STUCK_DETECTOR_H
 
