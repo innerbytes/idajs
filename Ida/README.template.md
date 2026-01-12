@@ -4,7 +4,7 @@
 
 # JavaScript-powered engine for LBA2 game modding
 
-**Getting Started Tutorial.**
+**Getting Started Tutorial**
 <div class="ida-video">
   <a href="https://www.youtube.com/watch?v=XiBlQ5rBOGE" title="Watch IdaJS Getting Started Tutorial on YouTube" target="_blank" rel="noopener noreferrer">
     <img src="/media/video.jpg" alt="IdaJS Getting Started Tutorial - Learn how to install IdaJS and create your first Little Big Adventure 2 mod" width="100%" loading="eager" fetchpriority="high" decoding="async">
