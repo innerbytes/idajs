@@ -1272,6 +1272,7 @@ Build and test (on Windows):
 
 ```bash
 npm run build
+npm run build:debug
 npm run test
 npm run test:md5
 ```
@@ -1283,6 +1284,9 @@ npm run test:md5
 npm run patch   # For the regular features and bug fixes, without breaking changes (0.1.0 -> 0.1.1)
 npm run minor   # For major features, breaking changes, and solutions implementations (0.1.0 -> 0.2.0)
 npm run major   # For epic changes (0.1.0 -> 1.0.0)
+
+# After minor or major version update, check the types reference is updated
+# Check the: srcjs/create-mod/_project.config/package.template.json:@idajs/types major and minor match the new version
 
 # Push to remote with tags - this will cause actual Release on GitHub
 npm run push
