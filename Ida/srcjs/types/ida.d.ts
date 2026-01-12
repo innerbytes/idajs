@@ -219,7 +219,11 @@ export interface LifeOpcodes {
    * @param quantity: u8 */
   readonly LM_SUB_MAGIC_POINT: 0x3c;
 
-  /** Sets the health of an actor.
+  /**
+   * Sets the health of an actor.
+   *
+   * If the actor was disabled (dead), it will be re-enabled (revived).
+   *
    * @param actor: u8
    * @param value: u8 */
   readonly LM_SET_LIFE_POINT_OBJ: 0x3d;
@@ -414,7 +418,11 @@ export interface LifeOpcodes {
    * @param obj: u8 */
   readonly LM_SET_ARMURE_OBJ: 0x6d;
 
-  /** Adds health to another actor.
+  /**
+   * Adds health to another actor.
+   *
+   * If the actor was disabled (dead), it will be re-enabled (revived).
+   *
    * @param actor: u8
    * @param life: u8 */
   readonly LM_ADD_LIFE_POINT_OBJ: 0x6e;
