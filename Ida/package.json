@@ -1,6 +1,6 @@
 {
   "name": "idajs",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "IdaJS game engine for Little Big Adventure 2 game modding",
   "author": "Andriy Tevelyev",
   "license": "GPL-2.0",
