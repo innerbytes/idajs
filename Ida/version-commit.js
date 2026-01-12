@@ -43,6 +43,8 @@ try {
     template.major < current.major ||
     (template.major === current.major && template.minor < current.minor);
 
+  let commitMessage = `chore: bump version to ${version}`;
+
   if (needsUpdate) {
     // Update to ^major.minor.0 format
     const newTypesVersion = `^${current.major}.${current.minor}.0`;
@@ -53,16 +55,15 @@ try {
       `Updated @idajs/types in package.template.json: ${typesVersion} -> ${newTypesVersion}`
     );
 
-    // Stage and commit the template update separately
+    // Stage the template update
     execSync(`git add "${templatePath}"`, { stdio: "inherit" });
-    execSync(
-      `git commit -m "chore: update @idajs/types to ${newTypesVersion} in package.template.json"`,
-      { stdio: "inherit" }
-    );
+
+    // Extend commit message with types update info
+    commitMessage += `\n\nUpdated @idajs/types to ${newTypesVersion} in package.template.json`;
   }
 
   // Run git commit with version message
-  execSync(`git commit -m "chore: bump version to ${version}"`, {
+  execSync(`git commit -m "${commitMessage}"`, {
     stdio: "inherit",
   });
 } catch (err) {
