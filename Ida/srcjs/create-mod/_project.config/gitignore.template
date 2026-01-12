@@ -36,3 +36,7 @@ Thumbs.db
 # Coverage
 coverage/
 .nyc_output/
+
+# IdaJS specific
+.idajs.json
+media/README.md

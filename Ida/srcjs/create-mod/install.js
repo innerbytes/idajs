@@ -151,6 +151,11 @@ function copyFiles() {
     { source: "template.prettierrc.json", target: ".prettierrc.json" },
   ];
 
+  // Add .gitignore only in standalone mode
+  if (!idaRoot) {
+    filesToCopy.push({ source: "gitignore.template", target: ".gitignore" });
+  }
+
   filesToCopy.forEach((file) => {
     const sourcePath = path.join(configDir, file.source);
     const targetPath = path.join(targetDir, file.target || file.source);
