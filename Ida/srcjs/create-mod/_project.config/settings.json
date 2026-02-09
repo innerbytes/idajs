@@ -7,14 +7,14 @@
     "*.ts": "typescript"
   },
   "[javascript]": {
-    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,
     "editor.rulers": [100]
   },
   "[typescript]": {
-    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2,
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 100,

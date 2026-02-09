@@ -21,7 +21,7 @@
   "C_Cpp.clang_format_fallbackStyle": "Google",
   "C_Cpp.autoAddFileAssociations": false,
   "[javascript]": {
-    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
     "editor.wordWrap": "wordWrapColumn",
@@ -29,7 +29,7 @@
     "editor.rulers": [100]
   },
   "[typescript]": {
-    "editor.defaultFormatter": "prettier.prettier-vscode",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
     "editor.wordWrap": "wordWrapColumn",
