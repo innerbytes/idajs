@@ -225,6 +225,7 @@ If nothing above helped, please open an issue here: {{{GIT_URL}}}/issues
 - `Ida/` — engine source code. You don't need to change anything here to create mods, but there are some useful folders inside:
   - `Ida/Samples/` — sample mods you can run and copy from. See the [Samples section](#5-idajs-samples) below.
     - `Ida/Samples/animations/` — a special sample to expore all 3D entities, bodies and animations used in LBA 2, and find the needed ids.
+    - `Ida/Samples/saves/` - a collection of full vanilla game playthrough save files, numbered and named, so you can easily load any scene and situation in the game to test / mod.
   - `srcjs/architect` — lists of all the 3D entities and sprite ids used in the original LBA 2 game.
   - `srcjs/lba2editor` — lists of all the scene ids used in the original LBA 2 game, structured by Planets, Islands and Sections.
 
@@ -1068,6 +1069,9 @@ Tool samples are designed to help you with modding process:
   - A very useful tool to explore LBA 2 Actor models and animations.
   - Set the EntityId you want to view on top of the `index.js` file, and run the sample to explore the Entity bodies and animations ids.
   - To find the id of an entity you need, see here: {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/entities.md
+- **`saves`** - a collection of a full vanilla playthrough saves, so that you can load the game state in different scenes and moments of the story. 
+  - Very useful to explore, mod and test different game situations.
+  - Read the `Samples/README.md` file for details on how to use these saves.
 
 ### 5.2 How to run the Samples
 
