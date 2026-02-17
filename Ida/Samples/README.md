@@ -7,7 +7,7 @@
 
 ## `saves` folder (playthrough save games)
 
-`saves` folder is not a sample, but a collection of a full playthrough save games files for all the game situations, with numbers and names. 
+`saves` folder is not a sample, but a collection of a full vanilla playthrough save games files for all the game situations, with numbers and names. 
 Those are useful for testing and modding when need to quickly load to a specific place in the LBA2 game.
 
 - just copy all the files from the `saves` folder to your `idajs/GameRun/save` folder, or `idajs/GameRun/save/<your mod>` if using a mod. 
