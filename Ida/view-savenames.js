@@ -5,7 +5,9 @@ const path = require("path");
 
 /**
  * View save names from LBA save files
- * Usage: node view-savenames.js [subfolder]
+ * Usage: node view-savenames.js [subfolder] [--sort=name|file]
+ *   --sort=name  Sort by save name (default)
+ *   --sort=file  Sort by file name
  */
 
 function extractSaveName(filePath) {
@@ -30,7 +32,7 @@ function extractSaveName(filePath) {
   }
 }
 
-function viewSaveNames(subfolder = "") {
+function viewSaveNames(subfolder = "", sortBy = "name") {
   const baseSavePath = path.join(__dirname, "..", "GameRun", "save");
   const targetPath = subfolder ? path.join(baseSavePath, subfolder) : baseSavePath;
 
@@ -68,8 +70,12 @@ function viewSaveNames(subfolder = "") {
     results.push({ file, saveName });
   }
 
-  // Sort by filename
-  results.sort((a, b) => a.file.localeCompare(b.file));
+  // Sort results
+  if (sortBy === "file") {
+    results.sort((a, b) => a.file.localeCompare(b.file));
+  } else {
+    results.sort((a, b) => (a.saveName || "").localeCompare(b.saveName || ""));
+  }
 
   // Display results
   for (const { file, saveName } of results) {
@@ -87,9 +93,16 @@ function viewSaveNames(subfolder = "") {
 // Handle command line arguments
 const allArgs = process.argv.slice(2);
 const paths = allArgs.filter((arg) => !arg.startsWith("--"));
+const sortArg = allArgs.find((arg) => arg.startsWith("--sort="));
+const sortBy = sortArg ? sortArg.split("=")[1] : "name";
+
+if (sortBy !== "name" && sortBy !== "file") {
+  console.error(`Error: Invalid --sort value "${sortBy}". Use "name" or "file".`);
+  process.exit(1);
+}
 
 // Get subfolder argument (if any)
 const subfolder = paths[0] || "";
 
 // Run the viewer
-viewSaveNames(subfolder);
+viewSaveNames(subfolder, sortBy);

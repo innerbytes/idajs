@@ -27,7 +27,8 @@
     "publish:docs": "node check-publish.js srcjs/types README.template.md && node generate-readme.js && node generate-typedoc-config.js && node publish-docs.js && rm README.md && node generate-typedoc-config.js --reset",
     "publish:docs:update": "node check-publish.js srcjs/types README.template.md --dev-publish && node generate-readme.js && node generate-typedoc-config.js && node publish-docs.js && rm README.md && node generate-typedoc-config.js --reset",
     "publish:docs:delete": "node publish-docs.js --delete",
-    "view:save": "node view-savenames.js"
+    "view:save": "node view-savenames.js",
+    "view:save:files": "node view-savenames.js --sort=file"
   },
   "devDependencies": {
     "dotenv": "^17.2.3",
