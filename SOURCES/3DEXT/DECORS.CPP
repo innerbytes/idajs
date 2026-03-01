@@ -1,4 +1,5 @@
 #include "defines.h"
+#include "../Ida/decorsTrace.h"
 
 /*══════════════════════════════════════════════════════════════════════════*
 		      █▀▀▀▄ █▀▀▀▀ █▀▀▀▀ █▀▀▀█ █▀▀▀█ ██▀▀▀
@@ -130,6 +131,9 @@ void	FixeObjetsDecorsInvisibles( void )
 	T_DECORS	*ptrobj ;
 	S32	numvar ;
 
+	// Ida - tracing decors for visibility
+	IdaHelpers::Decors::Trace_BeginVisibilityPass();
+
 	ptrobj = ListDecors ;
 
 	for( i=0; i<NbObjDecors; i++, ptrobj++ )
@@ -149,8 +153,23 @@ void	FixeObjetsDecorsInvisibles( void )
 			OR  ((numvar>=0) AND ListVarGame[numvar]) )
 #endif
 				ptrobj->Body |= DEC_INVISIBLE ;
+
+			// Ida - log conditional decor visibility
+			IdaHelpers::Decors::Trace_LogConditionalDecor(
+				i,
+				(ptrobj->Body & 0xFFFF),
+				numvar,
+				(ptrobj->Body & DEC_INVISIBLE) ? TRUE : FALSE);
+		}
+		else
+		{
+			// Ida - log always visible decor
+			IdaHelpers::Decors::Trace_LogUnconditionalDecor();
 		}
 	}
+
+	// Ida - end of visibility pass
+	IdaHelpers::Decors::Trace_EndVisibilityPass();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
