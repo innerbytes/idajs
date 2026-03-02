@@ -152,7 +152,7 @@ Notes:
 ## Recommended Workflow for Modders
 
 1. Identify target cube and island (with runtime trace).
-2. Trace conditional decors (`numvar`, `body`, visible/hidden state), using the debug tracing mechanism (`LBA_TRACE_DECORS` env variable, see below).
+2. Trace conditional decors (`numvar`, `body`, visible/hidden state), using the debug tracing mechanism (`LBA_IDA_TRACE_DECORS` env variable, see below).
 3. Find the controlling variable(s) used by that cube.
 4. Switch in IdaJS afterSceneLoad event when needed
 5. If editing map assets:
@@ -182,8 +182,8 @@ Notes:
 
 `SOURCES/3DEXT/DECORS.CPP` includes optional trace controlled by:
 
-- `LBA_TRACE_DECORS=1` (enable)
-- `LBA_TRACE_DECORS=0` (disable)
+- `LBA_IDA_TRACE_DECORS=1` (enable)
+- `LBA_IDA_TRACE_DECORS=0` (disable)
 
 It logs, per visibility pass:
 - island/cube
