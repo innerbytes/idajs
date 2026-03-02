@@ -6,7 +6,7 @@
   "sort": ["visibility", "kind", "instance-first", "alphabetical-ignoring-documents"],
   "sortEntryPoints": false,
   "readme": "README.md",
-  "projectDocuments": ["Knowledge/Decors.md", "Knowledge/Fragments.md"],
+  "projectDocuments": ["Knowledge/Knowledge.md"],
   "searchInDocuments": true,
   "exclude": ["**/mark.d.ts"],
   "out": "docs",
