@@ -216,7 +216,10 @@
     <ClInclude Include="cfg-defines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stuckDetector.h">
+    <ClInclude Include="Ida\stuckDetector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ida\decorsTrace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -395,7 +398,10 @@
     <ClCompile Include="Ida\IdaLbaBridge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stuckDetector.cpp">
+    <ClCompile Include="Ida\stuckDetector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ida\decorsTrace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,13 +2,12 @@
   "$schema": "https://typedoc.org/schema.json",
   "tsconfig": "tsconfig.typedoc.json",
   "name": "IdaJS",
-  "entryPoints": [
-    "srcjs/types/global.d.ts",
-    "srcjs/types/index.d.ts"
-  ],
+  "entryPoints": ["srcjs/types/global.d.ts", "srcjs/types/index.d.ts"],
   "sort": ["visibility", "kind", "instance-first", "alphabetical-ignoring-documents"],
   "sortEntryPoints": false,
   "readme": "README.md",
+  "projectDocuments": ["Knowledge/Knowledge.md"],
+  "searchInDocuments": true,
   "exclude": ["**/mark.d.ts"],
   "out": "docs",
   "customCss": "./typedoc-custom.css",

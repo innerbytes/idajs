@@ -145,6 +145,8 @@ function copyFiles() {
     { source: "watch.js" },
     { source: "sync.js" },
     { source: "build.js" },
+    { source: "AGENTS.md" },
+    { source: "CLAUDE.md" },
     { source: isTypeScriptProject ? "tsconfig.json" : "jsconfig.json" },
     { source: "settings.json", target: ".vscode/settings.json" },
     { source: "extensions.json", target: ".vscode/extensions.json" },

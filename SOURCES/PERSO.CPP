@@ -29,6 +29,7 @@ S32     NumPcxSave = 0 ;
 Ida::Ida *ida;
 Ida::IdaSpy* idaSpy;
 bool idaOmitLogo = false;
+bool idaTraceDecors = false;
 static std::string mod = "";
 static bool idaTestMode = false;
 static int idaLogLevel = -1; // If not specified by env, will use default CFG_LOGLEVEL
@@ -106,14 +107,17 @@ static void ReadIdaEnv()
     char *noLogo = getenv("LBA_IDA_NOLOGO");
     idaOmitLogo = (noLogo && (std::string(noLogo) == "1" || std::string(noLogo) == "true"));
 
+    char *idaTraceDecorsEnv = getenv("LBA_IDA_TRACE_DECORS");
+    idaTraceDecors = (idaTraceDecorsEnv && (std::string(idaTraceDecorsEnv) == "1" || std::string(idaTraceDecorsEnv) == "true"));
+
     char *testMode = getenv("LBA_IDA_TESTMODE");
     idaTestMode = (testMode && (std::string(testMode) == "1" || std::string(testMode) == "true"));
 
     char *logLevel = getenv("LBA_IDA_LOGLEVEL");
     idaLogLevel = (logLevel) ? ParseIdaLogLevel(logLevel) : -1;
 
-    printf("env:LBA_IDA_MOD: %s\nenv:LBA_IDA_NOLOGO: %s\nenv:LBA_IDA_CFG: %s\nenv:LBA_IDA_TESTMODE: %s\nenv:LBA_IDA_LOGLEVEL: %s\n", 
-        envMod ? envMod : "", noLogo ? noLogo : "", configPath ? configPath : "", testMode ? testMode : "", logLevel ? logLevel : "");
+    printf("env:LBA_IDA_MOD: %s\nenv:LBA_IDA_NOLOGO: %s\nenv:LBA_IDA_CFG: %s\nenv:LBA_IDA_TESTMODE: %s\nenv:LBA_IDA_LOGLEVEL: %s\nenv:LBA_IDA_TRACE_DECORS: %s\n", 
+        envMod ? envMod : "", noLogo ? noLogo : "", configPath ? configPath : "", testMode ? testMode : "", logLevel ? logLevel : "", idaTraceDecorsEnv ? idaTraceDecorsEnv : "");
 }
 
 static void CreateIdaSavePath()

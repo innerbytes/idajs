@@ -449,6 +449,16 @@ W [X-] ---+--- E [X+]
 
 **NB:** Beware, that other LBA-related projects can use different coordinate systems.
 
+#### Decors and Fragments
+
+**Decors** are exterior 3D objects (e.g., buildings, props) embedded in the island data, separate from scene actors. Their visibility can be toggled at runtime via game variables, which numbers are encoded in the decor data, allowing the same island model to show different object variants (e.g., a spaceship vs occupied barricades) without loading a different island file.
+
+**Fragments** (also called GRM zones) are zone-driven brick overlays for indoor grid-based maps. A Fragment zone can patch or restore a rectangular region of the map's brick data at runtime, controlled by the {@link index!LifeOpcodes.LM_SET_GRM} life script command. Fragment state is persisted through save/load.
+
+For detailed technical information, engine internals, and IdaJS usage examples, see:
+- [Decors](Knowledge/Decors.md)
+- [Fragments](Knowledge/Fragments.md)
+
 ---
 
 ### 3.3 Life Scripts
@@ -1108,9 +1118,9 @@ Here you will find a list of useful tools and resources to help you get started.
 ### 6.1 Find Ida of scenes, entities, bodies, animations, sprites, etc.
 
 1. Here you can view some of the ids you will need when writing your own story in LBA 2:
-    - **View all the 3D entities with their ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/entities.md
-    - **View all the sprites with their ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/sprites.md
-    - **View all the scene ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/lba2editor
+    - **Read all the 3D entities with their ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/entities.md
+    - **Read all the sprites with their ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/architect/sprites.md
+    - **Read all the scene ids:** {{{GIT_URL}}}/tree/main/Ida/srcjs/lba2editor
 
 2. `Ida/Samples/animations` - this allows to view all the existing LBA 2 Actor models, their boides and animations in 3D.
     - See the [Samples](#5-idajs-samples) section for more details.
@@ -1136,6 +1146,10 @@ Here you will find a list of useful tools and resources to help you get started.
 6. [LBA tools](https://magicball.net/devtools/) - A collection of all the LBA modding tools in one place.
 
 7. [LBA community forum](https://forum.magicball.net/) - A place to ask questions, share your mods, and discuss LBA modding with other enthusiasts.
+
+### 6.4 Advanced knowledge
+
+For deeper technical details about how specific LBA2 engine systems work under the hood, and how they can be used with {{{ida}}}, see the [Knowledge](Knowledge/Knowledge.md) section.
 
 ## 7. Supported features
 
