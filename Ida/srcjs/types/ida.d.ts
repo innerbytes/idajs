@@ -292,7 +292,7 @@ export interface LifeOpcodes {
    * @param marker: u8 */
   readonly LM_CLR_HOLO_POS: 0x49;
 
-  /** Enables or disables a terrain chunk.
+  /** Enables or disables an isometric grid fragment.
    * @param zone: u8
    * @param enable: u8 */
   readonly LM_SET_GRM: 0x4c;
