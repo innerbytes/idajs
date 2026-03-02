@@ -3,6 +3,7 @@ title: advanced
 children:
     - ./Decors.md
     - ./Fragments.md
+    - ./SaveLoad.md
 ---
 
 # Knowledge Base
@@ -13,3 +14,4 @@ The knowledge articles below cover in-depth some of the technical aspects about 
 
 - [Decors](Decors.md) - Exterior 3D fragments, that can be controlled by game variables
 - [Fragments](Fragments.md) - Isometric grid patches for indoor maps, that can be controlled by Life script commands
+- [SaveLoad](SaveLoad.md) - Scene loading flow, save/load system, and persisted game state
