@@ -9,6 +9,7 @@
 extern Ida::Ida *ida;
 extern Ida::IdaSpy *idaSpy;
 extern bool idaOmitLogo;
+extern bool idaTraceDecors;
 
 /*--------- divers ---------------------------------------------*/
 extern	S32	BodyComportement;
