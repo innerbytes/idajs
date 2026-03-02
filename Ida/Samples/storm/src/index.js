@@ -38,6 +38,8 @@ scene.addEventListener(scene.Events.beforeLoadScene, (sceneId, loadMode) => {
     ida.setStorm(ida.StormModes.ForceNoStorm);
 
     // Disable the ligtning in scripts alltogether
+    // We also disabling the whole thunder object now in the disableThunderObject() function.
+    // That object is the one that emits lightning, so this disableLightning call is not really necessary, but we can keep it here to demonstrate how to disable the lightning in scripts if we need to keep the thunder object active for some reason.
     ida.disableLightning();
   } else {
     // Otherwise forcing the stormy weather
@@ -50,7 +52,13 @@ scene.addEventListener(scene.Events.beforeLoadScene, (sceneId, loadMode) => {
 
 // After load scene event is where we should do all the custom scenes setup
 scene.addEventListener(scene.Events.afterLoadScene, (sceneId, loadMode) => {
-  // Outside the house
+  // In all outside scenes of the Citadel disabling the thunder object, so we don't have thunder sounds in case of the sunny weather
+  const gameStore = useGameStore();
+  if (gameStore.isSunny) {
+    disableThunderObject(sceneId);
+  }
+
+  // Outside the house scene - setting up Mage and dialog
   if (sceneId == outsideTwinsenHouseSceneId) {
     // Reserving text id and choices for the scripted dialogs
     textId = text.create();
@@ -175,4 +183,33 @@ function twinsenTalksToMeteoMage(objectId) {
     // A joke :)
     ida.life(objectId, ida.Life.LM_CHANGE_CUBE, voidSceneId);
   }
+}
+
+// The outside scenes of the Citadel island contain a Thunder object that randomly plays thunder sounds.
+// In sunny weather, we need to disable this object to prevent thunder sounds from playing.
+// Each scene has the Thunder object at a different object id, so we check the scene id to find the correct one.
+function disableThunderObject(sceneId) {
+  let thunderObjectId;
+  switch (sceneId) {
+    case 48: // Lupin-Bourg (statue)
+      thunderObjectId = 4;
+      break;
+    case 43: // Harbour
+      thunderObjectId = 3;
+      break;
+    case 49: // Twinsen's House Area
+    case 46: // Lighthouse Area
+    case 42: // Lupin-Bourg (landing zone)
+    case 47: // Flower's Circle
+    case 45: // Wizard's Tent Area
+    case 50: // Woodbridge
+      thunderObjectId = 2;
+      break;
+    default:
+      // Not a Citadel outside scene with a Thunder object - nothing to disable
+      return;
+  }
+
+  // Disabling the thunder object to prevent thunder sounds from playing in sunny weather
+  scene.getObject(thunderObjectId).disable();
 }
