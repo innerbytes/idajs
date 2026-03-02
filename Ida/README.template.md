@@ -1147,6 +1147,10 @@ Here you will find a list of useful tools and resources to help you get started.
 
 7. [LBA community forum](https://forum.magicball.net/) - A place to ask questions, share your mods, and discuss LBA modding with other enthusiasts.
 
+### 6.4 Advanced knowledge
+
+For deeper technical details about how specific LBA2 engine systems work under the hood, and how they can be used with {{{ida}}}, see the [Knowledge](Knowledge/Knowledge.md) section.
+
 ## 7. Supported features
 
 _This list might not cover all the current {{{ida}}} engine capabilities, but we try to keep it up to date._
