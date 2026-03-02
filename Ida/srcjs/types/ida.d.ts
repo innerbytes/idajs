@@ -357,7 +357,17 @@ export interface LifeOpcodes {
   readonly LM_ASK_CHOICE_OBJ: 0x5b;
 
   /** Enables or disables cutscene mode.
-   * @param enable: u8 */
+   * @param enable: u8 - `0` to disable, `1` to enable without a skip destination, or a scene ID to enable with a skip destination
+   * @remarks
+   * Instead of passing `1` to simply enable cinema mode, you can pass a **scene ID** (a value > 1).
+   * When the player presses Escape during the cutscene, the engine will automatically skip
+   * the remaining track script commands and jump directly to that scene.
+   *
+   * Passing `0` disables cinema mode.
+   *
+   * When Escape is pressed in cinema mode, the engine sets the game variable
+   * {@link GameVariables.VAR_ESC} to `1`, allowing Life scripts to detect that the cutscene
+   * was skipped and perform any necessary cleanup. */
   readonly LM_CINEMA_MODE: 0x5c;
 
   /** Saves Twinsen's stance to a hidden variable. */
