@@ -564,7 +564,8 @@ typedef	struct
 #endif
 
 // Ida - additional helpers
-#include    "stuckDetector.h"
+#include    "Ida/stuckDetector.h"
+#include	"Ida/decorsTrace.h"
 
 #endif	// EDITLBA2
 

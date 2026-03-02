@@ -132,7 +132,7 @@ void	FixeObjetsDecorsInvisibles( void )
 	S32	numvar ;
 
 	// Ida - tracing decors for visibility
-	IdaHelpers::Decors::Trace_BeginVisibilityPass();
+	IdaHelpers::Decors::trace_BeginVisibilityPass();
 
 	ptrobj = ListDecors ;
 
@@ -155,7 +155,7 @@ void	FixeObjetsDecorsInvisibles( void )
 				ptrobj->Body |= DEC_INVISIBLE ;
 
 			// Ida - log conditional decor visibility
-			IdaHelpers::Decors::Trace_LogConditionalDecor(
+			IdaHelpers::Decors::trace_LogConditionalDecor(
 				i,
 				(ptrobj->Body & 0xFFFF),
 				numvar,
@@ -164,12 +164,12 @@ void	FixeObjetsDecorsInvisibles( void )
 		else
 		{
 			// Ida - log always visible decor
-			IdaHelpers::Decors::Trace_LogUnconditionalDecor();
+			IdaHelpers::Decors::trace_LogUnconditionalDecor();
 		}
 	}
 
 	// Ida - end of visibility pass
-	IdaHelpers::Decors::Trace_EndVisibilityPass();
+	IdaHelpers::Decors::trace_EndVisibilityPass();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
