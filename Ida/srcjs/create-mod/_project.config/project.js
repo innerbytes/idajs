@@ -58,6 +58,27 @@ function getIdaJsPath(projectDir = process.cwd()) {
   return null;
 }
 
+function getIdaJsServer(projectDir = process.cwd()) {
+  const configPaths = [path.join(projectDir, ".idajs.json"), path.join(os.homedir(), ".idajs.json")];
+
+  for (const configPath of configPaths) {
+    if (!fs.existsSync(configPath)) {
+      continue;
+    }
+
+    try {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      if (config.server) {
+        return config.server;
+      }
+    } catch (error) {
+      // Ignore parse failures and keep looking.
+    }
+  }
+
+  return null;
+}
+
 function isTypeScriptProject(projectDir = process.cwd()) {
   const tsConfigPath = path.join(projectDir, "tsconfig.json");
   const srcDir = path.join(projectDir, "src");
@@ -92,6 +113,7 @@ module.exports = {
   getArgValue,
   getArgs,
   getIdaJsPath,
+  getIdaJsServer,
   getPackageName,
   isTypeScriptProject,
   parseServerAddress,

@@ -70,6 +70,37 @@ function getIdaJsDirFromConfig() {
   return null;
 }
 
+function normalizeServerAddress(value) {
+  const trimmed = String(value || "").trim();
+  const input = trimmed.includes("://") ? trimmed : `http://${trimmed}`;
+  const url = new URL(input);
+  return `${url.hostname}:${url.port || 7770}`;
+}
+
+function parseIdaConnection(value) {
+  const trimmed = String(value || "").trim();
+
+  if (!trimmed) {
+    throw new Error("IdaJS installation directory or host[:port] is required");
+  }
+
+  if (fs.existsSync(trimmed)) {
+    return {
+      installDir: trimmed,
+      server: null,
+    };
+  }
+
+  if (trimmed.includes("/") || trimmed.includes("\\") || /^[A-Za-z]:/.test(trimmed)) {
+    throw new Error(`Directory does not exist: ${trimmed}`);
+  }
+
+  return {
+    installDir: null,
+    server: normalizeServerAddress(trimmed),
+  };
+}
+
 async function main() {
   console.log("Welcome to IdaJS Mod Creator!\n");
 
@@ -124,16 +155,15 @@ async function main() {
     if (!config.idajsDir) {
       questions.push({
         type: "text",
-        name: "idajsDir",
-        message: "IdaJS installation directory:",
+        name: "idajsConnection",
+        message: "IdaJS installation directory or host[:port]:",
         validate: (value) => {
-          if (!value || value.length === 0) {
-            return "IdaJS installation directory is required";
+          try {
+            parseIdaConnection(value);
+            return true;
+          } catch (error) {
+            return error.message;
           }
-          if (!fs.existsSync(value)) {
-            return `Directory does not exist: ${value}`;
-          }
-          return true;
         },
       });
     }
@@ -159,6 +189,13 @@ async function main() {
     });
 
     config = { ...config, ...response };
+
+    if (response.idajsConnection) {
+      const parsedConnection = parseIdaConnection(response.idajsConnection);
+      config.idajsDir = parsedConnection.installDir;
+      config.server = parsedConnection.server;
+      delete config.idajsConnection;
+    }
   }
 
   // Set target directory to project name if not specified
@@ -171,7 +208,7 @@ async function main() {
     : path.join(process.cwd(), config.targetDirectory);
 
   // Validate IdaJS directory exists
-  if (!fs.existsSync(config.idajsDir)) {
+  if (config.idajsDir && !fs.existsSync(config.idajsDir)) {
     console.error(`\n❌ Error: IdaJS installation directory does not exist: ${config.idajsDir}`);
     process.exit(1);
   }
@@ -184,7 +221,7 @@ async function main() {
 
   console.log(`\nCreating IdaJS mod in ${targetDir}...`);
   console.log(`Language: ${config.language === "js" ? "JavaScript" : "TypeScript"}`);
-  console.log(`IdaJS: ${config.idajsDir}\n`);
+  console.log(`IdaJS: ${config.idajsDir || config.server}\n`);
 
   try {
     // Create project directory
@@ -218,15 +255,24 @@ async function main() {
     fs.writeFileSync(packageTemplatePath, JSON.stringify(packageTemplate, null, 2) + "\n");
     console.log("✓ Updated package.template.json");
 
-    // Create .idajs.json config file
-    const idajsConfig = {
-      installDir: config.idajsDir,
-    };
-    fs.writeFileSync(
-      path.join(targetDir, ".idajs.json"),
-      JSON.stringify(idajsConfig, null, 2) + "\n"
-    );
-    console.log("✓ Created .idajs.json");
+    if (config.idajsDir) {
+      const idajsConfig = {
+        installDir: config.idajsDir,
+      };
+      fs.writeFileSync(
+        path.join(targetDir, ".idajs.json"),
+        JSON.stringify(idajsConfig, null, 2) + "\n"
+      );
+      console.log("✓ Created .idajs.json");
+    } else if (config.server) {
+      const workspaceConfigPath = path.join(process.cwd(), ".idajs.json");
+      const existingConfig = fs.existsSync(workspaceConfigPath)
+        ? JSON.parse(fs.readFileSync(workspaceConfigPath, "utf8"))
+        : {};
+      existingConfig.server = config.server;
+      fs.writeFileSync(workspaceConfigPath, JSON.stringify(existingConfig, null, 2) + "\n");
+      console.log(`✓ Saved remote host to ${workspaceConfigPath}`);
+    }
 
     // Call Samples/install.js to set up the project
     console.log("\nSetting up development environment...");

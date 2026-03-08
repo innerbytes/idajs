@@ -1,7 +1,7 @@
 const path = require("path");
 const { spawn } = require("child_process");
 
-const { getArgValue, getPackageName } = require("./project");
+const { getArgValue, getIdaJsPath, getIdaJsServer, getPackageName } = require("./project");
 
 function runCommand(command, args) {
   const child = spawn(command, args, {
@@ -21,9 +21,13 @@ function runCommand(command, args) {
 
 const args = process.argv.slice(2);
 const server = getArgValue("--server", args);
+const installDir = getIdaJsPath();
+const configuredServer = getIdaJsServer();
 
 if (server) {
   runCommand(process.execPath, [path.join(__dirname, "run-remote.js"), ...args]);
+} else if (!installDir && configuredServer) {
+  runCommand(process.execPath, [path.join(__dirname, "run-remote.js"), "--server", configuredServer]);
 } else {
   runCommand("powershell", [
     "-ExecutionPolicy",
