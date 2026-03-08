@@ -255,24 +255,15 @@ async function main() {
     fs.writeFileSync(packageTemplatePath, JSON.stringify(packageTemplate, null, 2) + "\n");
     console.log("✓ Updated package.template.json");
 
+    const idajsConfig = {};
     if (config.idajsDir) {
-      const idajsConfig = {
-        installDir: config.idajsDir,
-      };
-      fs.writeFileSync(
-        path.join(targetDir, ".idajs.json"),
-        JSON.stringify(idajsConfig, null, 2) + "\n"
-      );
-      console.log("✓ Created .idajs.json");
-    } else if (config.server) {
-      const workspaceConfigPath = path.join(process.cwd(), ".idajs.json");
-      const existingConfig = fs.existsSync(workspaceConfigPath)
-        ? JSON.parse(fs.readFileSync(workspaceConfigPath, "utf8"))
-        : {};
-      existingConfig.server = config.server;
-      fs.writeFileSync(workspaceConfigPath, JSON.stringify(existingConfig, null, 2) + "\n");
-      console.log(`✓ Saved remote host to ${workspaceConfigPath}`);
+      idajsConfig.installDir = config.idajsDir;
     }
+    if (config.server) {
+      idajsConfig.server = config.server;
+    }
+    fs.writeFileSync(path.join(targetDir, ".idajs.json"), JSON.stringify(idajsConfig, null, 2) + "\n");
+    console.log("✓ Created .idajs.json");
 
     // Call Samples/install.js to set up the project
     console.log("\nSetting up development environment...");
