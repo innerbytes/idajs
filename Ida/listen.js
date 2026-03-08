@@ -10,6 +10,7 @@ const DEFAULT_PORT = 7770;
 const PROC_NAME = "LBA2.exe";
 const idaRoot = __dirname;
 const hostRoot = path.resolve(idaRoot, "..");
+let activeGameProcess = null;
 
 function getArgValue(name, args = process.argv.slice(2)) {
   const index = args.findIndex((arg) => arg === name || arg.startsWith(`${name}=`));
@@ -174,15 +175,42 @@ app.post("/game/start", async (req, res) => {
     const { exePath, workingDir } = resolveGamePaths();
     const child = spawn(exePath, [], {
       cwd: workingDir,
-      detached: true,
-      stdio: "ignore",
+      stdio: ["ignore", "pipe", "pipe"],
       env: {
         ...process.env,
         LBA_IDA_MOD: modName,
         LBA_IDA_NOLOGO: "1",
       },
     });
-    child.unref();
+    activeGameProcess = child;
+
+    if (child.stdout) {
+      child.stdout.on("data", (chunk) => {
+        process.stdout.write(chunk);
+      });
+    }
+
+    if (child.stderr) {
+      child.stderr.on("data", (chunk) => {
+        process.stderr.write(chunk);
+      });
+    }
+
+    child.on("exit", (code, signal) => {
+      if (activeGameProcess === child) {
+        activeGameProcess = null;
+      }
+
+      console.log(`[LBA2 exit] code=${code ?? "null"} signal=${signal ?? "null"}`);
+    });
+
+    child.on("error", (error) => {
+      if (activeGameProcess === child) {
+        activeGameProcess = null;
+      }
+
+      console.error(`[LBA2 spawn error] ${error.message}`);
+    });
 
     res.json({ started: true, modName });
   } catch (error) {
