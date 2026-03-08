@@ -9,6 +9,7 @@ const execFileAsync = promisify(execFile);
 const DEFAULT_PORT = 7770;
 const PROC_NAME = "LBA2.exe";
 const idaRoot = __dirname;
+const hostRoot = path.resolve(idaRoot, "..");
 
 function getArgValue(name, args = process.argv.slice(2)) {
   const index = args.findIndex((arg) => arg === name || arg.startsWith(`${name}=`));
@@ -62,20 +63,24 @@ function assertModName(modName) {
 }
 
 function resolveGamePaths() {
-  const debugPath = path.join(idaRoot, "Debug", PROC_NAME);
-  if (fs.existsSync(debugPath)) {
-    return {
-      exePath: debugPath,
-      workingDir: path.dirname(debugPath),
-    };
-  }
+  const candidateRoots = [hostRoot, idaRoot];
 
-  const releasePath = path.join(idaRoot, "Release", PROC_NAME);
-  if (fs.existsSync(releasePath)) {
-    return {
-      exePath: releasePath,
-      workingDir: path.dirname(releasePath),
-    };
+  for (const root of candidateRoots) {
+    const debugPath = path.join(root, "Debug", PROC_NAME);
+    if (fs.existsSync(debugPath)) {
+      return {
+        exePath: debugPath,
+        workingDir: path.dirname(debugPath),
+      };
+    }
+
+    const releasePath = path.join(root, "Release", PROC_NAME);
+    if (fs.existsSync(releasePath)) {
+      return {
+        exePath: releasePath,
+        workingDir: path.dirname(releasePath),
+      };
+    }
   }
 
   throw new Error("LBA2.exe not found in Debug or Release folders.");
@@ -120,7 +125,16 @@ async function expandArchive(zipPath, destinationPath) {
 }
 
 function getModsRoot() {
-  return path.join(idaRoot, "GameRun", "mods");
+  const candidateRoots = [hostRoot, idaRoot];
+
+  for (const root of candidateRoots) {
+    const modsRoot = path.join(root, "GameRun", "mods");
+    if (fs.existsSync(path.join(root, "GameRun"))) {
+      return modsRoot;
+    }
+  }
+
+  return path.join(hostRoot, "GameRun", "mods");
 }
 
 function replaceModDirectory(sourceDir, targetDir) {

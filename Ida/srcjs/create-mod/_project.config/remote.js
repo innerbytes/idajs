@@ -87,7 +87,20 @@ function request(server, method, requestPath, body, headers = {}) {
       });
     });
 
-    req.on("error", reject);
+    req.on("error", (error) => {
+      if (error.code === "EHOSTUNREACH" || error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT") {
+        reject(
+          new Error(
+            `Cannot reach remote Ida listener at ${server.host}:${server.port}. ` +
+              `Start it on the Windows machine with 'npm run listen' in the Ida folder and verify the host/port is reachable. ` +
+              `Original error: ${error.code}`
+          )
+        );
+        return;
+      }
+
+      reject(error);
+    });
 
     if (body) {
       req.write(body);

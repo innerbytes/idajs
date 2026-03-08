@@ -4,7 +4,7 @@ const path = require("path");
 const { spawn } = require("child_process");
 
 const { getArgValue, parseServerAddress } = require("./project");
-const { stageAndZip, startRemoteGame, uploadMod } = require("./remote");
+const { getRemoteGameStatus, stageAndZip, startRemoteGame, uploadMod } = require("./remote");
 
 async function main() {
   const args = process.argv.slice(2);
@@ -22,6 +22,9 @@ async function main() {
   };
 
   try {
+    console.log(`Checking remote Ida listener at ${server.origin}...`);
+    await getRemoteGameStatus(server);
+
     console.log(`Using remote staging directory: ${sessionRoot}`);
     const { modName, zipPath } = await stageAndZip(sessionRoot);
     await uploadMod(server, modName, zipPath);
