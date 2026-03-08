@@ -141,7 +141,11 @@ function mergePackageJson() {
 // Step 2: Copy necessary files
 function copyFiles() {
   const filesToCopy = [
+    { source: "project.js" },
+    { source: "remote.js" },
     { source: "run.ps1" },
+    { source: "run-remote.js" },
+    { source: "start.js" },
     { source: "watch.js" },
     { source: "sync.js" },
     { source: "build.js" },
