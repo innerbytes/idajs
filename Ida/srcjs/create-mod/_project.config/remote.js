@@ -30,7 +30,7 @@ function createZip(zipPath, sourceDir, rootName) {
   return new Promise((resolve, reject) => {
     const output = fs.createWriteStream(zipPath);
     const archive = archiver("zip", {
-      zlib: { level: 9 },
+      store: true,
     });
 
     output.on("close", resolve);
