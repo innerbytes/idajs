@@ -983,6 +983,9 @@ npx @idajs/create-mod
 
 This will generate a ready‑to‑run mod skeleton with scripts, types, and a minimal example.
 
+If you want to develop your mod on Linux or Mac, specify the IdaJS listener IP here when it prompts for the {{{ida}}} installation directory. 
+See [Develop Little Big Adventure 2 mods on Linux or Mac](#49-develop-little-big-adventure-2-mods-on-linux-or-mac) for details.
+
 See [Samples section](#5-idajs-samples) for more advanced mod examples, provided with detailed code explanations.
 
 ### 4.3 Open the mod project in VSCode
@@ -1044,6 +1047,41 @@ I will be very happy to see mods created with {{{ida}}}!
 The mods that work and play well will be published on top of this website.
 
 Please contact me here: https://innerbytes.com/#about or use [Discussions]({{{GIT_URL}}}/discussions) on {{{ida}}} GitHub page, to let me know about your mod.
+
+### 4.9 Develop Little Big Adventure 2 mods on Linux or Mac
+
+If you write your mod on Linux or Mac, you can still run and hot‑reload it in the Windows build of {{{ida}}} by using a VM or Windows machine.
+
+The general workflow is:
+
+1. On the Windows machine, build {{{ida}}}, install Node.js (same way as in [Setup modding environment](#41-setup-modding-environment)), then open the `Ida` folder in a terminal and run:
+
+```powershell
+npm install
+npm run listen
+```
+
+This starts a small listener service. By default it binds to the local network IP address on port `7770`. You can also choose the address explicitly:
+
+```powershell
+npm run listen -- --host 0.0.0.0:7770
+```
+
+2. On your Linux or Mac machine, run `npx @idajs/create-mod` and, when prompted for the {{{ida}}} location, enter the Windows host as `host[:port]` instead of a local path.  
+For example: `192.168.64.2` or `192.168.64.2:7770`.
+
+3. Open the created mod in VSCode and run:
+
+```bash
+npm start
+```
+
+The mod tooling will then:
+- sync your mod files to the Windows machine,
+- start `LBA2.exe` on the Windows machine,
+- keep watching your mod files and re-upload them after each change, same as when you develop directly on Windows.
+
+From that point, the hot‑reload workflow stays the same as on Windows: save files in the editor, then load or start a new game from the main menu to see the updated JavaScript.
 
 ## 5. IdaJS Samples
 
