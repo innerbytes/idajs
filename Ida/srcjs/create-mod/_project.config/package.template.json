@@ -4,8 +4,8 @@
   "scripts": {
     "setup": "node ../install.js",
     "watch": "node watch.js",
-    "sync": "node sync.js %npm_package_name%",
-    "start": "powershell -ExecutionPolicy Bypass -File run.ps1 %npm_package_name%",
+    "sync": "node sync.js",
+    "start": "node start.js",
     "build": "node build.js %npm_package_name%",
     "update:types": "npm update @idajs/types"
   },

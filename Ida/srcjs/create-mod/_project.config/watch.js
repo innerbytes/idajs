@@ -1,52 +1,119 @@
 /**
- * Watches for file changes in the src/ and media/ directories
- * and runs the sync script to copy changed files to the game mod directory.
- * Exits when the LBA2.exe process is no longer running.
+ * Watches for file changes in the src/ and media/ directories.
+ * Local mode syncs directly into the game mod directory.
+ * Remote mode stages the mod into a session temp folder and uploads a full zip.
  */
 
 const chokidar = require("chokidar");
-const { spawn, exec } = require("child_process");
+const { exec } = require("child_process");
 const { promisify } = require("util");
+
+const { getArgValue, parseServerAddress } = require("./project");
+const { getRemoteGameStatus, killRemoteGame, stageAndZip, stageMod, uploadMod } = require("./remote");
 
 const execAsync = promisify(exec);
 const PROC_NAME = "LBA2.exe";
+const args = process.argv.slice(2);
+const serverArg = getArgValue("--server", args);
+const sessionRoot = getArgValue("--session-root", args);
+const server = serverArg ? parseServerAddress(serverArg) : null;
 
-let syncing = null;
-function runSync() {
-  if (syncing) return; // prevent overlapping syncs
-  syncing = spawn("npm", ["run", "sync"], { stdio: "inherit", shell: true });
-  syncing.on("exit", () => (syncing = null));
+if (server && !sessionRoot) {
+  console.error("Remote watch mode requires --session-root <path>.");
+  process.exit(1);
 }
 
-const watcher = chokidar.watch(["src/**/*.js", "media/**/*.png"], {
+let syncing = false;
+let syncQueued = false;
+
+async function runLocalSync() {
+  if (syncing) {
+    syncQueued = true;
+    return;
+  }
+
+  syncing = true;
+  do {
+    syncQueued = false;
+    try {
+      await stageMod();
+    } catch (error) {
+      console.error(error.message);
+    }
+  } while (syncQueued);
+  syncing = false;
+}
+
+async function runRemoteSync() {
+  if (syncing) {
+    syncQueued = true;
+    return;
+  }
+
+  syncing = true;
+  do {
+    syncQueued = false;
+    try {
+      const { modName, zipPath } = await stageAndZip(sessionRoot);
+      await uploadMod(server, modName, zipPath);
+    } catch (error) {
+      console.error(error.message);
+    }
+  } while (syncQueued);
+  syncing = false;
+}
+
+const watcher = chokidar.watch(["src/**/*.js", "src/**/*.ts", "media/**/*.png"], {
   ignoreInitial: true,
 });
 
-watcher.on("all", () => runSync());
+watcher.on("all", async () => {
+  if (server) {
+    await runRemoteSync();
+    return;
+  }
 
-async function isProcRunning() {
+  await runLocalSync();
+});
+
+async function isLocalProcRunning() {
   try {
     const { stdout } = await execAsync(
-      `powershell -Command "Get-Process | Where-Object {$_.ProcessName -eq '${PROC_NAME.replace(".exe", "")}'} | Select-Object -First 1"`,
+      `tasklist /FI "IMAGENAME eq ${PROC_NAME}" /FO CSV /NH`,
       {
         timeout: 5000,
       }
     );
-    return stdout.trim().length > 0;
+    return stdout.toLowerCase().includes(`"${PROC_NAME.toLowerCase()}"`);
   } catch (error) {
-    // Process not found or command failed
     return false;
   }
 }
 
-async function killGameProc() {
+async function killLocalGameProc() {
   try {
-    await execAsync(
-      `powershell -Command "Stop-Process -Name '${PROC_NAME.replace(".exe", "")}' -Force -ErrorAction SilentlyContinue"`
-    );
-  } catch (e) {
-    // Process may already be stopped
+    await execAsync(`taskkill /IM "${PROC_NAME}" /F /T`);
+  } catch (error) {
+    // Process may already be stopped.
   }
+}
+
+async function isProcRunning() {
+  if (server) {
+    const status = await getRemoteGameStatus(server);
+    return Boolean(status && status.running);
+  }
+
+  return isLocalProcRunning();
+}
+
+async function killGameProc() {
+  if (server) {
+    await killRemoteGame(server);
+    return;
+  }
+
+  await killLocalGameProc();
 }
 
 const interval = setInterval(async () => {
@@ -59,12 +126,11 @@ const interval = setInterval(async () => {
       await watcher.close();
       process.exit(0);
     }
-  } catch (e) {
-    // if process listing fails, you can decide to ignore or stop
+  } catch (error) {
+    console.error(error.message);
   }
 }, 1000);
 
-// Ctrl+C cleanup
 process.on("SIGINT", async () => {
   console.log("Caught interrupt signal. Exiting watcher.");
 
