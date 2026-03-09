@@ -256,7 +256,7 @@ const handleCoroutine = (objectId) => {
       cmd.value(coroutine);
     } catch (e) {
       const stackInfo = isCoroutineStackTraceEnabled
-        ? `\nCoroutine stack trace:\n${coroutine.currentStackTrace}`
+        ? `\n${coroutine.currentStackTrace ?? "The current coroutine command did not provide stack trace"}`
         : "\nCall setCoroutineStackTrace(true) to enable stack traces for coroutines.";
       console.error(
         `Error in coroutine "${coroutine.name}" for objectId ${coroutine.id} at position ${coroutine.pos}:${stackInfo}`,
@@ -281,7 +281,6 @@ const doMove = (cmd, ...args) => {
 
   return (coroutine) => {
     coroutine.currentStackTrace = stackTrace;
-    throw new Error("Test error");
     return ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
   };
 };
@@ -290,14 +289,22 @@ const doMove = (cmd, ...args) => {
 const doAction = (callback) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return () => callback();
+  let stackTrace = getStackTrace();
+
+  return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
+    callback();
+  };
 };
 
 // Facilitator to change game variable
 const doGameStore = (callback) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return () => {
+  let stackTrace = getStackTrace();
+
+  return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
     const store = useGameStore();
     callback(store);
   };
@@ -307,7 +314,13 @@ const doGameStore = (callback) => {
 const doSceneStore = (callback) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return () => {
+  let stackTrace = getStackTrace();
+
+  return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
+
+    throw new Error("Test error");
+
     const store = useSceneStore();
     callback(store);
   };
@@ -318,7 +331,10 @@ const doSceneStore = (callback) => {
 const doReduce = (key) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
+  let stackTrace = getStackTrace();
+
   return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
     if (!key) {
       key = "__default";
     }
