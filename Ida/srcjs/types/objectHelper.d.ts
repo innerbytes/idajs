@@ -400,4 +400,12 @@ export interface ObjectHelper {
    * @returns The corresponding radians value (0-2π)
    */
   angleToRadians(angle: number): number;
+
+  /**
+   * Calculates the horizontal angle (around Y axis) from one position to another.
+   * @param sourcePos The source position [x, y, z]
+   * @param targetPos The target position [x, y, z]
+   * @returns The angle in LBA angle units (0-4096)
+   */
+  getAngleFromToPosition(sourcePos: number[], targetPos: number[]): number;
 }

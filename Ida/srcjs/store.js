@@ -2,28 +2,29 @@ const epp = require("./epp.js");
 
 const store = {};
 
+// Non-persistent scene store
+const tempStore = {};
+
 function resetAll() {
   store.data = {
     game: {},
     scene: {},
     system: {},
   };
+
+  tempStore.data = {};
 }
 resetAll();
 
-const useStore = (...args) => {
+const useStoreInternal = (root, ...args) => {
   if (args.length === 0) {
-    return store.data;
+    return root;
   }
 
-  let current = store.data;
+  let current = root;
   for (let i = 0; i < args.length; i++) {
     if (typeof args[i] !== "string") {
-      throw new Error(
-        `Invalid argument at index ${i}: expected a string, got ${typeof args[
-          i
-        ]}`
-      );
+      throw new Error(`Invalid argument at index ${i}: expected a string, got ${typeof args[i]}`);
     }
 
     if (current[args[i]] === undefined) {
@@ -43,19 +44,26 @@ const useStore = (...args) => {
 const useGameStore = (...args) => {
   var ep = epp.ExecutionPhase;
   epp.allowInPhases(ep.BeforeScene, ep.InScene, ep.InYield);
-  return useStore("game", ...args);
+  return useStoreInternal(store.data, "game", ...args);
 };
 
 const useSceneStore = (...args) => {
   var ep = epp.ExecutionPhase;
   epp.allowInPhases(ep.BeforeScene, ep.InScene, ep.InYield);
-  return useStore("scene", ...args);
+  return useStoreInternal(store.data, "scene", ...args);
 };
 
-const useSystemStore = (...args) => useStore("system", ...args);
+const useTempStore = (...args) => {
+  var ep = epp.ExecutionPhase;
+  epp.allowInPhases(ep.BeforeScene, ep.InScene, ep.InYield);
+  return useStoreInternal(tempStore.data, ...args);
+};
+
+const useSystemStore = (...args) => useStoreInternal(store.data, "system", ...args);
 
 const resetScene = () => {
   store.data.scene = {};
+  tempStore.data = {};
 };
 
 const resetGame = () => {
@@ -89,6 +97,7 @@ const loadBackup = () => {
     resetAll();
     console.error("No backup found to load");
   }
+  tempStore.data = {};
 };
 
 const loadFromJson = (json) => {
@@ -117,4 +126,5 @@ module.exports.saveBackup = saveBackup;
 module.exports.loadBackup = loadBackup;
 module.exports.useGameStore = useGameStore;
 module.exports.useSceneStore = useSceneStore;
+module.exports.useTempStore = useTempStore;
 module.exports.useSystemStore = useSystemStore;

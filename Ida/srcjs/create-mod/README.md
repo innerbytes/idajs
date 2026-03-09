@@ -24,6 +24,12 @@ npx @idajs/create-mod
 
 The tool will guide you through the setup process with interactive prompts.
 
+Refresh scaffolder-managed files in an existing mod project:
+
+```pwsh
+npx @idajs/create-mod --update
+```
+
 ## Usage
 
 ```pwsh

@@ -4,6 +4,12 @@ const { useSystemStore, useGameStore, useSceneStore } = require("./store");
 const generatorRegistry = new Map();
 const runningIterators = new Map();
 
+let isCoroutineStackTraceEnabled = false;
+
+const setCoroutineStackTrace = (isEnabled) => {
+  isCoroutineStackTraceEnabled = isEnabled;
+};
+
 // Some of the coroutine commands, like timers, can be implemented in js
 // NOTE - not used at the moment
 const handlers = new Set();
@@ -248,6 +254,15 @@ const handleCoroutine = (objectId) => {
     epp.setCurrentPhase(epp.ExecutionPhase.InYield);
     try {
       cmd.value(coroutine);
+    } catch (e) {
+      const stackInfo = isCoroutineStackTraceEnabled
+        ? `\n${coroutine.currentStackTrace ?? "The current coroutine command did not provide stack trace"}`
+        : "\nCall setCoroutineStackTrace(true) to enable stack traces for coroutines.";
+      console.error(
+        `Error in coroutine "${coroutine.name}" for objectId ${coroutine.id} at position ${coroutine.pos}:${stackInfo}`,
+        e
+      );
+      throw e;
     } finally {
       epp.setCurrentPhase(epp.ExecutionPhase.InMove);
     }
@@ -262,21 +277,34 @@ const handleCoroutine = (objectId) => {
 const doMove = (cmd, ...args) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return (coroutine) => ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
+  let stackTrace = getStackTrace();
+
+  return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
+    return ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
+  };
 };
 
 // Allows user to do an external action from the coroutine. For example change a variable, or start another coroutine.
 const doAction = (callback) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return () => callback();
+  let stackTrace = getStackTrace();
+
+  return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
+    callback();
+  };
 };
 
 // Facilitator to change game variable
 const doGameStore = (callback) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return () => {
+  let stackTrace = getStackTrace();
+
+  return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
     const store = useGameStore();
     callback(store);
   };
@@ -286,7 +314,10 @@ const doGameStore = (callback) => {
 const doSceneStore = (callback) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return () => {
+  let stackTrace = getStackTrace();
+
+  return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
     const store = useSceneStore();
     callback(store);
   };
@@ -297,7 +328,10 @@ const doSceneStore = (callback) => {
 const doReduce = (key) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
+  let stackTrace = getStackTrace();
+
   return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
     if (!key) {
       key = "__default";
     }
@@ -319,6 +353,16 @@ const doReduce = (key) => {
 };
 
 // *** Private area ***
+
+function getStackTrace() {
+  if (!isCoroutineStackTraceEnabled) {
+    return null;
+  }
+
+  const obj = {};
+  Error.captureStackTrace(obj, getStackTrace);
+  return obj.stack;
+}
 
 function resetCoroutineSystem() {
   runningIterators.clear();
@@ -429,3 +473,5 @@ module.exports.doMove = doMove;
 module.exports.doAction = doAction;
 module.exports.doGameStore = doGameStore;
 module.exports.doSceneStore = doSceneStore;
+
+module.exports.setCoroutineStackTrace = setCoroutineStackTrace;

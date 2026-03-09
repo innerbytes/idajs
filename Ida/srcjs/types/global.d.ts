@@ -75,6 +75,16 @@ declare global {
   var useSceneStore: (...args: string[]) => Record<string, any>;
 
   /**
+   * Provides access to temporary scene state that resets every time the scene is reloaded.
+   * Unlike scene state, this store is not serialized into save data or backup restores.
+   *
+   * Use it for non-persistent triggers state, for example action button trigger.
+   *
+   * @param args - Optional path of the subobject in the temp store. For example `useTempStore("cellar", "triggers")` will store runtime-only state in a nested temp object
+   */
+  var useTempStore: (...args: string[]) => Record<string, any>;
+
+  /**
    * Registers a coroutine generator with the given name. All coroutines must be registered before using them.
    */
   var registerCoroutine: (name: string, coroutine: CoroutineFunction) => void;
@@ -140,6 +150,16 @@ declare global {
    * @returns true if the coroutine is paused, false otherwise
    */
   var isCoroutinePaused: (objectId: number, name: string) => boolean;
+
+  /**
+   * Enables or disables stack trace capture for coroutine errors.
+   *
+   * When enabled, coroutine error messages will include the stack trace showing where the failing coroutine command was created.
+   *
+   * Disabled by default.
+   * @param isEnabled - true to enable stack traces, false to disable
+   */
+  var setCoroutineStackTrace: (isEnabled: boolean) => void;
 
   /**
    * **[COROUTINE COMMAND]** Use in the coroutines only; Must be called with yield!

@@ -58,6 +58,58 @@ function Normalize-Path($path) {
     return "`"$normalizedPath`""
 }
 
+# Runs "git submodule update --init --recursive" and handles the git-worktree/network-drive failure
+# gracefully by warning the user and prompting whether to continue.
+# Returns $true if the caller should proceed, $false if the caller should abort.
+function Invoke-GitSubmoduleUpdate {
+    $output = git submodule update --init --recursive 2>&1
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[v] Git submodules initialized successfully." -ForegroundColor Green
+        return $true
+    }
+
+    $outputText = $output -join "`n"
+
+    # Detect the specific worktree-not-accessible error
+    $isWorktreeError = $outputText -match 'not a git repository.*[/\\]worktrees[/\\]'
+
+    if ($isWorktreeError) {
+        Write-Host ""
+        Write-Host "[!] Git submodule initialization failed because the main repository folder" -ForegroundColor Yellow
+        Write-Host "    is not accessible from this machine." -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "    You appear to be working in a git worktree mounted from a network drive or similar scenario." -ForegroundColor Yellow
+        Write-Host "    Git requires access to the main '.git' folder to manage submodules, but" -ForegroundColor Yellow
+        Write-Host "    that folder cannot be reached from this machine." -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "    To fix this, run the following command on the machine where the main" -ForegroundColor Cyan
+        Write-Host "    repository folder IS accessible:" -ForegroundColor Cyan
+        Write-Host ""
+        Write-Host "        git submodule update --init --recursive" -ForegroundColor White
+        Write-Host ""
+        Write-Host "    After the submodules are checked out there, continue the script on this machine by choosing [Y]." -ForegroundColor Yellow
+        Write-Host ""
+
+        $answer = Read-Host "If you have already initialized the submodules elsewhere, do you want to continue the script? (Y/N)"
+        if ($answer -match '^[Yy]$') {
+            Write-Host "[~] Continuing with manual submodule initialization." -ForegroundColor Yellow
+            # Reset $LASTEXITCODE so the git failure code (128) does not propagate to callers
+            $global:LASTEXITCODE = 0
+            return $true
+        }
+        else {
+            Write-Host "[x] Aborted by user." -ForegroundColor Red
+            return $false
+        }
+    }
+
+    # Generic failure
+    Write-Host "[x] Failed to initialize git submodules:" -ForegroundColor Red
+    Write-Host $outputText -ForegroundColor Red
+    Write-Host "This is required for the project to build properly." -ForegroundColor Red
+    return $false
+}
+
 $isDebug = $BuildType -eq "Debug"
 
 # if packages.config doesn't exist in Ida, warning the user
@@ -195,16 +247,7 @@ $isGitRepo = Test-Path ".git"
 
 if ($isGitRepo) {
     # We're in a git repository, use standard git submodule command
-    try {
-        $gitSubmoduleResult = git submodule update --init --recursive
-        if ($LASTEXITCODE -ne 0) {
-            throw "Git submodule command failed with exit code $LASTEXITCODE"
-        }
-        Write-Host "[v] Git submodules initialized successfully." -ForegroundColor Green
-    }
-    catch {
-        Write-Host "[x] Failed to initialize git submodules: $($_.Exception.Message)" -ForegroundColor Red
-        Write-Host "This is required for the project to build properly." -ForegroundColor Red
+    if (-not (Invoke-GitSubmoduleUpdate)) {
         exit 1
     }
 }
@@ -310,3 +353,4 @@ catch {
 }
 
 Write-Host "You can now build the game by running .\build.ps1" -ForegroundColor Green
+exit 0

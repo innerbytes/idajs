@@ -129,18 +129,30 @@ const object = {
     }
   },
   degreesToAngle: function (degrees) {
-    return Math.round((degrees * 4096) / 360.0);
+    return transposeIntAngle(Math.round((degrees * 4096) / 360.0));
   },
   angleToDegrees: function (angle) {
+    angle = transposeIntAngle(angle);
     return (angle * 360) / 4096.0;
   },
   radiansToAngle: function (radians) {
-    return Math.round((radians * 4096) / (2 * Math.PI));
+    return transposeIntAngle(Math.round((radians * 4096) / (2 * Math.PI)));
   },
   angleToRadians: function (angle) {
+    angle = transposeIntAngle(angle);
     return (angle * (2 * Math.PI)) / 4096.0;
   },
+  getAngleFromToPosition: function (sourcePos, targetPos) {
+    const deltaX = targetPos[0] - sourcePos[0];
+    const deltaZ = targetPos[2] - sourcePos[2];
+    return this.radiansToAngle(Math.atan2(deltaX, deltaZ));
+  },
 };
+
+function transposeIntAngle(angle) {
+  return ((angle % 4096) + 4096) % 4096;
+}
+
 object.ControlModes.$ = new EnumHandler(object.ControlModes);
 object.Flags.$ = new FlagsHandler(object.Flags);
 object.Bonuses.$ = new FlagsHandler(object.Bonuses);

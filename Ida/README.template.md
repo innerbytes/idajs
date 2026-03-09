@@ -143,6 +143,9 @@ In short: enjoy {{{ida}}} locally and share your mods freely, but please don’t
 - **Linux** (not tested) - should work in QEMU/KVM with Windows 10/11 64bit installed, but it wasn't tested yet. Please let us know if you tried it and it worked good.
 - Internet connection (needed during the setup process only, to download necessary build tools)
 
+**NB:** If you prefer to develop on Linux or Mac, you can still code your Little Big Adventure 2 mod on these platforms, the Windows VM will just be needed to run LBA2.exe. 
+{{{ida}}} infrastructure is built with support of this flow.
+
 #### LBA 2 classic installed
 - LBA 2 classic game purchased and installed on your PC. You can use [GOG](https://www.gog.com/en/game/little_big_adventure_2) or [Steam](https://store.steampowered.com/app/398000/Twinsens_Little_Big_Adventure_2_Classic/) version of the game.
   - {{{ida}}} will not modify any of your original game files, so you can always run the original game as well.
@@ -705,6 +708,7 @@ However, for your new behavior, use {{{ida}}} scene variables, that are much eas
 
 - See {@link global!useGameStore} to read and write {{{ida}}} game variables.
 - See {@link global!useSceneStore} to read and write {{{ida}}} scene variables.
+- See {@link global!useTempStore} to read and write temporary scene state, that is not persisted in save data. The temp store resets to an empty object every time the player enters the scene. It can be used in non-persistent triggers, for example, to store action button press state.
 - See {@link global!doGameStore} to write {{{ida}}} game variables from the coroutines.
 - See {@link global!doSceneStore} to write {{{ida}}} scene variables from the coroutines.
 - See {@link index!Scene.getVariable} and {@link index!Scene.setVariable} to read and write original LBA 2 (vanilla) scene variables.
@@ -983,6 +987,19 @@ npx @idajs/create-mod
 
 This will generate a ready‑to‑run mod skeleton with scripts, types, and a minimal example.
 
+**Updating the scaffolder files later:**
+If the scaffolder gets updated later and you want to refresh the generated tooling in an existing mod, open that mod folder in PowerShell and run:
+
+```powershell
+npx @idajs/create-mod --update
+```
+
+This refreshes the scaffolder-managed infrastructure and config files in the project root, then runs `npm install` and `npm run update:types` by default. Your user code under `src/` is not touched. If you want to refresh only the scaffolder files, pass `--skip-install` to skip both commands. The command expects an existing IdaJS mod and will warn if the project no longer resembles the standard scaffold.
+
+**Developing on Linux or Mac:**
+If you want to develop your mod on Linux or Mac, specify the IdaJS listener IP here when it prompts for the {{{ida}}} installation directory. 
+See [Develop Little Big Adventure 2 mods on Linux or Mac](#49-develop-little-big-adventure-2-mods-on-linux-or-mac) for details.
+
 See [Samples section](#5-idajs-samples) for more advanced mod examples, provided with detailed code explanations.
 
 ### 4.3 Open the mod project in VSCode
@@ -1010,6 +1027,8 @@ Your mod project contains a small set of folders and files:
   - `.idajs.json` — {{{ida}}} config (the path to {{{ida}}} project).
   - `jsconfig.json`, `.gitignore`, and similar config files may be present depending on template.
 
+The root tooling/config files are scaffolder-managed. If a newer `@idajs/create-mod` version ships updated infrastructure, you can refresh those files later with `npx @idajs/create-mod --update`.
+
 You can grow the codebase by adding javascript / typescript modules under `src/` and importing them from `index.js`.
 
 ### 4.5 Mod project actions overview
@@ -1019,6 +1038,8 @@ Common actions are available as npm scripts:
 - `npm start` — starts LBA2 with your mod, and a watcher that syncs your `src/` and `media/` changes into the game’s `GameRun/mods/<name>/` folder in {{{ida}}}. Keep this running while you iterate.
 - `npm run update:types` — updates {{{ida}}} TypeScript definitions to the latest released version for better IntelliSense and API docs in the editor.
 - `npm run build` — produces a distributable zip of your mod you can share. The archive is put in `build` folder and contains your code and media in the correct structure.
+
+If you need to refresh the scaffolder-managed project tooling itself, run `npx @idajs/create-mod --update` from the mod folder. By default it also runs `npm install` and `npm run update:types` after updating the generated infrastructure.
 
 ### 4.6 Hot‑reload behavior in game
 
@@ -1044,6 +1065,41 @@ I will be very happy to see mods created with {{{ida}}}!
 The mods that work and play well will be published on top of this website.
 
 Please contact me here: https://innerbytes.com/#about or use [Discussions]({{{GIT_URL}}}/discussions) on {{{ida}}} GitHub page, to let me know about your mod.
+
+### 4.9 Develop Little Big Adventure 2 mods on Linux or Mac
+
+If you write your mod on Linux or Mac, you can still run and hot‑reload it in the Windows build of {{{ida}}} by using a VM or Windows machine.
+
+The general workflow is:
+
+1. On the Windows machine, build {{{ida}}}, install Node.js (same way as in [Setup modding environment](#41-setup-modding-environment)), then open the `Ida` folder in a terminal and run:
+
+```powershell
+npm install
+npm run listen
+```
+
+This starts a small listener service. By default it binds to the local network IP address on port `7770`. You can also choose the address explicitly:
+
+```powershell
+npm run listen -- --host 0.0.0.0:7770
+```
+
+2. On your Linux or Mac machine, run `npx @idajs/create-mod` and, when prompted for the {{{ida}}} location, enter the Windows host as `host[:port]` instead of a local path.  
+For example: `192.168.64.2` or `192.168.64.2:7770`.
+
+3. Open the created mod in VSCode and run:
+
+```bash
+npm start
+```
+
+The mod tooling will then:
+- sync your mod files to the Windows machine,
+- start `LBA2.exe` on the Windows machine,
+- keep watching your mod files and re-upload them after each change, same as when you develop directly on Windows.
+
+From that point, the hot‑reload workflow stays the same as on Windows: save files in the editor, then load or start a new game from the main menu to see the updated JavaScript.
 
 ## 5. IdaJS Samples
 

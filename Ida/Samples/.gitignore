@@ -4,9 +4,14 @@
 
 # When changing the sample to a standalone project, those should not be ignored
 */run.ps1
+*/start.js
 */watch.js
 */sync.js
 */build.js
+*/project.js
+*/archive.js
+*/remote.js
+*/run-remote.js
 */jsconfig.json
 */tsconfig.json
 */.vscode/settings.json

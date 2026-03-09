@@ -4,13 +4,13 @@
   "scripts": {
     "setup": "node ../install.js",
     "watch": "node watch.js",
-    "sync": "node sync.js %npm_package_name%",
-    "start": "powershell -ExecutionPolicy Bypass -File run.ps1 %npm_package_name%",
-    "build": "node build.js %npm_package_name%",
+    "sync": "node sync.js",
+    "start": "node start.js",
+    "build": "node build.js",
     "update:types": "npm update @idajs/types"
   },
   "devDependencies": {
-    "archiver": "^7.0.1",
+    "yazl": "^3.3.1",
     "chokidar-cli": "^3.0.0",
     "@idajs/types": "^0.2.0",
     "@idajs/sync": "^1.1.0",

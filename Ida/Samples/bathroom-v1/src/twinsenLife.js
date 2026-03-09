@@ -213,6 +213,8 @@ module.exports = {
   },
   playerControlled: (objectId) => {
     const S = useSceneStore();
+    // Using temp store for action button trigger state - not persisted in save data, resets on scene load
+    const tempStore = globalThis.useTempStore();
 
     // Checking the zone where Twinsen is
     const currentZone = ida.lifef(objectId, ida.Life.LF_ZONE);
@@ -254,14 +256,13 @@ module.exports = {
       return;
     }
 
-    // If player pressed action inside of the Window zone
+    // If player pressed action inside of the Window zone, while facing North (towards the window)
     if (
       currentZone === SceneProperties.zoneWindowValue &&
-      isTriggeredTrue(
-        SceneProperties.tempStore, // When triggering Action we use tempStore object as a store, because we don't need to persist the previous state of action pressed between save/load
-        "action",
-        ida.lifef(objectId, ida.Life.LF_ACTION) > 0
-      )
+      isTriggeredTrue(tempStore, "action", ida.lifef(objectId, ida.Life.LF_ACTION) > 0) &&
+      scene
+        .getObject(objectId)
+        .isFacingZoneDirection(SceneProperties.zoneWindowId, object.ZoneDirections.North)
     ) {
       // Twinsen is at the window, and can "look outside"
       ida.life(

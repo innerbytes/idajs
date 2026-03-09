@@ -29,6 +29,7 @@ const SceneProperties = {
   zoneBathroomEntranceValue: -1,
 
   // To handle Twinsen going to the window in the player controlled phase
+  zoneWindowId: 9,
   zoneWindowValue: 4,
 
   // Those will be new waypoints, they don't exist in the scene file
@@ -42,9 +43,6 @@ const SceneProperties = {
 
   // Will use this for custom texts in the dialogs
   textId: -1,
-
-  // Temporary store for non-persistent triggers (for example, handy for checking player pressed action key)
-  tempStore: null,
 };
 
 // Export the objects that should be accessible in other modules

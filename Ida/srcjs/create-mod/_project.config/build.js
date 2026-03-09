@@ -1,14 +1,15 @@
 const { execSync } = require("child_process");
 const path = require("path");
 const fs = require("fs");
-const archiver = require("archiver");
+const { createZipFromDirectories } = require("./archive");
+const { getPackageName } = require("./project");
 
 // Get mod name from command line argument
-const modName = process.argv[2];
+const modName = process.argv[2] || getPackageName();
 
 if (!modName) {
   console.error("Error: Mod name is required as an argument");
-  console.error("Usage: node build.js <mod-name>");
+  console.error("Usage: node build.js [mod-name]");
   process.exit(1);
 }
 
@@ -61,47 +62,31 @@ if (!fs.existsSync(buildFolder)) {
 
 // Create zip file
 const zipPath = path.join(buildFolder, `${modName}.zip`);
-const output = fs.createWriteStream(zipPath);
-const archive = archiver("zip", {
-  zlib: { level: 9 }, // Maximum compression
-});
 
-console.log(`Creating ${zipPath}...`);
+async function main() {
+  console.log(`Creating ${zipPath}...`);
 
-// Handle archive events
-output.on("close", () => {
-  const sizeInKB = (archive.pointer() / 1024).toFixed(2);
-  console.log(`✓ Build complete: ${zipPath} (${sizeInKB} KB)`);
-});
+  const mappings = [{ sourceDir: sourceFolder, zipRoot: modName }];
 
-archive.on("error", (err) => {
-  console.error("Error creating archive:", err);
-  process.exit(1);
-});
+  console.log(`Adding ${sourceFolder}/ → ${modName}/`);
 
-archive.on("warning", (err) => {
-  if (err.code === "ENOENT") {
-    console.warn("Warning:", err);
+  const mediaFolder = "media";
+  if (fs.existsSync(mediaFolder)) {
+    console.log(`Adding ${mediaFolder}/ → ${modName}/media/`);
+    mappings.push({ sourceDir: mediaFolder, zipRoot: `${modName}/media` });
   } else {
-    throw err;
+    console.log("No media folder found, skipping");
   }
-});
 
-// Pipe archive data to the file
-archive.pipe(output);
+  await createZipFromDirectories(zipPath, mappings, {
+    compressionLevel: 9,
+  });
 
-// Add source folder contents to zip under modName directory
-console.log(`Adding ${sourceFolder}/ → ${modName}/`);
-archive.directory(sourceFolder, modName);
-
-// Add media folder if it exists
-const mediaFolder = "media";
-if (fs.existsSync(mediaFolder)) {
-  console.log(`Adding ${mediaFolder}/ → ${modName}/media/`);
-  archive.directory(mediaFolder, `${modName}/media`);
-} else {
-  console.log("No media folder found, skipping");
+  const sizeInKB = (fs.statSync(zipPath).size / 1024).toFixed(2);
+  console.log(`✓ Build complete: ${zipPath} (${sizeInKB} KB)`);
 }
 
-// Finalize the archive
-archive.finalize();
+main().catch((error) => {
+  console.error("Error creating archive:", error);
+  process.exit(1);
+});

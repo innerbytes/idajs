@@ -17,7 +17,6 @@ namespace Ida
         {
             case LM_PALETTE:
             case LM_BODY:
-            case LM_CAMERA_CENTER:
             case LM_FALLABLE:
             case LM_CAM_FOLLOW:
             case LM_COMPORTEMENT_HERO:
@@ -59,6 +58,13 @@ namespace Ida
                 VALIDATE_VALUE(uint8_t, Uint32, args[2], arg0, 0, 255);
                 bridge->prepareLifeScript(opcode, 1);
                 bridge->pushArgument(arg0);
+            }
+            break;
+            case LM_CAMERA_CENTER: {
+                VALIDATE_ARGS_COUNT(3)
+                VALIDATE_VALUE(uint8_t, Uint32, args[2], orientation, 0, 3);
+                bridge->prepareLifeScript(opcode, 1);
+                bridge->pushArgument(orientation);
             }
             break;
             // 3-4 arguments
@@ -412,7 +418,6 @@ namespace Ida
             case TM_SAMPLE_STOP:
             case TM_REPEAT_SAMPLE:
             case TM_SIMPLE_SAMPLE:
-            case TM_FACE_TWINSEN:
             case TM_SPRITE:
             case TM_DECALAGE:
             case TM_FREQUENCE: {
@@ -423,11 +428,30 @@ namespace Ida
             }
             break;
 
+            // Single i16 argument with optional placeholder
+            case TM_FACE_TWINSEN: {
+                VALIDATE_ARGS_COUNT(baseArgsCount)
+                int16_t arg0 = -1;
+                if (args.Length() > baseArgsCount)
+                {
+                    VALIDATE_INT16_VALUE(args[baseArgsCount], checkedArg0);
+                    arg0 = checkedArg0;
+                }
+                bridge->prepareMoveScript(objectId, opcode, 2);
+                bridge->pushMoveArgument(objectId, arg0);
+            }
+            break;
+
             // Two u8 arguments
             case TM_WAIT_NB_ANIM: {
-                VALIDATE_ARGS_COUNT(baseArgsCount + 2)
+                VALIDATE_ARGS_COUNT(baseArgsCount + 1)
                 VALIDATE_VALUE(uint8_t, Uint32, args[baseArgsCount], arg0, 0, 255);
-                VALIDATE_VALUE(uint8_t, Uint32, args[baseArgsCount + 1], arg1, 0, 255);
+                uint8_t arg1 = 0;
+                if (args.Length() > baseArgsCount + 1)
+                {
+                    VALIDATE_VALUE(uint8_t, Uint32, args[baseArgsCount + 1], checkedArg1);
+                    arg1 = checkedArg1;
+                }
                 bridge->prepareMoveScript(objectId, opcode, 2);
                 bridge->pushMoveArgument(objectId, arg0);
                 bridge->pushMoveArgument(objectId, arg1);
@@ -436,9 +460,14 @@ namespace Ida
 
             // Two i16 arguments
             case TM_ANGLE_RND: {
-                VALIDATE_ARGS_COUNT(baseArgsCount + 2)
+                VALIDATE_ARGS_COUNT(baseArgsCount + 1)
                 VALIDATE_INT16_VALUE(args[baseArgsCount], arg0);
-                VALIDATE_INT16_VALUE(args[baseArgsCount + 1], arg1);
+                int16_t arg1 = -1;
+                if (args.Length() > baseArgsCount + 1)
+                {
+                    VALIDATE_INT16_VALUE(args[baseArgsCount + 1], checkedArg1);
+                    arg1 = checkedArg1;
+                }
                 bridge->prepareMoveScript(objectId, opcode, 4);
                 bridge->pushMoveArgument(objectId, arg0);
                 bridge->pushMoveArgument(objectId, arg1);
@@ -452,7 +481,12 @@ namespace Ida
             case TM_WAIT_NB_DIZIEME_RND: {
                 VALIDATE_ARGS_COUNT(baseArgsCount + 1)
                 VALIDATE_VALUE(uint8_t, Uint32, args[baseArgsCount], arg0, 0, 255);
-                uint32_t arg1 = 0;  // Second argument should always be zero for those opcodes
+                uint32_t arg1 = 0;
+                if (args.Length() > baseArgsCount + 1)
+                {
+                    VALIDATE_VALUE(uint32_t, Uint32, args[baseArgsCount + 1], checkedArg1);
+                    arg1 = checkedArg1;
+                }
                 bridge->prepareMoveScript(objectId, opcode, 5);
                 bridge->pushMoveArgument(objectId, arg0);
                 bridge->pushMoveArgument(objectId, arg1);

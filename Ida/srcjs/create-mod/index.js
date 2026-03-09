@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { execSync } = require("child_process");
+const readline = require("readline");
 const IdaSync = require("@idajs/sync");
 
 // Parse command line arguments
@@ -26,7 +27,9 @@ const idajsDir = getArgValue("--idajs-dir") || getArgValue("--idajs");
 const useTypeScript = args.includes("--typescript") || args.includes("--ts");
 const useJavaScript = args.includes("--javascript") || args.includes("--js");
 const skipInstall = args.includes("--skip-install");
+const updateMode = args.includes("--update");
 const helpRequested = args.includes("--help") || args.includes("-h");
+const requiredUpdatePackages = ["@idajs/types", "@idajs/sync"];
 
 // Show help if requested
 if (helpRequested) {
@@ -41,7 +44,8 @@ Options:
   --idajs-dir, --idajs <path>     IdaJS installation directory
   --typescript, --ts              Use TypeScript
   --javascript, --js              Use JavaScript
-  --skip-install                  Skip npm install
+  --update                        Refresh scaffolder-managed files in the current mod folder
+  --skip-install                  Skip npm install (and type update in --update mode)
   -h, --help                      Show this help message
 
 Examples:
@@ -50,6 +54,7 @@ Examples:
   npx @idajs/create-mod my-mod --typescript
   npx @idajs/create-mod my-mod --dir ./projects/my-mod --idajs C:/Projects/idajs --js
   npx @idajs/create-mod my-mod --skip-install
+  npx @idajs/create-mod --update
 `);
   process.exit(0);
 }
@@ -70,8 +75,123 @@ function getIdaJsDirFromConfig() {
   return null;
 }
 
+function normalizeServerAddress(value) {
+  const trimmed = String(value || "").trim();
+  const input = trimmed.includes("://") ? trimmed : `http://${trimmed}`;
+  const url = new URL(input);
+  return `${url.hostname}:${url.port || 7770}`;
+}
+
+function parseIdaConnection(value) {
+  const trimmed = String(value || "").trim();
+
+  if (!trimmed) {
+    throw new Error("IdaJS installation directory or host[:port] is required");
+  }
+
+  if (fs.existsSync(trimmed)) {
+    return {
+      installDir: trimmed,
+      server: null,
+    };
+  }
+
+  if (trimmed.includes("/") || trimmed.includes("\\") || /^[A-Za-z]:/.test(trimmed)) {
+    throw new Error(`Directory does not exist: ${trimmed}`);
+  }
+
+  return {
+    installDir: null,
+    server: normalizeServerAddress(trimmed),
+  };
+}
+
+function loadJson(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (error) {
+    throw new Error(`Failed to parse JSON file: ${filePath}`);
+  }
+}
+
+function isInteractiveTerminal() {
+  return Boolean(process.stdin.isTTY && process.stdout.isTTY);
+}
+
+function askYesNo(question) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question(question, (answer) => {
+      rl.close();
+      const normalized = String(answer || "").trim().toLowerCase();
+      resolve(normalized === "y" || normalized === "yes");
+    });
+  });
+}
+
+async function runUpdateMode() {
+  const targetDir = process.cwd();
+  const packageJsonPath = path.join(targetDir, "package.json");
+
+  if (!fs.existsSync(packageJsonPath)) {
+    console.error(`\n❌ Error: No package.json found in ${targetDir}`);
+    console.error("Run this command from inside an existing IdaJS mod folder.");
+    process.exit(1);
+  }
+
+  const packageJson = loadJson(packageJsonPath);
+  const devDependencies = packageJson.devDependencies || {};
+  const missingPackages = requiredUpdatePackages.filter((name) => !devDependencies[name]);
+
+  if (missingPackages.length > 0) {
+    console.warn(
+      `\n⚠️  Warning: Missing IdaJS devDependencies: ${missingPackages.join(", ")}.`
+    );
+    console.warn("This may not be an IdaJS mod, or the project may differ significantly from the scaffold.");
+
+    if (!isInteractiveTerminal()) {
+      console.error("\n❌ Error: Confirmation required. Rerun this command in an interactive terminal to continue.");
+      process.exit(1);
+    }
+
+    const confirmed = await askYesNo("Continue with scaffolder update? [y/N] ");
+    if (!confirmed) {
+      console.log("\nUpdate cancelled.");
+      process.exit(1);
+    }
+  }
+
+  console.log(`\nUpdating IdaJS mod in ${targetDir}...`);
+
+  const installScript = path.join(__dirname, "install.js");
+  const installArgs = [installScript, targetDir, "--update"];
+
+  if (skipInstall) {
+    installArgs.push("--skip-install");
+  }
+
+  try {
+    execSync(`node ${installArgs.map((arg) => `"${arg}"`).join(" ")}`, {
+      stdio: "inherit",
+    });
+    console.log("\n✅ Scaffolder update completed successfully.");
+  } catch (error) {
+    console.error(`\n❌ Error updating project: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 async function main() {
   console.log("Welcome to IdaJS Mod Creator!\n");
+
+  if (updateMode) {
+    await runUpdateMode();
+    return;
+  }
 
   // Determine if we need prompts
   const needsPrompts =
@@ -124,16 +244,15 @@ async function main() {
     if (!config.idajsDir) {
       questions.push({
         type: "text",
-        name: "idajsDir",
-        message: "IdaJS installation directory:",
+        name: "idajsConnection",
+        message: "IdaJS installation directory or host[:port]:",
         validate: (value) => {
-          if (!value || value.length === 0) {
-            return "IdaJS installation directory is required";
+          try {
+            parseIdaConnection(value);
+            return true;
+          } catch (error) {
+            return error.message;
           }
-          if (!fs.existsSync(value)) {
-            return `Directory does not exist: ${value}`;
-          }
-          return true;
         },
       });
     }
@@ -159,6 +278,13 @@ async function main() {
     });
 
     config = { ...config, ...response };
+
+    if (response.idajsConnection) {
+      const parsedConnection = parseIdaConnection(response.idajsConnection);
+      config.idajsDir = parsedConnection.installDir;
+      config.server = parsedConnection.server;
+      delete config.idajsConnection;
+    }
   }
 
   // Set target directory to project name if not specified
@@ -171,7 +297,7 @@ async function main() {
     : path.join(process.cwd(), config.targetDirectory);
 
   // Validate IdaJS directory exists
-  if (!fs.existsSync(config.idajsDir)) {
+  if (config.idajsDir && !fs.existsSync(config.idajsDir)) {
     console.error(`\n❌ Error: IdaJS installation directory does not exist: ${config.idajsDir}`);
     process.exit(1);
   }
@@ -184,7 +310,7 @@ async function main() {
 
   console.log(`\nCreating IdaJS mod in ${targetDir}...`);
   console.log(`Language: ${config.language === "js" ? "JavaScript" : "TypeScript"}`);
-  console.log(`IdaJS: ${config.idajsDir}\n`);
+  console.log(`IdaJS: ${config.idajsDir || config.server}\n`);
 
   try {
     // Create project directory
@@ -218,14 +344,14 @@ async function main() {
     fs.writeFileSync(packageTemplatePath, JSON.stringify(packageTemplate, null, 2) + "\n");
     console.log("✓ Updated package.template.json");
 
-    // Create .idajs.json config file
-    const idajsConfig = {
-      installDir: config.idajsDir,
-    };
-    fs.writeFileSync(
-      path.join(targetDir, ".idajs.json"),
-      JSON.stringify(idajsConfig, null, 2) + "\n"
-    );
+    const idajsConfig = {};
+    if (config.idajsDir) {
+      idajsConfig.installDir = config.idajsDir;
+    }
+    if (config.server) {
+      idajsConfig.server = config.server;
+    }
+    fs.writeFileSync(path.join(targetDir, ".idajs.json"), JSON.stringify(idajsConfig, null, 2) + "\n");
     console.log("✓ Created .idajs.json");
 
     // Call Samples/install.js to set up the project

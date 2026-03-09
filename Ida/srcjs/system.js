@@ -31,6 +31,7 @@ const {
   doAction,
   doGameStore,
   doSceneStore,
+  setCoroutineStackTrace,
 } = require("./coroutines");
 
 const {
@@ -43,6 +44,7 @@ const {
   loadBackup,
   useGameStore,
   useSceneStore,
+  useTempStore,
 } = require("./store");
 
 Object.setPrototypeOf(scene, sceneProto);
@@ -91,12 +93,8 @@ ida._setMoveHandler((objectId) => {
   }
 });
 
-scene._setSaveHandler((isBackupSave) =>
-  isBackupSave ? saveBackup() : saveToJson()
-);
-scene._setLoadHandler((json) =>
-  json !== undefined ? loadFromJson(json) : loadBackup()
-);
+scene._setSaveHandler((isBackupSave) => (isBackupSave ? saveBackup() : saveToJson()));
+scene._setLoadHandler((json) => (json !== undefined ? loadFromJson(json) : loadBackup()));
 
 // Expose global entities
 
@@ -118,6 +116,7 @@ globalThis.getRunningCoroutineName = getRunningCoroutineName;
 globalThis.isCoroutinePaused = isCoroutinePaused;
 // Epp limit: in scene
 globalThis.registerCoroutine = registerCoroutine;
+globalThis.setCoroutineStackTrace = setCoroutineStackTrace;
 
 // Coroutines operations
 // Epp limit: InMove
@@ -131,6 +130,7 @@ globalThis.doSceneStore = doSceneStore;
 // Epp limit: inScene, inYield
 globalThis.useGameStore = useGameStore;
 globalThis.useSceneStore = useSceneStore;
+globalThis.useTempStore = useTempStore;
 
 // Utils
 globalThis.isTriggeredTrue = isTriggeredTrue;

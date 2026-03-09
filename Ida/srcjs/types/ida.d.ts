@@ -79,8 +79,12 @@ export interface LifeOpcodes {
    * @param flag: u8 */
   readonly LM_SET_CAMERA: 0x15;
 
-  /** Recentres camera.
-   * @param angle_adjust: u8 */
+  /** Recentres camera around the followed actor.
+   * @param orientation: u8
+   * 0 = camera goes behind the actor
+   * 1 = camera goes to the actor's right side
+   * 2 = camera goes in front of the actor
+   * 3 = camera goes to the actor's left side */
   readonly LM_CAMERA_CENTER: 0x16;
 
   /** Changes this actor's move script track.
@@ -811,7 +815,7 @@ export interface MoveOpcodes {
 
   /** Waits for the actor's animation to have played a number of times.
    * @param count: u8
-   * @param zero: u8 */
+   * @param zero?: u8 - optional placeholder argument, defaults to `0` */
   readonly TM_WAIT_NB_ANIM: 0x0d;
 
   /** Plays a sound sample.
@@ -832,7 +836,7 @@ export interface MoveOpcodes {
 
   /** Waits for the number of seconds.
    * @param count: u8
-   * @param zero: u32
+   * @param zero?: u32 - optional placeholder argument, defaults to `0`
    */
   readonly TM_WAIT_NB_SECOND: 0x12;
 
@@ -893,17 +897,17 @@ export interface MoveOpcodes {
   readonly TM_SIMPLE_SAMPLE: 0x20;
 
   /** Actor rotates to face Twinsen and waits until the rotation completes.
-   * @param negative_one: i16 */
+   * @param negative_one?: i16 - optional placeholder argument, defaults to `-1` */
   readonly TM_FACE_TWINSEN: 0x21;
 
   /** Actor rotates to a random angle and waits until the rotation completes.
    * @param angle: i16
-   * @param negative_one: i16 */
+   * @param negative_one?: i16 - optional placeholder argument, defaults to `-1` */
   readonly TM_ANGLE_RND: 0x22;
 
   /** Waits for a number of deciseconds (tenths of a second).
    * @param count: u8
-   * @param zero: u32
+   * @param zero?: u32 - optional placeholder argument, defaults to `0`
    */
   readonly TM_WAIT_NB_DIZIEME: 0x24;
 
@@ -913,7 +917,7 @@ export interface MoveOpcodes {
 
   /** Waits for a random number of seconds, up to a maximum.
    * @param max: u8
-   * @param zero: u32
+   * @param zero?: u32 - optional placeholder argument, defaults to `0`
    */
   readonly TM_WAIT_NB_SECOND_RND: 0x27;
 
@@ -949,7 +953,7 @@ export interface MoveOpcodes {
 
   /** Waits for a random number of deciseconds, up to a maximum.
    * @param max: u8
-   * @param zero: u32
+   * @param zero?: u32 - optional placeholder argument, defaults to `0`
    */
   readonly TM_WAIT_NB_DIZIEME_RND: 0x31;
 
