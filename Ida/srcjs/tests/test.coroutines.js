@@ -878,14 +878,10 @@ test.group("Coroutines Tests", () => {
     startCoroutine(1, "errorCoroutine");
 
     epp.setCurrentPhase(epp.ExecutionPhase.InMove);
-    let thrownError = null;
-    try {
+    expect.throws(() => {
       handleCoroutine(1);
-    } catch (e) {
-      thrownError = e;
-    }
+    });
 
-    expect.true(thrownError !== null);
     const errorCall = global.console.error.calls[0][0];
     expect.true(errorCall.includes("errorCoroutine"));
     expect.true(errorCall.includes("objectId 1"));
@@ -907,14 +903,10 @@ test.group("Coroutines Tests", () => {
     startCoroutine(1, "errorCoroutine");
 
     epp.setCurrentPhase(epp.ExecutionPhase.InMove);
-    let thrownError = null;
-    try {
+    expect.throws(() => {
       handleCoroutine(1);
-    } catch (e) {
-      thrownError = e;
-    }
+    });
 
-    expect.true(thrownError !== null);
     const errorCall = global.console.error.calls[0][0];
     expect.true(errorCall.includes("errorCoroutine"));
     expect.true(errorCall.includes("objectId 1"));
