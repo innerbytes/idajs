@@ -2,7 +2,7 @@ const { test, expect } = require("./idatest");
 // @ts-ignore
 const { object } = require("./srcjs/objectHelper");
 
-test.group("ObjectHelper Tests", () => {
+test.group.only("ObjectHelper Tests", () => {
   test("converts South direction to 0 angle", () => {
     const result = object.directionToAngle(object.ZoneDirections.South);
     expect.equal(result, 0);
@@ -175,11 +175,7 @@ test.group("ObjectHelper Tests", () => {
 
   test("converts 3072 angle to 3π/2 radians", () => {
     const result = object.angleToRadians(3072);
-    expect.between(
-      (3 * Math.PI) / 2 - 0.0001,
-      (3 * Math.PI) / 2 + 0.0001,
-      result
-    );
+    expect.between((3 * Math.PI) / 2 - 0.0001, (3 * Math.PI) / 2 + 0.0001, result);
   });
 
   test("converts 4096 angle to 2π radians", () => {
@@ -211,11 +207,7 @@ test.group("ObjectHelper Tests", () => {
 
   test("handles maximum game angle (4096)", () => {
     expect.equal(object.angleToDegrees(4096), 360);
-    expect.between(
-      2 * Math.PI - 0.0001,
-      2 * Math.PI + 0.0001,
-      object.angleToRadians(4096)
-    );
+    expect.between(2 * Math.PI - 0.0001, 2 * Math.PI + 0.0001, object.angleToRadians(4096));
   });
 
   test("handles full circle conversions", () => {
@@ -234,11 +226,7 @@ test.group("ObjectHelper Tests", () => {
     const originalRadians = 2.5;
     const angle = object.radiansToAngle(originalRadians);
     const convertedBack = object.angleToRadians(angle);
-    expect.between(
-      originalRadians - 0.01,
-      originalRadians + 0.01,
-      convertedBack
-    );
+    expect.between(originalRadians - 0.01, originalRadians + 0.01, convertedBack);
   });
 
   test("degrees and radians conversions are consistent", () => {
@@ -248,10 +236,6 @@ test.group("ObjectHelper Tests", () => {
     const angleFromDegrees = object.degreesToAngle(degrees);
     const angleFromRadians = object.radiansToAngle(radians);
 
-    expect.between(
-      angleFromDegrees - 1,
-      angleFromDegrees + 1,
-      angleFromRadians
-    );
+    expect.between(angleFromDegrees - 1, angleFromDegrees + 1, angleFromRadians);
   });
 });
