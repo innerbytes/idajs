@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const StreamZip = require("node-stream-zip");
 const os = require("os");
 const path = require("path");
 const { execFile } = require("child_process");
@@ -112,35 +113,23 @@ async function killGame() {
   }
 }
 
-function escapePowerShell(value) {
-  return String(value).replace(/'/g, "''");
-}
-
 async function expandArchive(zipPath, destinationPath) {
-  const command = [
-    "Add-Type -AssemblyName System.IO.Compression.FileSystem",
-    `[System.IO.Compression.ZipFile]::ExtractToDirectory('${escapePowerShell(
-      zipPath
-    )}', '${escapePowerShell(destinationPath)}')`,
-  ].join("; ");
+  const zip = new StreamZip.async({ file: zipPath });
 
-  await execFileAsync("powershell", [
-    "-NoProfile",
-    "-NonInteractive",
-    "-ExecutionPolicy",
-    "Bypass",
-    "-Command",
-    command,
-  ]);
+  try {
+    await zip.extract(null, destinationPath);
+  } finally {
+    await zip.close();
+  }
 }
 
 async function startGame(exePath, workingDir, modName) {
   const command = [
-    `$env:LBA_IDA_MOD='${escapePowerShell(modName)}'`,
+    `$env:LBA_IDA_MOD='${String(modName).replace(/'/g, "''")}'`,
     "$env:LBA_IDA_NOLOGO='1'",
-    `Start-Process -FilePath '${escapePowerShell(exePath)}' -WorkingDirectory '${escapePowerShell(
+    `Start-Process -FilePath '${String(exePath).replace(/'/g, "''")}' -WorkingDirectory '${String(
       workingDir
-    )}'`,
+    ).replace(/'/g, "''")}'`,
   ].join("; ");
 
   await execFileAsync("powershell", ["-ExecutionPolicy", "Bypass", "-Command", command]);
