@@ -143,6 +143,9 @@ In short: enjoy {{{ida}}} locally and share your mods freely, but please don’t
 - **Linux** (not tested) - should work in QEMU/KVM with Windows 10/11 64bit installed, but it wasn't tested yet. Please let us know if you tried it and it worked good.
 - Internet connection (needed during the setup process only, to download necessary build tools)
 
+**NB:** If you prefer to develop on Linux or Mac, you can still code your Little Big Adventure 2 mod on these platforms, the Windows VM will just be needed to run LBA2.exe. 
+{{{ida}}} infrastructure is built with support of this flow.
+
 #### LBA 2 classic installed
 - LBA 2 classic game purchased and installed on your PC. You can use [GOG](https://www.gog.com/en/game/little_big_adventure_2) or [Steam](https://store.steampowered.com/app/398000/Twinsens_Little_Big_Adventure_2_Classic/) version of the game.
   - {{{ida}}} will not modify any of your original game files, so you can always run the original game as well.
