@@ -864,7 +864,7 @@ test.group("Coroutines Tests", () => {
     expect.eq(receivedStore, sceneStore);
   });
 
-  test.only("handleCoroutine error should suggest enabling stack trace when disabled", () => {
+  test("handleCoroutine error should suggest enabling stack trace when disabled", () => {
     setCoroutineStackTrace(false);
 
     global.ida._move = createMockFn(() => {
@@ -889,7 +889,7 @@ test.group("Coroutines Tests", () => {
     expect.true(errorCall.includes("setCoroutineStackTrace(true)"));
   });
 
-  test.only("handleCoroutine error should include stack trace when enabled", () => {
+  test("handleCoroutine error should include stack trace when enabled", () => {
     setCoroutineStackTrace(true);
 
     global.ida._move = createMockFn(() => {
