@@ -333,7 +333,7 @@ test.group("Core Tests", () => {
     expect.true(result.endsWith("\\mods\\tests\\tests.module.js"));
   });
 
-  test.only("circular dependency returns empty exports causing TypeError", () => {
+  test("circular dependency returns empty exports causing TypeError", () => {
     try {
       const circular01 = require("./test-modules/circular-01");
       expect.true(false); // fail if call didn't throw

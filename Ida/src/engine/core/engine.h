@@ -40,7 +40,8 @@ namespace core
     /// @brief Runs a script unwrapped
     v8::MaybeLocal<v8::Value> inscope_runScript(v8::Local<v8::Context> context, const std::string &scriptPath,
                                                 const std::string &script = "");
-    v8::MaybeLocal<v8::Value> inscope_tryCatch(const std::function<v8::MaybeLocal<v8::Value>()> &callback);
+    v8::MaybeLocal<v8::Value> inscope_tryCatch(const std::function<v8::MaybeLocal<v8::Value>()> &callback,
+                                               bool rethrow = false);
 
     v8::Local<v8::Object> inscope_GetObject(v8::Local<v8::Context> context, const char *objectName);
 
