@@ -28,39 +28,44 @@ namespace core
 
     constexpr const char *HandleEventFunction = "_handleEvent";
 
-    v8::MaybeLocal<v8::Value> inscope_tryCatch(const std::function<v8::MaybeLocal<v8::Value>()> &callback)
+    v8::MaybeLocal<v8::Value> inscope_tryCatch(const std::function<v8::MaybeLocal<v8::Value>()> &callback, bool rethrow)
     {
         v8::TryCatch tryCatch(isolate);
         auto result = callback();
-        if (tryCatch.HasCaught())
+        if (!tryCatch.HasCaught())
         {
-            v8::Local<v8::Message> message = tryCatch.Message();
-            v8::String::Utf8Value filename(isolate, message->GetScriptOrigin().ResourceName());
-            int line = message->GetLineNumber(isolate->GetCurrentContext()).FromMaybe(-1);
-            int column = message->GetStartColumn(isolate->GetCurrentContext()).FromMaybe(-1);
-            v8::String::Utf8Value exception(isolate, tryCatch.Exception());
-            std::string errorMessage = *exception ? *exception : "Unknown exception";
+            return result;
+        }
 
-            std::string stackTraceOrMessage = errorMessage;
-            if (!tryCatch.StackTrace(isolate->GetCurrentContext()).IsEmpty())
-            {
-                v8::Local<v8::Value> stackTraceValue =
-                    tryCatch.StackTrace(isolate->GetCurrentContext()).ToLocalChecked();
-                v8::String::Utf8Value stackTraceStr(isolate, stackTraceValue);
-                if (*stackTraceStr)
-                {
-                    stackTraceOrMessage = *stackTraceStr;
-                }
-            }
-
-            err() << "Unhandled exception in " << (*filename ? *filename : "unknown script") << " on line " << line
-                  << " column " << column << "\n"
-                  << stackTraceOrMessage;
-
+        if (rethrow)
+        {
+            tryCatch.ReThrow();
             return v8::MaybeLocal<v8::Value>();
         }
 
-        return result;
+        v8::Local<v8::Message> message = tryCatch.Message();
+        v8::String::Utf8Value filename(isolate, message->GetScriptOrigin().ResourceName());
+        int line = message->GetLineNumber(isolate->GetCurrentContext()).FromMaybe(-1);
+        int column = message->GetStartColumn(isolate->GetCurrentContext()).FromMaybe(-1);
+        v8::String::Utf8Value exception(isolate, tryCatch.Exception());
+        std::string errorMessage = *exception ? *exception : "Unknown exception";
+
+        std::string stackTraceOrMessage = errorMessage;
+        if (!tryCatch.StackTrace(isolate->GetCurrentContext()).IsEmpty())
+        {
+            v8::Local<v8::Value> stackTraceValue = tryCatch.StackTrace(isolate->GetCurrentContext()).ToLocalChecked();
+            v8::String::Utf8Value stackTraceStr(isolate, stackTraceValue);
+            if (*stackTraceStr)
+            {
+                stackTraceOrMessage = *stackTraceStr;
+            }
+        }
+
+        err() << "Unhandled exception in " << (*filename ? *filename : "unknown script") << " on line " << line
+              << " column " << column << "\n"
+              << stackTraceOrMessage;
+
+        return v8::MaybeLocal<v8::Value>();
     }
 
     void initV8(char *appLocation)

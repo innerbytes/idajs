@@ -109,28 +109,32 @@ namespace core
         newRequireData->thisFunction.Reset(isolate, requireFunction);
         newRequireData->thisFunction.SetWeak(newRequireData, requireFinalizer, WeakCallbackType::kParameter);
 
+        // Cache the module before execution to handle circular dependencies.
+        // If module A requires module B which requires module A back,
+        // the second require of A will return the partially-populated exports
+        // (same behavior as Node.js).
+        thisObject->mModuleCache[modulePath].Reset(isolate, module);
+
         // Call the module wrapper function
         v8::Local<Value> argv[] = {exports, requireFunction, module,
                                    v8::String::NewFromUtf8(isolate, modulePath.c_str()).ToLocalChecked(),
                                    v8::String::NewFromUtf8(isolate, dirPath.c_str()).ToLocalChecked()};
 
-        MaybeLocal<Value> functionResult = inscope_tryCatch([&context, &isolate, &moduleFunction, &argv]() {
-            return moduleFunction->Call(context, Undefined(isolate), 5, argv);
-        });
+        MaybeLocal<Value> functionResult =
+            inscope_tryCatch([&context, &isolate, &moduleFunction,
+                              &argv]() { return moduleFunction->Call(context, Undefined(isolate), 5, argv); },
+                             /* rethrow */ true);
+
         if (functionResult.IsEmpty())
         {
-            std::string errorMessage = "Error loading the module: " + modulePath;
-            isolate->ThrowException(
-                Exception::Error(v8::String::NewFromUtf8(isolate, errorMessage.c_str()).ToLocalChecked()));
+            // Remove from cache on failure (same behavior as Node.js)
+            thisObject->mModuleCache.erase(modulePath);
             return;
         }
 
         // Getting module.exports again for the case the module overrides it
         Local<Value> moduleExports =
             module->Get(context, v8::String::NewFromUtf8Literal(isolate, "exports")).ToLocalChecked();
-
-        // Cache the module
-        thisObject->mModuleCache[modulePath].Reset(isolate, module);
 
         // Return module.exports
         args.GetReturnValue().Set(moduleExports);
