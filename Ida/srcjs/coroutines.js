@@ -268,7 +268,10 @@ const handleCoroutine = (objectId) => {
 const doMove = (cmd, ...args) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
-  return (coroutine) => ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
+  return (coroutine) => {
+    throw new Error("Test error");
+    return ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
+  };
 };
 
 // Allows user to do an external action from the coroutine. For example change a variable, or start another coroutine.
