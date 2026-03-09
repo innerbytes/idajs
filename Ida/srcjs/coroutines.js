@@ -318,9 +318,6 @@ const doSceneStore = (callback) => {
 
   return (coroutine) => {
     coroutine.currentStackTrace = stackTrace;
-
-    throw new Error("Test error");
-
     const store = useSceneStore();
     callback(store);
   };

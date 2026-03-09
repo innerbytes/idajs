@@ -27,6 +27,7 @@ const {
   doGameStore,
   doSceneStore,
   getRunningCoroutineName,
+  setCoroutineStackTrace,
   // @ts-ignore
 } = require("./srcjs/coroutines");
 
@@ -567,10 +568,7 @@ test.group("Coroutines Tests", () => {
 
     expect.true(global.ida._cmove.calls.length > 0);
     expect.equal(global.ida._cmove.calls[0][0], 1);
-    expect.collectionEqual(
-      systemStore.runningCoroutines[1].savedCode,
-      [1, 2, 3]
-    );
+    expect.collectionEqual(systemStore.runningCoroutines[1].savedCode, [1, 2, 3]);
   });
 
   test("handleCoroutine should not save code when cmove returns null", () => {
@@ -604,8 +602,7 @@ test.group("Coroutines Tests", () => {
 
     // Need to halt after the first step
     let step = 0;
-    global.ida._isMoveActive.returnValue = (objectId) =>
-      step++ === 0 ? false : true;
+    global.ida._isMoveActive.returnValue = (objectId) => (step++ === 0 ? false : true);
 
     const systemStore = useSystemStore();
     startCoroutine(1, "testCoroutine", "test", 42);
@@ -865,5 +862,56 @@ test.group("Coroutines Tests", () => {
     action();
     const sceneStore = useSceneStore();
     expect.eq(receivedStore, sceneStore);
+  });
+
+  test("handleCoroutine error should suggest enabling stack trace when disabled", () => {
+    setCoroutineStackTrace(false);
+
+    global.ida._move = createMockFn(() => {
+      throw new Error("Test move error");
+    });
+
+    const mockGenerator = function* () {
+      yield doMove(ida.Move.TM_GOTO_POINT, 0);
+    };
+    registerCoroutine("errorCoroutine", mockGenerator);
+    startCoroutine(1, "errorCoroutine");
+
+    expect.throws(() => {
+      handleCoroutine(1);
+    });
+
+    const errorCall = global.console.error.calls[0][0];
+    expect.true(errorCall.includes("errorCoroutine"));
+    expect.true(errorCall.includes("objectId 1"));
+    expect.true(errorCall.includes("position 0"));
+    expect.true(errorCall.includes("setCoroutineStackTrace(true)"));
+  });
+
+  test("handleCoroutine error should include stack trace when enabled", () => {
+    setCoroutineStackTrace(true);
+
+    global.ida._move = createMockFn(() => {
+      throw new Error("Test move error");
+    });
+
+    const mockGenerator = function* () {
+      yield doMove(ida.Move.TM_GOTO_POINT, 0);
+    };
+    registerCoroutine("errorCoroutine", mockGenerator);
+    startCoroutine(1, "errorCoroutine");
+
+    expect.throws(() => {
+      handleCoroutine(1);
+    });
+
+    const errorCall = global.console.error.calls[0][0];
+    expect.true(errorCall.includes("errorCoroutine"));
+    expect.true(errorCall.includes("objectId 1"));
+    expect.true(errorCall.includes("position 0"));
+    expect.true(errorCall.includes("doMove"));
+
+    // Clean up
+    setCoroutineStackTrace(false);
   });
 });
