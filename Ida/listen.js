@@ -117,11 +117,21 @@ function escapePowerShell(value) {
 }
 
 async function expandArchive(zipPath, destinationPath) {
-  const command = `Expand-Archive -LiteralPath '${escapePowerShell(
-    zipPath
-  )}' -DestinationPath '${escapePowerShell(destinationPath)}' -Force`;
+  const command = [
+    "Add-Type -AssemblyName System.IO.Compression.FileSystem",
+    `[System.IO.Compression.ZipFile]::ExtractToDirectory('${escapePowerShell(
+      zipPath
+    )}', '${escapePowerShell(destinationPath)}')`,
+  ].join("; ");
 
-  await execFileAsync("powershell", ["-ExecutionPolicy", "Bypass", "-Command", command]);
+  await execFileAsync("powershell", [
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-Command",
+    command,
+  ]);
 }
 
 async function startGame(exePath, workingDir, modName) {
