@@ -333,6 +333,16 @@ test.group("Core Tests", () => {
     expect.true(result.endsWith("\\mods\\tests\\tests.module.js"));
   });
 
+  test.only("circular dependency returns empty exports causing TypeError", () => {
+    try {
+      const circular01 = require("./test-modules/circular-01");
+      expect.true(false); // fail if call didn't throw
+    } catch (e) {
+      expect.true(e instanceof TypeError);
+      expect.true(e.message.includes("circular01.greetFrom01 is not a function"));
+    }
+  });
+
   test("module is singleton", () => {
     const testModule1 = require("./tests.module.js");
     testModule1.setSingleValue(5);
@@ -366,9 +376,7 @@ test.group("Core Tests", () => {
       // @ts-ignore
       require("tests.module.js");
     } catch (e) {
-      expect.true(
-        e instanceof Error && e.message.startsWith("Unexpected characters")
-      );
+      expect.true(e instanceof Error && e.message.startsWith("Unexpected characters"));
     }
   });
 
