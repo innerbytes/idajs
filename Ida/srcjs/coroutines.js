@@ -4,6 +4,12 @@ const { useSystemStore, useGameStore, useSceneStore } = require("./store");
 const generatorRegistry = new Map();
 const runningIterators = new Map();
 
+let isCoroutineStackTraceEnabled = false;
+
+const setCoroutineStackTrace = (isEnabled) => {
+  isCoroutineStackTraceEnabled = isEnabled;
+};
+
 // Some of the coroutine commands, like timers, can be implemented in js
 // NOTE - not used at the moment
 const handlers = new Set();
@@ -249,8 +255,11 @@ const handleCoroutine = (objectId) => {
     try {
       cmd.value(coroutine);
     } catch (e) {
+      const stackInfo = isCoroutineStackTraceEnabled
+        ? `\nCoroutine stack trace:\n${coroutine.currentStackTrace}`
+        : "\nCall setCoroutineStackTrace(true) to enable stack traces for coroutines.";
       console.error(
-        `Error in coroutine "${coroutine.name}" for objectId ${coroutine.id} at position ${coroutine.pos}:`,
+        `Error in coroutine "${coroutine.name}" for objectId ${coroutine.id} at position ${coroutine.pos}:${stackInfo}`,
         e
       );
       throw e;
@@ -268,7 +277,10 @@ const handleCoroutine = (objectId) => {
 const doMove = (cmd, ...args) => {
   epp.allowInPhases(epp.ExecutionPhase.InMove);
 
+  let stackTrace = getStackTrace();
+
   return (coroutine) => {
+    coroutine.currentStackTrace = stackTrace;
     throw new Error("Test error");
     return ida._move(coroutine.id, coroutine.code ?? [], cmd, ...args);
   };
@@ -328,6 +340,16 @@ const doReduce = (key) => {
 };
 
 // *** Private area ***
+
+function getStackTrace() {
+  if (!isCoroutineStackTraceEnabled) {
+    return null;
+  }
+
+  const obj = {};
+  Error.captureStackTrace(obj, getStackTrace);
+  return obj.stack;
+}
 
 function resetCoroutineSystem() {
   runningIterators.clear();
@@ -438,3 +460,5 @@ module.exports.doMove = doMove;
 module.exports.doAction = doAction;
 module.exports.doGameStore = doGameStore;
 module.exports.doSceneStore = doSceneStore;
+
+module.exports.setCoroutineStackTrace = setCoroutineStackTrace;
