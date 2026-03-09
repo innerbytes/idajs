@@ -16,7 +16,7 @@ const {
 // @ts-ignore
 const epp = require("./srcjs/epp");
 
-test.group("Store Tests", () => {
+test.group.only("Store Tests", () => {
   test.beforeEach(() => {
     // Reset all store data before each test
     loadFromJson(""); // This calls resetAll internally
