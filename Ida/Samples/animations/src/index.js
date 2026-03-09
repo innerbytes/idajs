@@ -30,11 +30,9 @@ const triggerBodyId = 4;
 ida.setStartSceneId(sceneId);
 ida.setIntroVideo("");
 
-let tmp;
-
 // After load scene event is where we should do all the custom scenes setup
 scene.addEventListener(scene.Events.afterLoadScene, (sceneId, loadMode) => {
-  tmp = {};
+  const tmp = useTempStore();
 
   if (sceneId != sceneId) {
     return;

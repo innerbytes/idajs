@@ -705,6 +705,7 @@ However, for your new behavior, use {{{ida}}} scene variables, that are much eas
 
 - See {@link global!useGameStore} to read and write {{{ida}}} game variables.
 - See {@link global!useSceneStore} to read and write {{{ida}}} scene variables.
+- See {@link global!useTempStore} to read and write temporary scene state, that is not persisted in save data. The temp store resets to an empty object every time the player enters the scene. It can be used in non-persistent triggers, for example, to store action button press state.
 - See {@link global!doGameStore} to write {{{ida}}} game variables from the coroutines.
 - See {@link global!doSceneStore} to write {{{ida}}} scene variables from the coroutines.
 - See {@link index!Scene.getVariable} and {@link index!Scene.setVariable} to read and write original LBA 2 (vanilla) scene variables.

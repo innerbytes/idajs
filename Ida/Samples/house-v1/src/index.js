@@ -57,13 +57,8 @@ const varKidnappedChildrenQuestState = 83; // Within this scene, this variable u
 // We can use it for custom text in the script
 let scriptTextId;
 
-// Use this as baking state for non-persistent triggers, for example checking player action key press
-let tempStore = null;
-
 // afterLoadScene event allows to modify the scene objects, zones, and waypoints when the scene is loaded
 scene.addEventListener(scene.Events.afterLoadScene, (sceneId, startMode) => {
-  tempStore = {}; // Resetting temp store on each scene load
-
   // In this mod we handle the main house room only - this is the scene with id 0
   if (sceneId === 0) {
     setupHouseMainRoom(startMode);
@@ -283,11 +278,11 @@ const houseTwinsenBehaviors = {
   },
   // Behavior when Twinsen is controlled by the player, corresponds to Twinsen Comportment 1 in the original script
   playerControlled: (objectId) => {
+    // Using temp store for action button trigger state - not persisted in save data, resets on scene load
+    const tempStore = useTempStore();
+
     // Checking if action key is pressed by player
-    if (
-      // When we check the action is triggered it is enough to use tempStore object for the backing state as we don't need to persist the previous state of the action button in the save game
-      isTriggeredTrue(tempStore, "playerAction", ida.lifef(objectId, ida.Life.LF_ACTION) > 0)
-    ) {
+    if (isTriggeredTrue(tempStore, "playerAction", ida.lifef(objectId, ida.Life.LF_ACTION) > 0)) {
       // If distance to Zoe is close, we handle interactions with Zoe
       if (ida.lifef(objectId, ida.Life.LF_DISTANCE, zoeId) < 1250) {
         twinsenHandleInteractionsWithZoe(objectId);
