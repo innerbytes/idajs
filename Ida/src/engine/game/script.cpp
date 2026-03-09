@@ -17,7 +17,6 @@ namespace Ida
         {
             case LM_PALETTE:
             case LM_BODY:
-            case LM_CAMERA_CENTER:
             case LM_FALLABLE:
             case LM_CAM_FOLLOW:
             case LM_COMPORTEMENT_HERO:
@@ -59,6 +58,13 @@ namespace Ida
                 VALIDATE_VALUE(uint8_t, Uint32, args[2], arg0, 0, 255);
                 bridge->prepareLifeScript(opcode, 1);
                 bridge->pushArgument(arg0);
+            }
+            break;
+            case LM_CAMERA_CENTER: {
+                VALIDATE_ARGS_COUNT(3)
+                VALIDATE_VALUE(uint8_t, Uint32, args[2], orientation, 0, 3);
+                bridge->prepareLifeScript(opcode, 1);
+                bridge->pushArgument(orientation);
             }
             break;
             // 3-4 arguments

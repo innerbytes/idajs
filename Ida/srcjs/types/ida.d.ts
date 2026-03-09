@@ -79,8 +79,12 @@ export interface LifeOpcodes {
    * @param flag: u8 */
   readonly LM_SET_CAMERA: 0x15;
 
-  /** Recentres camera.
-   * @param angle_adjust: u8 */
+  /** Recentres camera around the followed actor.
+   * @param orientation: u8
+   * 0 = camera goes behind the actor
+   * 1 = camera goes to the actor's right side
+   * 2 = camera goes in front of the actor
+   * 3 = camera goes to the actor's left side */
   readonly LM_CAMERA_CENTER: 0x16;
 
   /** Changes this actor's move script track.
