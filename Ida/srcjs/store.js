@@ -97,6 +97,7 @@ const loadBackup = () => {
     resetAll();
     console.error("No backup found to load");
   }
+  tempStore.data = {};
 };
 
 const loadFromJson = (json) => {
