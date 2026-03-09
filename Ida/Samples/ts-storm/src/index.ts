@@ -104,11 +104,8 @@ scene.addEventListener(scene.Events.afterLoadScene, (sceneId: number, loadMode: 
         .plus(object.East.mul(1000).plus(object.Up.mul(370).plus(object.North.mul(1000))))
     );
 
-    // Any object to store trigger states that we don't want to save in the saved game.
-    // This is useful for action button presses and similar temporary states.
-    // This object should reset on each scene load, so if the life script handler is declared outside of this event,
-    // we can use tempStore, like in the House or Bathroom samples.
-    const triggerStore = {};
+    // Temporary trigger state can live in useTempStore so it resets on scene load but never persists in saved data.
+    const triggerStore = useTempStore();
 
     // Handle Twinsen life script
     const twinsen = scene.getObject(0);

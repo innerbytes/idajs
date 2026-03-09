@@ -9,6 +9,7 @@ const {
   loadBackup,
   useGameStore,
   useSceneStore,
+  useTempStore,
   useSystemStore,
   // @ts-ignore
 } = require("./srcjs/store");
@@ -43,9 +44,16 @@ test.group("Store Tests", () => {
     expect.false(systemStore === null);
   });
 
+  test("useTempStore should return temp store object", () => {
+    const tempStore = useTempStore();
+    expect.equal(typeof tempStore, "object");
+    expect.false(tempStore === null);
+  });
+
   for (const [functionName, useStore] of [
     ["useGameStore", useGameStore],
     ["useSceneStore", useSceneStore],
+    ["useTempStore", useTempStore],
     ["useSystemStore", useSystemStore],
   ]) {
     test(`${functionName} with path should create nested objects`, () => {
@@ -73,6 +81,7 @@ test.group("Store Tests", () => {
   test("resetGame should clear only game store", () => {
     useGameStore("player").name = "Twinsen";
     useSceneStore("current").id = 1;
+    useTempStore("runtime").pressed = true;
     useSystemStore("settings").volume = 50;
 
     resetGame();
@@ -83,28 +92,33 @@ test.group("Store Tests", () => {
 
     expect.equal(Object.keys(gameStore).length, 0);
     expect.equal(sceneStore.current.id, 1);
+    expect.equal(useTempStore("runtime", "pressed"), true);
     expect.equal(systemStore.settings.volume, 50);
   });
 
-  test("resetScene should clear only scene store", () => {
+  test("resetScene should clear scene and temp stores", () => {
     useGameStore("player").name = "Twinsen";
     useSceneStore("current").id = 1;
+    useTempStore("runtime").pressed = true;
     useSystemStore("settings").volume = 50;
 
     resetScene();
 
     const gameStore = useGameStore();
     const sceneStore = useSceneStore();
+    const tempStore = useTempStore();
     const systemStore = useSystemStore();
 
     expect.equal(gameStore.player.name, "Twinsen");
     expect.equal(Object.keys(sceneStore).length, 0);
+    expect.equal(Object.keys(tempStore).length, 0);
     expect.equal(systemStore.settings.volume, 50);
   });
 
   test("resetSystem should clear only system store", () => {
     useGameStore("player").name = "Twinsen";
     useSceneStore("current").id = 1;
+    useTempStore("runtime").pressed = true;
     useSystemStore("settings").volume = 50;
 
     resetSystem();
@@ -115,6 +129,7 @@ test.group("Store Tests", () => {
 
     expect.equal(gameStore.player.name, "Twinsen");
     expect.equal(sceneStore.current.id, 1);
+    expect.equal(useTempStore("runtime", "pressed"), true);
     expect.equal(Object.keys(systemStore).length, 0);
   });
 
@@ -122,6 +137,7 @@ test.group("Store Tests", () => {
   test("saveToJson should return valid JSON string", () => {
     useGameStore("player").name = "Twinsen";
     useSceneStore("current").id = 5;
+    useTempStore("runtime").pressed = true;
     useSystemStore("settings").volume = 75;
 
     const json = saveToJson();
@@ -135,6 +151,7 @@ test.group("Store Tests", () => {
     expect.equal(parsed.game.player.name, "Twinsen");
     expect.equal(parsed.scene.current.id, 5);
     expect.equal(parsed.system.settings.volume, 75);
+    expect.equal(parsed.temp, undefined);
   });
 
   test("loadFromJson should restore from valid JSON", () => {
@@ -152,20 +169,32 @@ test.group("Store Tests", () => {
     expect.equal(useSceneStore("current", "name"), "Citadel");
     expect.equal(useSystemStore("settings", "volume"), 80);
     expect.equal(useSystemStore("settings", "difficulty"), "normal");
+    expect.equal(Object.keys(useTempStore()).length, 0);
   });
 
   test("loadFromJson with null, undefined or empty string should reset all stores", () => {
     for (const input of ["", null, undefined]) {
       useGameStore("test").value = 1;
       useSceneStore("test").value = 2;
+      useTempStore("test").value = 4;
       useSystemStore("test").value = 3;
 
       loadFromJson(input);
 
       expect.equal(Object.keys(useGameStore()).length, 0);
       expect.equal(Object.keys(useSceneStore()).length, 0);
+      expect.equal(Object.keys(useTempStore()).length, 0);
       expect.equal(Object.keys(useSystemStore()).length, 0);
     }
+  });
+
+  test("loadFromJson should normalize missing store namespaces", () => {
+    loadFromJson(JSON.stringify({ game: { player: { name: "Twinsen" } } }));
+
+    expect.equal(useGameStore("player", "name"), "Twinsen");
+    expect.equal(Object.keys(useSceneStore()).length, 0);
+    expect.equal(Object.keys(useSystemStore()).length, 0);
+    expect.equal(Object.keys(useTempStore()).length, 0);
   });
 
   test("loadFromJson should handle invalid JSON gracefully", () => {
@@ -194,6 +223,7 @@ test.group("Store Tests", () => {
   test("saveBackup should create backup in system store", () => {
     useGameStore("player").name = "Twinsen";
     useSceneStore("current").id = 7;
+    useTempStore("runtime").pressed = true;
     useSystemStore("settings").volume = 90;
 
     saveBackup();
@@ -203,6 +233,7 @@ test.group("Store Tests", () => {
     expect.equal(backup.game.player.name, "Twinsen");
     expect.equal(backup.scene.current.id, 7);
     expect.equal(backup.system.settings.volume, 90);
+    expect.equal(backup.temp, undefined);
   });
 
   test("saveBackup should not include existing backup in new backup", () => {
@@ -234,11 +265,13 @@ test.group("Store Tests", () => {
     // Set initial data and create backup
     useGameStore("player").name = "Twinsen";
     useSceneStore("current").id = 8;
+    useTempStore("runtime").pressed = true;
     saveBackup();
 
     // Change data
     useGameStore("player").name = "Zoe";
     useSceneStore("current").id = 9;
+    useTempStore("runtime").pressed = false;
     useSystemStore("newData").value = "new";
 
     // Load backup
@@ -246,6 +279,7 @@ test.group("Store Tests", () => {
 
     expect.equal(useGameStore("player", "name"), "Twinsen");
     expect.equal(useSceneStore("current", "id"), 8);
+    expect.equal(Object.keys(useTempStore()).length, 0);
     expect.equal(useSystemStore("newData"), {});
   });
 
@@ -287,10 +321,7 @@ test.group("Store Tests", () => {
     const deepData = useGameStore("level1", "level2", "level3", "level4");
     deepData.value = "deep";
 
-    expect.equal(
-      useGameStore("level1", "level2", "level3", "level4", "value"),
-      "deep"
-    );
+    expect.equal(useGameStore("level1", "level2", "level3", "level4", "value"), "deep");
     expect.equal(useGameStore().level1.level2.level3.level4.value, "deep");
   });
 

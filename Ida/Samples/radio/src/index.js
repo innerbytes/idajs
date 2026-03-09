@@ -8,7 +8,6 @@ console.log(
 
 const cellarSceneId = 1;
 
-let tempStore;
 let textId;
 
 // Vanilla Game variable, responsible for tracking Zoe's location
@@ -18,7 +17,7 @@ const varZoeLocation = 40;
  * Start with this event handler to setup every scene, the mod needs to modify
  */
 scene.addEventListener(scene.Events.afterLoadScene, (sceneId, sceneLoadMode) => {
-  tempStore = {};
+  const tempStore = useTempStore();
 
   if (sceneId !== cellarSceneId) {
     return;

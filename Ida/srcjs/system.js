@@ -44,6 +44,7 @@ const {
   loadBackup,
   useGameStore,
   useSceneStore,
+  useTempStore,
 } = require("./store");
 
 Object.setPrototypeOf(scene, sceneProto);
@@ -129,6 +130,7 @@ globalThis.doSceneStore = doSceneStore;
 // Epp limit: inScene, inYield
 globalThis.useGameStore = useGameStore;
 globalThis.useSceneStore = useSceneStore;
+globalThis.useTempStore = useTempStore;
 
 // Utils
 globalThis.isTriggeredTrue = isTriggeredTrue;
