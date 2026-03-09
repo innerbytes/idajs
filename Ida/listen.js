@@ -184,7 +184,9 @@ app.post("/game/start", async (req, res) => {
     }
 
     const { exePath, workingDir } = resolveGamePaths();
+    console.log(`Starting ${PROC_NAME} for mod '${modName}'...`);
     await startGame(exePath, workingDir, modName);
+    console.log(`${PROC_NAME} started for mod '${modName}'.`);
 
     res.json({ started: true, modName });
   } catch (error) {
@@ -194,7 +196,9 @@ app.post("/game/start", async (req, res) => {
 
 app.post("/game/kill", async (req, res) => {
   try {
+    console.log(`Killing ${PROC_NAME}...`);
     await killGame();
+    console.log(`${PROC_NAME} kill request completed.`);
     res.json({ killed: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -219,6 +223,8 @@ app.post(
         return;
       }
 
+      console.log(`Received sync archive for mod '${modName}' (${req.body.length} bytes).`);
+
       const modsRoot = getModsRoot();
       fs.mkdirSync(modsRoot, { recursive: true });
       tempRoot = fs.mkdtempSync(path.join(modsRoot, ".incoming-"));
@@ -240,6 +246,8 @@ app.post(
       replaceModDirectory(extractedModDir, targetDir);
       fs.rmSync(tempRoot, { recursive: true, force: true });
       tempRoot = null;
+
+      console.log(`Finished syncing mod '${modName}' to ${targetDir}.`);
 
       res.json({ synced: true, modName, targetDir });
     } catch (error) {
