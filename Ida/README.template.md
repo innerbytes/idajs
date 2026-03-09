@@ -983,6 +983,16 @@ npx @idajs/create-mod
 
 This will generate a ready‑to‑run mod skeleton with scripts, types, and a minimal example.
 
+**Updating the scaffolder files later:**
+If the scaffolder gets updated later and you want to refresh the generated tooling in an existing mod, open that mod folder in PowerShell and run:
+
+```powershell
+npx @idajs/create-mod --update
+```
+
+This refreshes the scaffolder-managed infrastructure and config files in the project root, then runs `npm install` and `npm run update:types` by default. Your user code under `src/` is not touched. If you want to refresh only the scaffolder files, pass `--skip-install` to skip both commands. The command expects an existing IdaJS mod and will warn if the project no longer resembles the standard scaffold.
+
+**Developing on Linux or Mac:**
 If you want to develop your mod on Linux or Mac, specify the IdaJS listener IP here when it prompts for the {{{ida}}} installation directory. 
 See [Develop Little Big Adventure 2 mods on Linux or Mac](#49-develop-little-big-adventure-2-mods-on-linux-or-mac) for details.
 
@@ -1013,6 +1023,8 @@ Your mod project contains a small set of folders and files:
   - `.idajs.json` — {{{ida}}} config (the path to {{{ida}}} project).
   - `jsconfig.json`, `.gitignore`, and similar config files may be present depending on template.
 
+The root tooling/config files are scaffolder-managed. If a newer `@idajs/create-mod` version ships updated infrastructure, you can refresh those files later with `npx @idajs/create-mod --update`.
+
 You can grow the codebase by adding javascript / typescript modules under `src/` and importing them from `index.js`.
 
 ### 4.5 Mod project actions overview
@@ -1022,6 +1034,8 @@ Common actions are available as npm scripts:
 - `npm start` — starts LBA2 with your mod, and a watcher that syncs your `src/` and `media/` changes into the game’s `GameRun/mods/<name>/` folder in {{{ida}}}. Keep this running while you iterate.
 - `npm run update:types` — updates {{{ida}}} TypeScript definitions to the latest released version for better IntelliSense and API docs in the editor.
 - `npm run build` — produces a distributable zip of your mod you can share. The archive is put in `build` folder and contains your code and media in the correct structure.
+
+If you need to refresh the scaffolder-managed project tooling itself, run `npx @idajs/create-mod --update` from the mod folder. By default it also runs `npm install` and `npm run update:types` after updating the generated infrastructure.
 
 ### 4.6 Hot‑reload behavior in game
 

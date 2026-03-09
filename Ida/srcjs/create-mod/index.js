@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { execSync } = require("child_process");
+const readline = require("readline");
 const IdaSync = require("@idajs/sync");
 
 // Parse command line arguments
@@ -26,7 +27,9 @@ const idajsDir = getArgValue("--idajs-dir") || getArgValue("--idajs");
 const useTypeScript = args.includes("--typescript") || args.includes("--ts");
 const useJavaScript = args.includes("--javascript") || args.includes("--js");
 const skipInstall = args.includes("--skip-install");
+const updateMode = args.includes("--update");
 const helpRequested = args.includes("--help") || args.includes("-h");
+const requiredUpdatePackages = ["@idajs/types", "@idajs/sync"];
 
 // Show help if requested
 if (helpRequested) {
@@ -41,7 +44,8 @@ Options:
   --idajs-dir, --idajs <path>     IdaJS installation directory
   --typescript, --ts              Use TypeScript
   --javascript, --js              Use JavaScript
-  --skip-install                  Skip npm install
+  --update                        Refresh scaffolder-managed files in the current mod folder
+  --skip-install                  Skip npm install (and type update in --update mode)
   -h, --help                      Show this help message
 
 Examples:
@@ -50,6 +54,7 @@ Examples:
   npx @idajs/create-mod my-mod --typescript
   npx @idajs/create-mod my-mod --dir ./projects/my-mod --idajs C:/Projects/idajs --js
   npx @idajs/create-mod my-mod --skip-install
+  npx @idajs/create-mod --update
 `);
   process.exit(0);
 }
@@ -101,8 +106,92 @@ function parseIdaConnection(value) {
   };
 }
 
+function loadJson(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (error) {
+    throw new Error(`Failed to parse JSON file: ${filePath}`);
+  }
+}
+
+function isInteractiveTerminal() {
+  return Boolean(process.stdin.isTTY && process.stdout.isTTY);
+}
+
+function askYesNo(question) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question(question, (answer) => {
+      rl.close();
+      const normalized = String(answer || "").trim().toLowerCase();
+      resolve(normalized === "y" || normalized === "yes");
+    });
+  });
+}
+
+async function runUpdateMode() {
+  const targetDir = process.cwd();
+  const packageJsonPath = path.join(targetDir, "package.json");
+
+  if (!fs.existsSync(packageJsonPath)) {
+    console.error(`\n❌ Error: No package.json found in ${targetDir}`);
+    console.error("Run this command from inside an existing IdaJS mod folder.");
+    process.exit(1);
+  }
+
+  const packageJson = loadJson(packageJsonPath);
+  const devDependencies = packageJson.devDependencies || {};
+  const missingPackages = requiredUpdatePackages.filter((name) => !devDependencies[name]);
+
+  if (missingPackages.length > 0) {
+    console.warn(
+      `\n⚠️  Warning: Missing IdaJS devDependencies: ${missingPackages.join(", ")}.`
+    );
+    console.warn("This may not be an IdaJS mod, or the project may differ significantly from the scaffold.");
+
+    if (!isInteractiveTerminal()) {
+      console.error("\n❌ Error: Confirmation required. Rerun this command in an interactive terminal to continue.");
+      process.exit(1);
+    }
+
+    const confirmed = await askYesNo("Continue with scaffolder update? [y/N] ");
+    if (!confirmed) {
+      console.log("\nUpdate cancelled.");
+      process.exit(1);
+    }
+  }
+
+  console.log(`\nUpdating IdaJS mod in ${targetDir}...`);
+
+  const installScript = path.join(__dirname, "install.js");
+  const installArgs = [installScript, targetDir, "--update"];
+
+  if (skipInstall) {
+    installArgs.push("--skip-install");
+  }
+
+  try {
+    execSync(`node ${installArgs.map((arg) => `"${arg}"`).join(" ")}`, {
+      stdio: "inherit",
+    });
+    console.log("\n✅ Scaffolder update completed successfully.");
+  } catch (error) {
+    console.error(`\n❌ Error updating project: ${error.message}`);
+    process.exit(1);
+  }
+}
+
 async function main() {
   console.log("Welcome to IdaJS Mod Creator!\n");
+
+  if (updateMode) {
+    await runUpdateMode();
+    return;
+  }
 
   // Determine if we need prompts
   const needsPrompts =

@@ -2,12 +2,13 @@
 
 const fs = require("fs");
 const path = require("path");
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 
 // Get configuration from arguments or defaults
 const args = process.argv.slice(2);
 const targetDirArg = args.find((arg) => !arg.startsWith("--"));
 const skipInstall = args.includes("--skip-install");
+const updateMode = args.includes("--update");
 const idaRootArg = args.find((arg) => arg.startsWith("--ida-root="));
 
 // Get the directory where this script was called from or use provided argument
@@ -30,16 +31,62 @@ const isTypeScriptProject = (() => {
   const files = fs.readdirSync(srcDir);
   return files.some((file) => file.endsWith(".ts"));
 })();
+const protectedUpdateFields = new Set(["author", "private", "license"]);
 
-console.log(`Installing development environment in: ${targetDir}`);
+console.log(`${updateMode ? "Updating" : "Installing"} development environment in: ${targetDir}`);
 if (idaRoot) {
   console.log(`Ida root: ${idaRoot}`);
 } else {
   console.log(`Running in standalone mode`);
 }
 
+function getPackageVersion() {
+  let version = null;
+
+  if (versionScriptPath && fs.existsSync(versionScriptPath)) {
+    try {
+      version = execSync(`node "${versionScriptPath}"`, { encoding: "utf8" }).trim();
+      console.log(`Using version from version.js: ${version}`);
+    } catch (error) {
+      console.warn("Warning: Could not read version from version.js");
+    }
+  } else {
+    const localPackagePath = path.join(__dirname, "package.json");
+    if (fs.existsSync(localPackagePath)) {
+      try {
+        const localPackage = JSON.parse(fs.readFileSync(localPackagePath, "utf8"));
+        version = localPackage.version;
+        console.log(`Using version from package.json: ${version}`);
+      } catch (error) {
+        console.warn("Warning: Could not read version from package.json");
+      }
+    }
+  }
+
+  return version;
+}
+
+function orderPackageJson(packageJson) {
+  const orderedPackageJson = {};
+  const propertyOrder = ["name", "description", "version", "author", "license", "private", "scripts"];
+
+  propertyOrder.forEach((key) => {
+    if (packageJson[key] !== undefined) {
+      orderedPackageJson[key] = packageJson[key];
+    }
+  });
+
+  Object.keys(packageJson).forEach((key) => {
+    if (!propertyOrder.includes(key)) {
+      orderedPackageJson[key] = packageJson[key];
+    }
+  });
+
+  return orderedPackageJson;
+}
+
 // Step 1: Merge package.template.json files to create package.json
-function mergePackageJson() {
+function mergePackageJsonForCreate() {
   const packagePath = path.join(targetDir, "package.json");
   const globalTemplatePath = path.join(configDir, "package.template.json");
   const sampleTemplatePath = path.join(targetDir, "package.template.json");
@@ -60,31 +107,7 @@ function mergePackageJson() {
   const packageJson = JSON.parse(fs.readFileSync(globalTemplatePath, "utf8"));
   const sampleTemplate = JSON.parse(fs.readFileSync(sampleTemplatePath, "utf8"));
 
-  // Get version from version.js or package.json (standalone mode)
-  let version = null;
-  if (versionScriptPath && fs.existsSync(versionScriptPath)) {
-    try {
-      const { execSync } = require("child_process");
-      version = execSync(`node "${versionScriptPath}"`, { encoding: "utf8" }).trim();
-      console.log(`Using version from version.js: ${version}`);
-    } catch (error) {
-      console.warn("Warning: Could not read version from version.js");
-    }
-  } else {
-    // Standalone mode: get version from package.json in the same directory as this script
-    const localPackagePath = path.join(__dirname, "package.json");
-    if (fs.existsSync(localPackagePath)) {
-      try {
-        const localPackage = JSON.parse(fs.readFileSync(localPackagePath, "utf8"));
-        version = localPackage.version;
-        console.log(`Using version from package.json: ${version}`);
-      } catch (error) {
-        console.warn("Warning: Could not read version from package.json");
-      }
-    }
-  }
-
-  // Set version if available
+  const version = getPackageVersion();
   if (version) {
     packageJson.version = version;
   }
@@ -116,26 +139,48 @@ function mergePackageJson() {
     packageJson.dependencies = { ...packageJson.dependencies, ...sampleTemplate.dependencies };
   }
 
-  // Reorder properties to ensure consistent ordering
-  const orderedPackageJson = {};
-  const propertyOrder = ["name", "description", "version", "author", "private", "scripts"];
-
-  // Add properties in the specified order
-  propertyOrder.forEach((key) => {
-    if (packageJson[key] !== undefined) {
-      orderedPackageJson[key] = packageJson[key];
-    }
-  });
-
-  // Add all remaining properties
-  Object.keys(packageJson).forEach((key) => {
-    if (!propertyOrder.includes(key)) {
-      orderedPackageJson[key] = packageJson[key];
-    }
-  });
-
-  fs.writeFileSync(packagePath, JSON.stringify(orderedPackageJson, null, 2) + "\n");
+  fs.writeFileSync(packagePath, JSON.stringify(orderPackageJson(packageJson), null, 2) + "\n");
   console.log("✓ Package.json created successfully");
+}
+
+function mergePackageJsonForUpdate() {
+  const packagePath = path.join(targetDir, "package.json");
+  const globalTemplatePath = path.join(configDir, "package.template.json");
+
+  if (!fs.existsSync(globalTemplatePath)) {
+    console.error("Error: package.template.json not found in config directory");
+    process.exit(1);
+  }
+
+  if (!fs.existsSync(packagePath)) {
+    console.error("Error: package.json not found in target directory");
+    process.exit(1);
+  }
+
+  console.log("Refreshing package.json from scaffolder template...");
+
+  const existingPackageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
+  const configTemplate = JSON.parse(fs.readFileSync(globalTemplatePath, "utf8"));
+  const packageJson = { ...existingPackageJson };
+
+  Object.entries(configTemplate).forEach(([key, value]) => {
+    if (protectedUpdateFields.has(key)) {
+      return;
+    }
+
+    if (key === "scripts" || key === "devDependencies") {
+      packageJson[key] = {
+        ...(existingPackageJson[key] || {}),
+        ...value,
+      };
+      return;
+    }
+
+    packageJson[key] = value;
+  });
+
+  fs.writeFileSync(packagePath, JSON.stringify(orderPackageJson(packageJson), null, 2) + "\n");
+  console.log("✓ Package.json refreshed successfully");
 }
 
 // Step 2: Copy necessary files
@@ -204,11 +249,49 @@ function runNpmInstall() {
   npmProcess.stderr.pipe(process.stderr);
 }
 
+function runCommand(command, errorMessage) {
+  try {
+    execSync(command, {
+      cwd: targetDir,
+      stdio: "inherit",
+    });
+  } catch (error) {
+    console.error(errorMessage);
+    process.exit(1);
+  }
+}
+
+function runUpdatePostInstall() {
+  if (skipInstall) {
+    console.log("\nSkipped npm install and update:types");
+    console.log("\nInfrastructure update complete.");
+    return;
+  }
+
+  console.log("Running npm install...");
+  runCommand("npm install", "Error running npm install");
+  console.log("✓ npm install completed successfully");
+
+  console.log("Running npm run update:types...");
+  runCommand(
+    "npm run update:types",
+    "Error running npm run update:types. Infrastructure refresh and npm install already completed."
+  );
+  console.log("✓ npm run update:types completed successfully");
+  console.log("\nInfrastructure update complete! You can now use the refreshed development scripts.");
+}
+
 // Main execution
 try {
-  mergePackageJson();
+  if (updateMode) {
+    mergePackageJsonForUpdate();
+  } else {
+    mergePackageJsonForCreate();
+  }
   copyFiles();
-  if (!skipInstall) {
+  if (updateMode) {
+    runUpdatePostInstall();
+  } else if (!skipInstall) {
     runNpmInstall();
   } else {
     console.log("\nSkipped npm install");
