@@ -29,6 +29,7 @@ const SceneProperties = {
   zoneBathroomEntranceValue: -1,
 
   // To handle Twinsen going to the window in the player controlled phase
+  zoneWindowId: 9,
   zoneWindowValue: 4,
 
   // Those will be new waypoints, they don't exist in the scene file

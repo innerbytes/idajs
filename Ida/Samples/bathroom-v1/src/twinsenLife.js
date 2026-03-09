@@ -256,10 +256,13 @@ module.exports = {
       return;
     }
 
-    // If player pressed action inside of the Window zone
+    // If player pressed action inside of the Window zone, while facing North (towards the window)
     if (
       currentZone === SceneProperties.zoneWindowValue &&
-      isTriggeredTrue(tempStore, "action", ida.lifef(objectId, ida.Life.LF_ACTION) > 0)
+      isTriggeredTrue(tempStore, "action", ida.lifef(objectId, ida.Life.LF_ACTION) > 0) &&
+      scene
+        .getObject(objectId)
+        .isFacingZoneDirection(SceneProperties.zoneWindowId, object.ZoneDirections.North)
     ) {
       // Twinsen is at the window, and can "look outside"
       ida.life(
