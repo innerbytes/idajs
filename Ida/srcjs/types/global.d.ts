@@ -142,6 +142,16 @@ declare global {
   var isCoroutinePaused: (objectId: number, name: string) => boolean;
 
   /**
+   * Enables or disables stack trace capture for coroutine errors.
+   *
+   * When enabled, coroutine error messages will include the stack trace showing where the failing coroutine command was created.
+   *
+   * Disabled by default.
+   * @param isEnabled - true to enable stack traces, false to disable
+   */
+  var setCoroutineStackTrace: (isEnabled: boolean) => void;
+
+  /**
    * **[COROUTINE COMMAND]** Use in the coroutines only; Must be called with yield!
    *
    * This is the main coroutine function in IdaJS. Use it to execute any LBA2 move script command in an actor coroutine.
