@@ -872,7 +872,7 @@ test.group("Coroutines Tests", () => {
     });
 
     const mockGenerator = function* () {
-      yield doMove(ida.Move.TM_GOTO_POINT, 0);
+      yield doMove("MOVE_CMD", 0);
     };
     registerCoroutine("errorCoroutine", mockGenerator);
     startCoroutine(1, "errorCoroutine");
@@ -896,7 +896,7 @@ test.group("Coroutines Tests", () => {
     });
 
     const mockGenerator = function* () {
-      yield doMove(ida.Move.TM_GOTO_POINT, 0);
+      yield doMove("MOVE_CMD", 0);
     };
     registerCoroutine("errorCoroutine", mockGenerator);
     startCoroutine(1, "errorCoroutine");
