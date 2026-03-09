@@ -2,7 +2,7 @@ const { test, expect } = require("./idatest");
 // @ts-ignore
 const { object } = require("./srcjs/objectHelper");
 
-test.group.only("ObjectHelper Tests", () => {
+test.group("ObjectHelper Tests", () => {
   test("converts South direction to 0 angle", () => {
     const result = object.directionToAngle(object.ZoneDirections.South);
     expect.equal(result, 0);
