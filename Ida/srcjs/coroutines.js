@@ -248,6 +248,12 @@ const handleCoroutine = (objectId) => {
     epp.setCurrentPhase(epp.ExecutionPhase.InYield);
     try {
       cmd.value(coroutine);
+    } catch (e) {
+      console.error(
+        `Error in coroutine "${coroutine.name}" for objectId ${coroutine.id} at position ${coroutine.pos}:`,
+        e
+      );
+      throw e;
     } finally {
       epp.setCurrentPhase(epp.ExecutionPhase.InMove);
     }
