@@ -2,13 +2,14 @@ const { execSync } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const { createZipFromDirectories } = require("./archive");
+const { getPackageName } = require("./project");
 
 // Get mod name from command line argument
-const modName = process.argv[2];
+const modName = process.argv[2] || getPackageName();
 
 if (!modName) {
   console.error("Error: Mod name is required as an argument");
-  console.error("Usage: node build.js <mod-name>");
+  console.error("Usage: node build.js [mod-name]");
   process.exit(1);
 }
 

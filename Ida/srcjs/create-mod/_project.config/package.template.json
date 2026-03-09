@@ -6,7 +6,7 @@
     "watch": "node watch.js",
     "sync": "node sync.js",
     "start": "node start.js",
-    "build": "node build.js %npm_package_name%",
+    "build": "node build.js",
     "update:types": "npm update @idajs/types"
   },
   "devDependencies": {
