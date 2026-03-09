@@ -1,10 +1,10 @@
-const archiver = require("archiver");
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const path = require("path");
 const { spawn } = require("child_process");
 
+const { createZipFromDirectories } = require("./archive");
 const { getPackageName } = require("./project");
 
 function runNodeScript(scriptName, args = []) {
@@ -27,25 +27,11 @@ function runNodeScript(scriptName, args = []) {
 }
 
 function createZip(zipPath, sourceDir, rootName) {
-  return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(zipPath);
-    const archive = archiver("zip", {
-      store: true,
-    });
-
-    output.on("close", resolve);
-    output.on("error", reject);
-    archive.on("error", reject);
-    archive.on("warning", (error) => {
-      if (error.code !== "ENOENT") {
-        reject(error);
-      }
-    });
-
-    archive.pipe(output);
-    archive.directory(sourceDir, rootName);
-    archive.finalize();
-  });
+  return createZipFromDirectories(
+    zipPath,
+    [{ sourceDir, zipRoot: rootName }],
+    { compressionLevel: 0 }
+  );
 }
 
 function request(server, method, requestPath, body, headers = {}) {

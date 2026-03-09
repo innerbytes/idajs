@@ -39,6 +39,7 @@ const protectedUpdateFields = new Set([
   "private",
   "license",
 ]);
+const obsoleteScaffolderDevDependencies = ["archiver"];
 
 console.log(`${updateMode ? "Updating" : "Installing"} development environment in: ${targetDir}`);
 if (idaRoot) {
@@ -197,6 +198,12 @@ function mergePackageJsonForUpdate() {
     packageJson[key] = value;
   });
 
+  if (packageJson.devDependencies) {
+    obsoleteScaffolderDevDependencies.forEach((dependency) => {
+      delete packageJson.devDependencies[dependency];
+    });
+  }
+
   fs.writeFileSync(packagePath, JSON.stringify(orderPackageJson(packageJson), null, 2) + "\n");
   console.log("✓ Package.json refreshed successfully");
 }
@@ -204,6 +211,7 @@ function mergePackageJsonForUpdate() {
 // Step 2: Copy necessary files
 function copyFiles() {
   const filesToCopy = [
+    { source: "archive.js" },
     { source: "project.js" },
     { source: "remote.js" },
     { source: "run.ps1" },
