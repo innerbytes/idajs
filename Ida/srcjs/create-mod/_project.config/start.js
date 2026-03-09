@@ -1,13 +1,30 @@
 const path = require("path");
-const { spawn } = require("child_process");
+const { execFile, spawn } = require("child_process");
 
 const { getArgValue, getIdaJsPath, getIdaJsServer, getPackageName } = require("./project");
 
-function runCommand(command, args) {
+function runCommand(command, args, options = {}) {
   const child = spawn(command, args, {
     cwd: process.cwd(),
     stdio: "inherit",
   });
+  let interruptHandled = false;
+
+  if (options.onSigint) {
+    process.on("SIGINT", async () => {
+      if (interruptHandled) {
+        return;
+      }
+
+      interruptHandled = true;
+
+      try {
+        await options.onSigint();
+      } catch (error) {
+        console.error(error.message);
+      }
+    });
+  }
 
   child.on("exit", (code) => {
     process.exit(code ?? 0);
@@ -16,6 +33,21 @@ function runCommand(command, args) {
   child.on("error", (error) => {
     console.error(error.message);
     process.exit(1);
+  });
+}
+
+function killLocalGameProc() {
+  return new Promise((resolve) => {
+    execFile(
+      "powershell",
+      [
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "Stop-Process -Name 'LBA2' -Force -ErrorAction SilentlyContinue",
+      ],
+      () => resolve()
+    );
   });
 }
 
@@ -29,11 +61,17 @@ if (server) {
 } else if (!installDir && configuredServer) {
   runCommand(process.execPath, [path.join(__dirname, "run-remote.js"), "--server", configuredServer]);
 } else {
-  runCommand("powershell", [
-    "-ExecutionPolicy",
-    "Bypass",
-    "-File",
-    path.join(__dirname, "run.ps1"),
-    getPackageName(),
-  ]);
+  runCommand(
+    "powershell",
+    [
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      path.join(__dirname, "run.ps1"),
+      getPackageName(),
+    ],
+    {
+      onSigint: killLocalGameProc,
+    }
+  );
 }
