@@ -17,6 +17,8 @@ const args = process.argv.slice(2);
 const serverArg = getArgValue("--server", args);
 const sessionRoot = getArgValue("--session-root", args);
 const server = serverArg ? parseServerAddress(serverArg) : null;
+const startupDeadline = Date.now() + 15000;
+let hasSeenGameProcess = false;
 
 if (server && !sessionRoot) {
   console.error("Remote watch mode requires --session-root <path>.");
@@ -121,6 +123,15 @@ async function killGameProc() {
 const interval = setInterval(async () => {
   try {
     const alive = await isProcRunning();
+    if (alive) {
+      hasSeenGameProcess = true;
+      return;
+    }
+
+    if (!hasSeenGameProcess && Date.now() < startupDeadline) {
+      return;
+    }
+
     if (!alive) {
       console.log(`${PROC_NAME} not running. Exiting watcher.`);
 
