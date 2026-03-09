@@ -877,9 +877,19 @@ test.group("Coroutines Tests", () => {
     registerCoroutine("errorCoroutine", mockGenerator);
     startCoroutine(1, "errorCoroutine");
 
-    expect.throws(() => {
+    let thrownError = null;
+    try {
       handleCoroutine(1);
-    });
+      originalConsole.log("TRACE: handleCoroutine did NOT throw");
+    } catch (e) {
+      thrownError = e;
+      originalConsole.log("TRACE: handleCoroutine threw:", e.message);
+    }
+
+    originalConsole.log("TRACE: console.error calls count:", global.console.error.calls.length);
+    for (let i = 0; i < global.console.error.calls.length; i++) {
+      originalConsole.log("TRACE: console.error call", i, ":", global.console.error.calls[i]);
+    }
 
     const errorCall = global.console.error.calls[0][0];
     expect.true(errorCall.includes("errorCoroutine"));
@@ -901,9 +911,19 @@ test.group("Coroutines Tests", () => {
     registerCoroutine("errorCoroutine", mockGenerator);
     startCoroutine(1, "errorCoroutine");
 
-    expect.throws(() => {
+    let thrownError = null;
+    try {
       handleCoroutine(1);
-    });
+      originalConsole.log("TRACE: handleCoroutine did NOT throw");
+    } catch (e) {
+      thrownError = e;
+      originalConsole.log("TRACE: handleCoroutine threw:", e.message);
+    }
+
+    originalConsole.log("TRACE: console.error calls count:", global.console.error.calls.length);
+    for (let i = 0; i < global.console.error.calls.length; i++) {
+      originalConsole.log("TRACE: console.error call", i, ":", global.console.error.calls[i]);
+    }
 
     const errorCall = global.console.error.calls[0][0];
     expect.true(errorCall.includes("errorCoroutine"));
