@@ -17,8 +17,6 @@ const args = process.argv.slice(2);
 const serverArg = getArgValue("--server", args);
 const sessionRoot = getArgValue("--session-root", args);
 const server = serverArg ? parseServerAddress(serverArg) : null;
-const startupDeadline = Date.now() + 15000;
-let hasSeenGameProcess = false;
 
 if (server && !sessionRoot) {
   console.error("Remote watch mode requires --session-root <path>.");
@@ -81,12 +79,12 @@ watcher.on("all", async () => {
 async function isLocalProcRunning() {
   try {
     const { stdout } = await execAsync(
-      `powershell -Command "Get-Process | Where-Object {$_.ProcessName -eq '${PROC_NAME.replace(".exe", "")}'} | Select-Object -First 1"`,
+      `tasklist /FI "IMAGENAME eq ${PROC_NAME}" /FO CSV /NH`,
       {
         timeout: 5000,
       }
     );
-    return stdout.trim().length > 0;
+    return stdout.toLowerCase().includes(`"${PROC_NAME.toLowerCase()}"`);
   } catch (error) {
     return false;
   }
@@ -94,9 +92,7 @@ async function isLocalProcRunning() {
 
 async function killLocalGameProc() {
   try {
-    await execAsync(
-      `powershell -Command "Stop-Process -Name '${PROC_NAME.replace(".exe", "")}' -Force -ErrorAction SilentlyContinue"`
-    );
+    await execAsync(`taskkill /IM "${PROC_NAME}" /F /T`);
   } catch (error) {
     // Process may already be stopped.
   }
@@ -123,15 +119,6 @@ async function killGameProc() {
 const interval = setInterval(async () => {
   try {
     const alive = await isProcRunning();
-    if (alive) {
-      hasSeenGameProcess = true;
-      return;
-    }
-
-    if (!hasSeenGameProcess && Date.now() < startupDeadline) {
-      return;
-    }
-
     if (!alive) {
       console.log(`${PROC_NAME} not running. Exiting watcher.`);
 
