@@ -123,27 +123,27 @@ test.group.only("ObjectHelper Tests", () => {
     expect.equal(result, 0);
   });
 
-  test("converts π/2 radians to 1024 angle", () => {
+  test("converts pi/2 radians to 1024 angle", () => {
     const result = object.radiansToAngle(Math.PI / 2);
     expect.equal(result, 1024);
   });
 
-  test("converts π radians to 2048 angle", () => {
+  test("converts pi radians to 2048 angle", () => {
     const result = object.radiansToAngle(Math.PI);
     expect.equal(result, 2048);
   });
 
-  test("converts 3π/2 radians to 3072 angle", () => {
+  test("converts 3pi/2 radians to 3072 angle", () => {
     const result = object.radiansToAngle((3 * Math.PI) / 2);
     expect.equal(result, 3072);
   });
 
-  test("converts 2π radians to 0 angle (normalized)", () => {
+  test("converts 2pi radians to 0 angle (normalized)", () => {
     const result = object.radiansToAngle(2 * Math.PI);
     expect.equal(result, 0);
   });
 
-  test("converts π/4 radians to 512 angle", () => {
+  test("converts pi/4 radians to 512 angle", () => {
     const result = object.radiansToAngle(Math.PI / 4);
     expect.equal(result, 512);
   });
@@ -153,7 +153,7 @@ test.group.only("ObjectHelper Tests", () => {
     expect.equal(result, 3072);
   });
 
-  test("handles radians > 2π", () => {
+  test("handles radians > 2pi", () => {
     const result = object.radiansToAngle(3 * Math.PI);
     expect.equal(result, 2048);
   });
@@ -163,17 +163,17 @@ test.group.only("ObjectHelper Tests", () => {
     expect.equal(result, 0);
   });
 
-  test("converts 1024 angle to π/2 radians", () => {
+  test("converts 1024 angle to pi/2 radians", () => {
     const result = object.angleToRadians(1024);
     expect.between(Math.PI / 2 - 0.0001, Math.PI / 2 + 0.0001, result);
   });
 
-  test("converts 2048 angle to π radians", () => {
+  test("converts 2048 angle to pi radians", () => {
     const result = object.angleToRadians(2048);
     expect.between(Math.PI - 0.0001, Math.PI + 0.0001, result);
   });
 
-  test("converts 3072 angle to 3π/2 radians", () => {
+  test("converts 3072 angle to 3pi/2 radians", () => {
     const result = object.angleToRadians(3072);
     expect.between((3 * Math.PI) / 2 - 0.0001, (3 * Math.PI) / 2 + 0.0001, result);
   });
@@ -183,7 +183,7 @@ test.group.only("ObjectHelper Tests", () => {
     expect.between(-0.0001, 0.0001, result);
   });
 
-  test("converts 512 angle to π/4 radians", () => {
+  test("converts 512 angle to pi/4 radians", () => {
     const result = object.angleToRadians(512);
     expect.between(Math.PI / 4 - 0.0001, Math.PI / 4 + 0.0001, result);
   });
@@ -238,4 +238,28 @@ test.group.only("ObjectHelper Tests", () => {
 
     expect.between(angleFromDegrees - 1, angleFromDegrees + 1, angleFromRadians);
   });
+
+  const angleTheories = [
+    { source: [0, 0, 0], target: [0, 0, 10], expected: 0, desc: "Z+ direction (South)" },
+    { source: [0, 0, 0], target: [10, 0, 0], expected: 1024, desc: "X+ direction (East)" },
+    { source: [0, 0, 0], target: [0, 0, -10], expected: 2048, desc: "Z- direction (North)" },
+    { source: [0, 0, 0], target: [-10, 0, 0], expected: 3072, desc: "X- direction (West)" },
+    { source: [0, 0, 0], target: [10, 0, 10], expected: 512, desc: "diagonal SE (45 deg)" },
+    { source: [0, 0, 0], target: [-10, 0, 10], expected: 3584, desc: "diagonal SW (315 deg)" },
+    { source: [5, 0, 5], target: [15, 0, 5], expected: 1024, desc: "offset origin, X+ direction" },
+    {
+      source: [10, 0, 10],
+      target: [10, 0, 0],
+      expected: 2048,
+      desc: "offset origin, Z- direction",
+    },
+    { source: [0, 0, 0], target: [10, 5, 10], expected: 512, desc: "ignores Y difference" },
+  ];
+
+  for (const { source, target, expected, desc } of angleTheories) {
+    test(`getAngleFromToPosition: ${desc}`, () => {
+      const result = object.getAngleFromToPosition(source, target);
+      expect.equal(result, expected);
+    });
+  }
 });
