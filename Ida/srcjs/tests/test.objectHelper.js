@@ -53,9 +53,9 @@ test.group.only("ObjectHelper Tests", () => {
     expect.equal(result, 3072);
   });
 
-  test("converts 360 degrees to 4096 angle", () => {
+  test("converts 360 degrees to 0 angle (normalized)", () => {
     const result = object.degreesToAngle(360);
-    expect.equal(result, 4096);
+    expect.equal(result, 0);
   });
 
   test("converts 45 degrees correctly", () => {
@@ -70,12 +70,12 @@ test.group.only("ObjectHelper Tests", () => {
 
   test("handles negative degrees", () => {
     const result = object.degreesToAngle(-90);
-    expect.equal(result, -1024);
+    expect.equal(result, 3072);
   });
 
   test("handles degrees > 360", () => {
-    const result = object.degreesToAngle(450); // 360 + 90
-    expect.equal(result, 5120);
+    const result = object.degreesToAngle(450); // 360 + 90 = 90
+    expect.equal(result, 1024);
   });
 
   test("converts 0 angle to 0 degrees", () => {
@@ -98,9 +98,9 @@ test.group.only("ObjectHelper Tests", () => {
     expect.equal(result, 270);
   });
 
-  test("converts 4096 angle to 360 degrees", () => {
+  test("converts 4096 angle to 0 degrees (normalized)", () => {
     const result = object.angleToDegrees(4096);
-    expect.equal(result, 360);
+    expect.equal(result, 0);
   });
 
   test("converts 512 angle to 45 degrees", () => {
@@ -110,12 +110,12 @@ test.group.only("ObjectHelper Tests", () => {
 
   test("handles negative angles", () => {
     const result = object.angleToDegrees(-1024);
-    expect.equal(result, -90);
+    expect.equal(result, 270);
   });
 
   test("handles angles > 4096", () => {
     const result = object.angleToDegrees(5120);
-    expect.equal(result, 450);
+    expect.equal(result, 90);
   });
 
   test("converts 0 radians to 0 angle", () => {
@@ -138,9 +138,9 @@ test.group.only("ObjectHelper Tests", () => {
     expect.equal(result, 3072);
   });
 
-  test("converts 2π radians to 4096 angle", () => {
+  test("converts 2π radians to 0 angle (normalized)", () => {
     const result = object.radiansToAngle(2 * Math.PI);
-    expect.equal(result, 4096);
+    expect.equal(result, 0);
   });
 
   test("converts π/4 radians to 512 angle", () => {
@@ -150,12 +150,12 @@ test.group.only("ObjectHelper Tests", () => {
 
   test("handles negative radians", () => {
     const result = object.radiansToAngle(-Math.PI / 2);
-    expect.equal(result, -1024);
+    expect.equal(result, 3072);
   });
 
   test("handles radians > 2π", () => {
     const result = object.radiansToAngle(3 * Math.PI);
-    expect.equal(result, 6144);
+    expect.equal(result, 2048);
   });
 
   test("converts 0 angle to 0 radians", () => {
@@ -178,9 +178,9 @@ test.group.only("ObjectHelper Tests", () => {
     expect.between((3 * Math.PI) / 2 - 0.0001, (3 * Math.PI) / 2 + 0.0001, result);
   });
 
-  test("converts 4096 angle to 2π radians", () => {
+  test("converts 4096 angle to 0 radians (normalized)", () => {
     const result = object.angleToRadians(4096);
-    expect.between(2 * Math.PI - 0.0001, 2 * Math.PI + 0.0001, result);
+    expect.between(-0.0001, 0.0001, result);
   });
 
   test("converts 512 angle to π/4 radians", () => {
@@ -190,12 +190,12 @@ test.group.only("ObjectHelper Tests", () => {
 
   test("handles negative angles", () => {
     const result = object.angleToRadians(-1024);
-    expect.between(-Math.PI / 2 - 0.0001, -Math.PI / 2 + 0.0001, result);
+    expect.between((3 * Math.PI) / 2 - 0.0001, (3 * Math.PI) / 2 + 0.0001, result);
   });
 
   test("handles angles > 4096", () => {
     const result = object.angleToRadians(6144);
-    expect.between(3 * Math.PI - 0.0001, 3 * Math.PI + 0.0001, result);
+    expect.between(Math.PI - 0.0001, Math.PI + 0.0001, result);
   });
 
   test("handles zero values correctly", () => {
@@ -205,14 +205,14 @@ test.group.only("ObjectHelper Tests", () => {
     expect.equal(object.angleToRadians(0), 0);
   });
 
-  test("handles maximum game angle (4096)", () => {
-    expect.equal(object.angleToDegrees(4096), 360);
-    expect.between(2 * Math.PI - 0.0001, 2 * Math.PI + 0.0001, object.angleToRadians(4096));
+  test("handles maximum game angle (4096) normalized to 0", () => {
+    expect.equal(object.angleToDegrees(4096), 0);
+    expect.between(-0.0001, 0.0001, object.angleToRadians(4096));
   });
 
-  test("handles full circle conversions", () => {
-    expect.equal(object.degreesToAngle(360), 4096);
-    expect.equal(object.radiansToAngle(2 * Math.PI), 4096);
+  test("handles full circle conversions (normalized to 0)", () => {
+    expect.equal(object.degreesToAngle(360), 0);
+    expect.equal(object.radiansToAngle(2 * Math.PI), 0);
   });
 
   test("degrees to angle to degrees round-trip", () => {
