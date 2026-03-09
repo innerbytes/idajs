@@ -31,7 +31,14 @@ const isTypeScriptProject = (() => {
   const files = fs.readdirSync(srcDir);
   return files.some((file) => file.endsWith(".ts"));
 })();
-const protectedUpdateFields = new Set(["author", "private", "license"]);
+const protectedUpdateFields = new Set([
+  "name",
+  "description",
+  "version",
+  "author",
+  "private",
+  "license",
+]);
 
 console.log(`${updateMode ? "Updating" : "Installing"} development environment in: ${targetDir}`);
 if (idaRoot) {
@@ -162,6 +169,7 @@ function mergePackageJsonForUpdate() {
   const existingPackageJson = JSON.parse(fs.readFileSync(packagePath, "utf8"));
   const configTemplate = JSON.parse(fs.readFileSync(globalTemplatePath, "utf8"));
   const packageJson = { ...existingPackageJson };
+  const existingDevDependencies = existingPackageJson.devDependencies || {};
 
   Object.entries(configTemplate).forEach(([key, value]) => {
     if (protectedUpdateFields.has(key)) {
@@ -169,9 +177,19 @@ function mergePackageJsonForUpdate() {
     }
 
     if (key === "scripts" || key === "devDependencies") {
+      const templateValue = { ...value };
+
+      if (
+        key === "devDependencies" &&
+        !isTypeScriptProject &&
+        !Object.prototype.hasOwnProperty.call(existingDevDependencies, "typescript")
+      ) {
+        delete templateValue.typescript;
+      }
+
       packageJson[key] = {
         ...(existingPackageJson[key] || {}),
-        ...value,
+        ...templateValue,
       };
       return;
     }
