@@ -834,7 +834,7 @@ test.group("Coroutines Tests", () => {
     });
     epp.setCurrentPhase(epp.ExecutionPhase.InScene);
 
-    action();
+    action({});
     expect.true(executed);
   });
 
@@ -846,7 +846,7 @@ test.group("Coroutines Tests", () => {
     });
     epp.setCurrentPhase(epp.ExecutionPhase.InScene);
 
-    action();
+    action({});
     const gameStore = useGameStore();
     expect.eq(receivedStore, gameStore);
   });
@@ -859,7 +859,7 @@ test.group("Coroutines Tests", () => {
     });
     epp.setCurrentPhase(epp.ExecutionPhase.InScene);
 
-    action();
+    action({});
     const sceneStore = useSceneStore();
     expect.eq(receivedStore, sceneStore);
   });
